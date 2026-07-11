@@ -9,197 +9,242 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --obsidian:#111111;
-  --charcoal:#1C1C1E;
-  --espresso:#2A1E18;
-  --camel:#B68A5A;
-  --brass:#C49A4A;
-  --bone:#E8E1D2;
-  --ash:#8A8580;
-  --forest:#24352B;
-  --oxide:#7A2E25;
-  --sand:#D1B894;
-  --line:#2b2521;
-  --line-warm:rgba(182,138,90,0.22);
-  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
-  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --obsidian:#111111;--charcoal:#1C1C1E;--espresso:#2A1E18;--camel:#B68A5A;--brass:#C49A4A;
+  --bone:#E8E1D2;--ash:#8A8580;--forest:#24352B;--oxide:#7A2E25;--sand:#D1B894;
+  --line:#2b2521;--line-warm:rgba(182,138,90,0.22);--amber:#C98B3A;--green:#5FAE7A;--red:#C96A5F;
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:var(--obsidian);color:var(--bone);font-family:var(--sans);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased}
-body{background:
-  radial-gradient(1200px 600px at 50% -10%, rgba(182,138,90,0.06), transparent 60%),
-  var(--obsidian);
-}
-.container{max-width:1100px;margin:0 auto;padding:20px 18px 48px;min-height:100vh;display:flex;flex-direction:column}
-
-/* header */
-header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--line)}
-.brand{display:flex;flex-direction:column;gap:2px}
-.brand h1{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:.5px;color:var(--bone);line-height:1}
-.brand .tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ash)}
-.header-stats{display:flex;gap:22px}
+body{background:radial-gradient(1200px 600px at 50% -10%,rgba(182,138,90,0.06),transparent 60%),var(--obsidian)}
+.container{max-width:1400px;margin:0 auto;padding:18px 16px 48px;min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand h1{font-family:var(--serif);font-weight:600;font-size:28px;letter-spacing:.5px;line-height:1}
+.brand .tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ash);margin-top:2px}
+.header-stats{display:flex;gap:20px}
 .stat{display:flex;flex-direction:column;align-items:flex-end}
-.stat-value{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--brass);line-height:1}
+.stat-value{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--brass);line-height:1}
 .stat-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ash);margin-top:3px}
-
-/* grid + cards */
-.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1}
-@media(max-width:760px){.main-grid{grid-template-columns:1fr}}
-.card{background:var(--charcoal);border:1px solid var(--line);border-radius:10px;padding:22px;display:flex;flex-direction:column;box-shadow:0 1px 0 rgba(255,255,255,0.02) inset}
-.card h2{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:.4px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line);color:var(--sand)}
-.section-note{font-size:12px;color:var(--ash);margin-bottom:16px;line-height:1.6}
-.subhead{font-size:10px;color:var(--camel);text-transform:uppercase;letter-spacing:2px;font-weight:600;padding-bottom:8px;margin-bottom:12px;border-bottom:1px solid var(--line)}
-
+/* nav */
+.nav{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+.nav button{background:transparent;border:1px solid transparent;color:var(--ash);padding:8px 13px;border-radius:6px;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:600;cursor:pointer}
+.nav button:hover{color:var(--bone);background:rgba(182,138,90,.06)}
+.nav button.active{color:var(--brass);border-color:var(--line-warm);background:rgba(182,138,90,.08)}
+.nav .badge{display:inline-block;margin-left:5px;background:var(--oxide);color:var(--bone);border-radius:9px;padding:1px 6px;font-size:9px}
+.nav .badge.amber{background:var(--amber);color:#17120c}
+/* cards */
+.card{background:var(--charcoal);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column}
+.card h2{font-family:var(--serif);font-size:19px;font-weight:600;margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--line);color:var(--sand)}
+.section-note{font-size:12px;color:var(--ash);margin-bottom:14px;line-height:1.6}
+.subhead{font-size:10px;color:var(--camel);text-transform:uppercase;letter-spacing:2px;font-weight:600;padding-bottom:7px;margin-bottom:11px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+/* dashboard 3-col */
+.dash{display:grid;grid-template-columns:1fr 1.05fr 1.15fr;gap:18px;align-items:start}
+@media(max-width:1080px){.dash{grid-template-columns:1fr}}
 /* forms */
-.form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 label{font-size:10px;color:var(--camel);text-transform:uppercase;letter-spacing:2px;font-weight:600}
-input[type=text],textarea{background:var(--obsidian);border:1px solid var(--line);color:var(--bone);padding:11px 13px;border-radius:6px;font-size:14px;font-family:var(--sans)}
-input[type=text]:focus,textarea:focus{outline:none;border-color:var(--camel);box-shadow:0 0 0 2px rgba(182,138,90,0.14)}
-textarea{resize:vertical;min-height:104px;font-family:var(--sans)}
-
-/* buttons */
-button{background:var(--camel);color:#17120c;border:none;padding:11px 17px;border-radius:6px;font-size:13px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:.15s;font-family:var(--sans)}
+input[type=text],textarea,select{background:var(--obsidian);border:1px solid var(--line);color:var(--bone);padding:11px 12px;border-radius:6px;font-size:14px;font-family:var(--sans);width:100%}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--camel);box-shadow:0 0 0 2px rgba(182,138,90,.14)}
+textarea{resize:vertical;min-height:100px}
+button{background:var(--camel);color:#17120c;border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;font-family:var(--sans)}
 button:hover{background:var(--brass)}
 button:disabled{background:#3a352f;color:var(--ash);cursor:not-allowed}
 button.ghost{background:transparent;border:1px solid var(--line-warm);color:var(--camel)}
-button.ghost:hover{background:rgba(182,138,90,0.08);color:var(--sand)}
+button.ghost:hover{background:rgba(182,138,90,.08);color:var(--sand)}
 button.danger{background:var(--oxide);color:var(--bone)}
 button.danger:hover{background:#8f382e}
-.button-group{display:flex;gap:10px;flex-wrap:wrap}
-
-/* lists */
-.item-list{display:flex;flex-direction:column;gap:10px;flex:1}
-.item{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:13px;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:.15s}
+.button-group{display:flex;gap:8px;flex-wrap:wrap}
+/* items */
+.item-list{display:flex;flex-direction:column;gap:9px}
+.item{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;transition:.15s}
 .item:hover{border-color:var(--line-warm);background:#151210}
-.item.selected{border-color:var(--camel);background:rgba(182,138,90,0.07)}
-.item-info{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
-.item-title{font-size:14px;font-weight:500;color:var(--bone)}
-.item-meta{font-size:11px;color:var(--ash);letter-spacing:.3px}
-.item-actions{display:flex;gap:7px;flex-shrink:0}
-.item-actions button{padding:6px 11px;font-size:11px}
-.parent-link{color:var(--camel);cursor:pointer;border-bottom:1px dotted var(--line-warm);transition:.15s}
-.parent-link:hover{color:var(--sand);border-bottom-color:var(--camel)}
-.item.completed{border-color:var(--forest);background:rgba(36,53,43,0.28)}
+.item.selected{border-color:var(--camel);background:rgba(182,138,90,.07)}
+.item.completed{border-color:var(--forest);background:rgba(36,53,43,.28)}
 .item.completed .item-title{color:var(--ash)}
-/* completed-tasks accordion */
-.accordion{background:var(--obsidian);border:1px solid var(--forest);border-radius:8px;margin-bottom:10px;overflow:hidden}
-.accordion-head{padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:10px}
-.accordion-head:hover{background:rgba(36,53,43,0.18)}
-.accordion-title{font-size:14px;font-weight:500;color:var(--bone)}
-.accordion-title .chk,.accordion-stage .chk{color:#8fb89a;margin-right:8px}
-.accordion-right{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.item.rock{border-left:3px solid var(--brass)}
+.item.waiting{border-color:var(--amber);background:rgba(201,139,58,.07);opacity:.85}
+.item-info{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.item-title{font-size:14px;font-weight:500;word-break:break-word}
+.item-meta{font-size:11px;color:var(--ash)}
+.item-actions{display:flex;gap:6px;flex-shrink:0;align-items:center}
+.item-actions button{padding:6px 10px;font-size:11px}
+.iconbtn{background:transparent;border:1px solid var(--line);color:var(--ash);padding:5px 9px;border-radius:5px;cursor:pointer;font-size:13px;line-height:1}
+.iconbtn:hover{border-color:var(--camel);color:var(--brass);background:transparent}
+.iconbtn.on{color:var(--brass);border-color:var(--camel);background:rgba(182,138,90,.1)}
+.star{font-size:14px}
+.parent-link{color:var(--camel);cursor:pointer;border-bottom:1px dotted var(--line-warm)}
+.parent-link:hover{color:var(--sand)}
+.pill{font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid var(--line-warm);color:var(--camel);white-space:nowrap}
+.pill.wait{border-color:var(--amber);color:var(--amber)}
+.pill.stale{border-color:var(--red);color:var(--red)}
+.pill.rockp{border-color:var(--brass);color:var(--brass)}
+/* objectives */
+.obj-card{background:var(--obsidian);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:11px;cursor:pointer;transition:.15s}
+.obj-card:hover{border-color:var(--line-warm)}
+.obj-card.stalled{border-color:var(--amber)}
+.obj-card.done{border-color:var(--forest)}
+.obj-head{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;margin-bottom:9px}
+.obj-title{font-family:var(--serif);font-size:17px;color:var(--sand);line-height:1.25}
+.obj-bar{background:var(--charcoal);border:1px solid var(--line);border-radius:5px;height:8px;overflow:hidden;margin:8px 0 6px}
+.obj-fill{background:linear-gradient(90deg,var(--espresso),var(--camel));height:100%;transition:width .4s}
+.obj-meta{font-size:11px;color:var(--ash);display:flex;justify-content:space-between;gap:8px}
+.obj-next{font-size:12px;color:var(--bone);margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+.obj-next b{color:var(--camel);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:3px;font-weight:600}
+/* window */
+.window-selector{display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:8px;margin-bottom:14px}
+.window-btn{padding:13px 6px;font-family:var(--serif);font-size:17px;font-weight:600;background:var(--obsidian);border:1px solid var(--line);color:var(--bone);border-radius:7px;cursor:pointer}
+.window-btn:hover{border-color:var(--line-warm)}
+.window-btn.active{background:var(--camel);color:#17120c;border-color:var(--camel)}
+.selected-list{background:var(--espresso);border:1px solid var(--line-warm);border-radius:7px;padding:12px;margin-bottom:14px;max-height:210px;overflow-y:auto}
+.selected-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(182,138,90,.14);font-size:13px}
+.selected-item:last-child{border-bottom:none}
+.seq{font-family:var(--serif);color:var(--brass);font-weight:600;margin-right:7px}
+/* timer */
+.timer-value{font-family:var(--serif);font-size:84px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;color:var(--brass);line-height:1;text-shadow:0 0 30px rgba(196,154,74,.15)}
+@media(max-width:760px){.timer-value{font-size:58px}}
+.timer-sub{text-align:center;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ash);margin-top:6px}
+.deficit-banner{background:rgba(201,139,58,.12);border:1px solid var(--amber);border-radius:7px;padding:12px;margin:16px 0;text-align:center;font-size:13px;color:var(--amber)}
+.deficit-banner b{display:block;font-family:var(--serif);font-size:17px;margin-bottom:3px}
+.timer-stages{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.tsi{display:flex;flex-direction:column;padding:12px;background:var(--obsidian);border:1px solid var(--line);border-radius:7px}
+.tsi.completed{background:rgba(36,53,43,.35);border-color:var(--forest)}
+.tsi.extra{border-left:3px solid var(--camel)}
+.tsi.backfill{border-left:3px solid var(--amber)}
+.tsi.waiting{border-color:var(--amber);background:rgba(201,139,58,.08);opacity:.7}
+.ts-main{display:flex;align-items:center;gap:11px}
+.tick{width:22px;height:22px;border:1px solid var(--camel);border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tick.on{background:var(--forest);border-color:var(--forest)}
+.tick.on::after{content:"✓";color:var(--sand);font-size:14px;font-weight:700}
+.tick.derived{opacity:.45;cursor:default}
+.tick.dead{opacity:.3;cursor:not-allowed;border-color:var(--ash)}
+.ts-text{flex:1;font-size:14px}
+.tsi.completed .ts-text{color:var(--ash);text-decoration:line-through}
+.tsi.waiting .ts-text{color:var(--amber)}
+.ts-btns{display:flex;gap:5px;flex-shrink:0}
+.ts-btns button{padding:5px 9px;font-size:11px}
+.substage-list{display:flex;flex-direction:column;gap:6px;margin:10px 0 2px 33px}
+.substage-item{display:flex;align-items:center;gap:9px;padding:8px 10px;background:var(--charcoal);border:1px solid var(--line);border-radius:6px;cursor:pointer}
+.substage-item:hover{border-color:var(--line-warm)}
+.substage-item.done{border-color:var(--forest);background:rgba(36,53,43,.25)}
+.subtick{width:16px;height:16px;border:1px solid var(--camel);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.subtick.on{background:var(--forest);border-color:var(--forest)}
+.subtick.on::after{content:"✓";color:var(--sand);font-size:10px}
+.substage-text{flex:1;font-size:13px}
+.substage-item.done .substage-text{color:var(--ash);text-decoration:line-through}
+/* result */
+.result-card{background:var(--espresso);border:1px solid var(--camel);border-radius:10px;padding:24px;text-align:center}
+.result-value{font-family:var(--serif);font-size:60px;font-weight:700;color:var(--brass);margin:8px 0;line-height:1}
+.result-detail{font-size:13px;color:var(--ash);margin:5px 0}
+.penalty{color:var(--red)}
+.bonus{color:var(--green)}
+.result-line{margin-top:13px;border-top:1px solid var(--line-warm);padding-top:13px;font-size:14px;color:var(--bone)}
+.stage-report{display:flex;flex-direction:column;gap:6px;margin:16px 0 4px;text-align:left}
+.report-row{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;font-size:13px}
+.report-row.done{border-color:var(--forest)}
+.report-row.wait{border-color:var(--amber)}
+.report-row .mark{width:15px;flex-shrink:0;text-align:center;font-weight:700}
+.report-row.done .mark{color:var(--green)}
+.report-row.miss .mark{color:var(--red)}
+.report-row.wait .mark{color:var(--amber)}
+.report-row .txt{flex:1}
+.report-row.miss .txt{color:var(--ash);text-decoration:line-through}
+.report-row.wait .txt{color:var(--amber)}
+/* profile */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:13px;margin-bottom:18px}
+.profile-stat{background:var(--obsidian);border:1px solid var(--line);border-radius:9px;padding:16px;text-align:center}
+.profile-stat-value{font-family:var(--serif);font-size:34px;font-weight:600;color:var(--brass);line-height:1}
+.profile-stat-label{font-size:9px;color:var(--ash);text-transform:uppercase;letter-spacing:2px;margin-top:5px}
+.xp-bar{background:var(--obsidian);border:1px solid var(--line);border-radius:6px;height:20px;overflow:hidden;margin:9px 0}
+.xp-fill{background:linear-gradient(90deg,var(--espresso),var(--camel));height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#17120c;font-weight:700}
+/* accordion */
+.accordion{background:var(--obsidian);border:1px solid var(--forest);border-radius:8px;margin-bottom:9px;overflow:hidden}
+.accordion-head{padding:13px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:10px}
+.accordion-head:hover{background:rgba(36,53,43,.18)}
+.accordion-title{font-size:14px}
+.chk{color:var(--green);margin-right:7px}
+.accordion-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .accordion-meta{font-size:11px;color:var(--ash)}
 .chev{color:var(--ash);transition:.2s;font-size:11px}
 .accordion.open .chev{transform:rotate(90deg)}
-.accordion-body{display:none;padding:0 14px 14px;flex-direction:column;gap:7px}
+.accordion-body{display:none;padding:0 13px 13px;flex-direction:column;gap:6px}
 .accordion.open .accordion-body{display:flex}
-.accordion-stage{font-size:13px;color:var(--ash);padding:9px 12px;background:var(--charcoal);border-radius:6px;border-left:2px solid var(--forest)}
-/* result stage report */
-.stage-report{display:flex;flex-direction:column;gap:7px;margin:18px 0 4px;text-align:left}
-.report-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;font-size:13px}
-.report-row.done{border-color:var(--forest)}
-.report-row .mark{width:16px;flex-shrink:0;text-align:center;font-weight:700}
-.report-row.done .mark{color:#8fb89a}
-.report-row.miss .mark{color:#c96a5f}
-.report-row .txt{flex:1}
-.report-row.miss .txt{color:var(--ash);text-decoration:line-through}
-.report-row .ov{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--camel);border:1px solid var(--line-warm);padding:2px 6px;border-radius:4px}
-
-/* window selector */
-.window-selector{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:9px;margin-bottom:16px}
-.window-btn{padding:14px 8px;font-family:var(--serif);font-size:17px;font-weight:600;background:var(--obsidian);border:1px solid var(--line);color:var(--bone);border-radius:7px;cursor:pointer;transition:.15s}
-.window-btn:hover{border-color:var(--line-warm)}
-.window-btn.active{background:var(--camel);color:#17120c;border-color:var(--camel)}
-
-/* selected roster */
-.selected-list{background:var(--espresso);border:1px solid var(--line-warm);border-radius:7px;padding:13px;margin-bottom:16px;max-height:210px;overflow-y:auto}
-.selected-item{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(182,138,90,0.14);font-size:13px}
-.selected-item:last-child{border-bottom:none}
-.selected-item .seq{font-family:var(--serif);color:var(--brass);font-weight:600;margin-right:8px}
-
-/* timer */
-.timer-display{display:flex;flex-direction:column;gap:22px;flex:1}
-.timer-value{font-family:var(--serif);font-size:88px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;color:var(--brass);letter-spacing:2px;line-height:1;text-shadow:0 0 30px rgba(196,154,74,0.15)}
-@media(max-width:760px){.timer-value{font-size:60px}}
-.timer-sub{text-align:center;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ash);margin-top:-14px}
-.timer-stages{display:flex;flex-direction:column;gap:9px;flex:1}
-.timer-stage-item{display:flex;flex-direction:column;padding:12px;background:var(--obsidian);border:1px solid var(--line);border-radius:7px;transition:.15s}
-.ts-main{display:flex;align-items:center;gap:13px}
-.split-btn{padding:5px 10px;font-size:11px;margin-left:auto;flex-shrink:0}
-.tick.derived{opacity:.45;cursor:default}
-.substage-list{display:flex;flex-direction:column;gap:6px;margin:11px 0 2px 35px}
-.substage-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--charcoal);border:1px solid var(--line);border-radius:6px;cursor:pointer;transition:.15s}
-.substage-item:hover{border-color:var(--line-warm)}
-.substage-item.done{border-color:var(--forest);background:rgba(36,53,43,0.25)}
-.subtick{width:17px;height:17px;border:1px solid var(--camel);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.subtick.on{background:var(--forest);border-color:var(--forest)}
-.subtick.on::after{content:"✓";color:var(--sand);font-size:11px}
-.substage-text{flex:1;font-size:13px}
-.substage-item.done .substage-text{color:var(--ash);text-decoration:line-through}
-.timer-stage-item.completed{background:rgba(36,53,43,0.35);border-color:var(--forest)}
-.timer-stage-item.extra{border-left:3px solid var(--camel)}
-.tick{width:22px;height:22px;border:1px solid var(--camel);border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;background:transparent}
-.tick.on{background:var(--forest);border-color:var(--forest)}
-.tick.on::after{content:"✓";color:var(--sand);font-size:14px;font-weight:700}
-.timer-stage-text{flex:1;font-size:14px}
-.timer-stage-item.completed .timer-stage-text{color:var(--ash);text-decoration:line-through}
-.extra-tag{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--camel);border:1px solid var(--line-warm);padding:2px 6px;border-radius:4px}
-
-/* views */
+.accordion-stage{font-size:13px;color:var(--ash);padding:8px 11px;background:var(--charcoal);border-radius:6px;border-left:2px solid var(--forest)}
+/* ledger */
+.tabs{display:flex;gap:5px;border-bottom:1px solid var(--line);margin-bottom:16px;flex-wrap:wrap}
+.ltab{background:none;border:none;color:var(--ash);padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.ltab:hover{color:var(--bone)}
+.ltab.active{color:var(--brass);border-bottom-color:var(--camel)}
+.hist-day{margin-bottom:20px}
+.hist-day-head{display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--serif);font-size:17px;color:var(--sand);padding-bottom:6px;margin-bottom:9px;border-bottom:1px solid var(--line)}
+.hist-day-head span{font-family:var(--sans);font-size:11px;color:var(--ash)}
+.session-row{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;margin-bottom:8px;overflow:hidden}
+.sr-main{display:flex;align-items:center;gap:10px;padding:12px;cursor:pointer}
+.sr-main:hover{background:#151210}
+.sdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sdot.good{background:var(--green)}
+.sdot.bad{background:var(--red)}
+.sdot.easy{background:var(--green);box-shadow:0 0 0 2px rgba(232,225,210,.35)}
+.sr-info{flex:1;min-width:0}
+.sr-title{font-size:14px}
+.sr-meta{font-size:11px;color:var(--ash);margin-top:2px}
+.sr-xp{font-family:var(--serif);font-size:17px;color:var(--brass);font-weight:600;flex-shrink:0}
+.sr-detail{padding:0 12px 12px;display:flex;flex-direction:column;gap:6px}
+.chart-wrap{display:flex;gap:11px;align-items:flex-start;margin:12px 0 4px}
+.chart-yaxis{display:flex;flex-direction:column;justify-content:space-between;height:230px;font-size:10px;color:var(--ash);text-align:right;min-width:32px}
+.chart-cols{display:flex;gap:7px;flex:1}
+.chart-col{flex:1;display:flex;flex-direction:column;min-width:0}
+.col-bararea{height:230px;display:flex;flex-direction:column-reverse;border-left:1px solid var(--line);border-bottom:1px solid var(--line)}
+.col-bararea.weekend{background:rgba(182,138,90,.06)}
+.seg{width:100%;border-top:1px solid rgba(0,0,0,.45);cursor:pointer}
+.seg:hover{filter:brightness(1.3)}
+.seg.good,.dive-seg.good{background:var(--forest)}
+.seg.bad,.dive-seg.bad{background:var(--oxide)}
+.seg.easy,.dive-seg.easy{background:var(--forest);background-image:repeating-linear-gradient(45deg,transparent 0,transparent 5px,rgba(232,225,210,.3) 5px,rgba(232,225,210,.3) 7px)}
+.col-total{text-align:center;font-size:11px;color:var(--brass);font-family:var(--serif);margin-top:4px}
+.col-label{text-align:center;font-size:10px;color:var(--ash);margin-top:2px;line-height:1.3}
+.col-today .col-label{color:var(--brass);font-weight:700}
+.chart-legend{display:flex;gap:14px;justify-content:center;margin-top:14px;font-size:11px;color:var(--ash);flex-wrap:wrap}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.lg-swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+.dive-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.dive-date{font-family:var(--serif);font-size:20px;color:var(--sand)}
+.dive-summary{display:flex;gap:11px;margin-bottom:16px;flex-wrap:wrap}
+.dive-summary>div{flex:1;min-width:80px;background:var(--obsidian);border:1px solid var(--line);border-radius:8px;padding:13px;text-align:center}
+.ds-v{font-family:var(--serif);font-size:24px;color:var(--brass);line-height:1}
+.ds-l{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--ash);margin-top:4px}
+.dive-chart{display:flex;justify-content:center;margin:6px 0 20px}
+.dive-col{width:min(260px,72%);display:flex;flex-direction:column-reverse;border-left:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dive-seg{width:100%;border-top:1px solid rgba(0,0,0,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:26px}
+.dive-seg:hover{filter:brightness(1.25)}
+.seg-lbl{font-size:11px;color:var(--bone);padding:2px 6px;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+/* rocks banner */
+.rock-panel{background:var(--espresso);border:1px solid var(--line-warm);border-radius:8px;padding:14px;margin-bottom:14px}
+.rock-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--camel);font-weight:600;margin-bottom:9px}
+.rock-list{display:flex;flex-direction:column;gap:6px}
+.rock-item{display:flex;align-items:center;gap:8px;font-size:13px;padding:7px 9px;background:var(--obsidian);border-radius:6px;border-left:2px solid var(--brass)}
+.rock-item.done{border-left-color:var(--forest);color:var(--ash);text-decoration:line-through}
+.rock-item.waiting{border-left-color:var(--amber);color:var(--amber)}
+.gate-note{font-size:11px;color:var(--ash);margin-top:9px;padding-top:9px;border-top:1px solid var(--line-warm)}
+.gate-note.locked{color:var(--amber)}
+/* views + misc */
 .view{display:none}
 .view.active{display:flex;flex-direction:column;gap:16px;animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-
-/* result */
-.result-card{background:var(--espresso);border:1px solid var(--camel);border-radius:10px;padding:26px;text-align:center}
-.result-value{font-family:var(--serif);font-size:64px;font-weight:700;color:var(--brass);margin:10px 0;line-height:1}
-.result-detail{font-size:13px;color:var(--ash);margin:6px 0}
-.result-detail .penalty{color:#c96a5f}
-.result-detail .bonus{color:#8fb89a}
-.result-line{margin-top:14px;border-top:1px solid var(--line-warm);padding-top:14px;font-size:14px;color:var(--bone)}
-
-/* breakdown */
-.stage-breakdown-form{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:17px}
-.stage-input-row{display:flex;gap:9px;margin-bottom:11px;align-items:center}
-.stage-input-row .seq{font-family:var(--serif);color:var(--brass);font-weight:600;width:18px;text-align:center;flex-shrink:0}
-.stage-input-row input{flex:1}
-.stage-input-row button{padding:8px 11px;font-size:11px}
-
-/* profile */
-.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
-.profile-stat{background:var(--obsidian);border:1px solid var(--line);border-radius:9px;padding:18px;text-align:center}
-.profile-stat-value{font-family:var(--serif);font-size:38px;font-weight:600;color:var(--brass);line-height:1}
-.profile-stat-label{font-size:9px;color:var(--ash);text-transform:uppercase;letter-spacing:2px;margin-top:6px}
-.xp-bar{background:var(--obsidian);border:1px solid var(--line);border-radius:6px;height:22px;overflow:hidden;margin:10px 0}
-.xp-fill{background:linear-gradient(90deg,var(--espresso),var(--camel));height:100%;transition:width .4s;display:flex;align-items:center;justify-content:center;font-size:11px;color:#17120c;font-weight:700}
-.session-history{display:flex;flex-direction:column;gap:10px}
-.session-item{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:13px;font-size:13px}
-.session-xp{font-family:var(--serif);font-size:17px;color:var(--brass);font-weight:600}
-.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:18px}
-.tab-btn{background:none;border:none;color:var(--ash);padding:9px 15px;cursor:pointer;border-bottom:2px solid transparent;font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
-.tab-btn:hover{color:var(--bone)}
-.tab-btn.active{color:var(--brass);border-bottom-color:var(--camel)}
-
-.empty-state{text-align:center;padding:34px 16px;color:var(--ash);font-family:var(--serif);font-size:17px;font-style:italic}
-
-/* modal (in-app, native dialogs suppressed in webview) */
-.modal-overlay{position:fixed;inset:0;background:rgba(5,4,3,0.72);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.empty-state{text-align:center;padding:26px 14px;color:var(--ash);font-family:var(--serif);font-size:16px;font-style:italic}
+.modal-overlay{position:fixed;inset:0;background:rgba(5,4,3,.72);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:100;padding:18px}
 .modal-overlay.open{display:flex;animation:fade .2s ease}
-.modal{background:var(--charcoal);border:1px solid var(--line-warm);border-radius:12px;padding:24px;max-width:440px;width:100%;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6)}
-.modal-title{font-family:var(--serif);font-size:23px;font-weight:600;color:var(--sand);margin-bottom:5px}
-.modal-sub{font-size:12px;color:var(--ash);margin-bottom:16px;line-height:1.5}
-.modal-list{display:flex;flex-direction:column;gap:8px;overflow-y:auto;margin-bottom:16px;flex:1}
-.modal-pick{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:13px;cursor:pointer;transition:.15s}
-.modal-pick:hover{border-color:var(--camel);background:rgba(182,138,90,0.07)}
-.modal-pick .item-title{font-size:14px}
-.modal-actions{display:flex;gap:9px;justify-content:flex-end}
-
-/* toast */
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--espresso);border:1px solid var(--camel);color:var(--sand);padding:12px 20px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.modal{background:var(--charcoal);border:1px solid var(--line-warm);border-radius:12px;padding:22px;max-width:460px;width:100%;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal-title{font-family:var(--serif);font-size:22px;color:var(--sand);margin-bottom:5px}
+.modal-sub{font-size:12px;color:var(--ash);margin-bottom:14px;line-height:1.5}
+.modal-list{display:flex;flex-direction:column;gap:7px;overflow-y:auto;margin-bottom:14px}
+.modal-pick{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:12px;cursor:pointer}
+.modal-pick:hover{border-color:var(--camel);background:rgba(182,138,90,.07)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--espresso);border:1px solid var(--camel);color:var(--sand);padding:12px 20px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:200}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-.center-cta{text-align:center;margin-top:22px}
-.center-cta button{padding:13px 34px;font-size:14px}
+.center-cta{text-align:center;margin-top:18px}
+.stage-input-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.stage-input-row input{flex:1}
 </style>
 </head>
 <body>
@@ -207,7 +252,7 @@ button.danger:hover{background:#8f382e}
   <header>
     <div class="brand">
       <h1>The Forge</h1>
-      <div class="tag">Execution Layer · <span id="syncStatus" style="letter-spacing:1px;color:var(--ash)">◇ local</span></div>
+      <div class="tag">Execution Layer · <span id="syncStatus" style="color:var(--ash)">◇ local</span></div>
     </div>
     <div class="header-stats">
       <div class="stat"><div class="stat-value" id="dailyXpDisplay">0</div><div class="stat-label">Today</div></div>
@@ -216,32 +261,82 @@ button.danger:hover{background:#8f382e}
     </div>
   </header>
 
-  <!-- TASK POOL -->
-  <div id="taskPoolView" class="view active">
-    <div class="main-grid">
+  <div class="nav" id="nav">
+    <button data-view="dashView" class="active">Dashboard</button>
+    <button data-view="objectivesView">Objectives</button>
+    <button data-view="stagePoolView">Stages</button>
+    <button data-view="waitingView">Waiting<span class="badge amber" id="waitBadge" style="display:none">0</span></button>
+    <button data-view="ledgerView">Ledger</button>
+    <button data-view="completedView">Completed</button>
+    <button data-view="profileView">Character</button>
+    <button id="syncNowBtn">Sync</button>
+  </div>
+  <!-- DASHBOARD -->
+  <div id="dashView" class="view active">
+    <div class="dash">
+      <!-- LEFT: ACTIVE OBJECTIVES -->
       <div class="card">
-        <h2>Task Pool</h2>
+        <h2>Active Objectives</h2>
+        <div class="section-note">Observe. Read-only here — manage in Objectives.</div>
+        <div id="dashObjectives"></div>
+        <button id="dashToObjBtn" class="ghost" style="margin-top:6px">Manage Objectives →</button>
+      </div>
+      <!-- CENTRE: INPUT + ROCKS -->
+      <div class="card">
+        <h2>Muster</h2>
+        <div id="rockPanel"></div>
         <div class="form-group">
-          <label>Muster the work</label>
+          <label>Add Tasks</label>
           <textarea id="taskPasteInput" placeholder="Paste or type tasks, one per line…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Attach to Objective (optional)</label>
+          <select id="taskObjSelect"><option value="">— Unassigned —</option></select>
         </div>
         <div class="button-group">
           <button id="addTasksBtn">Add Tasks</button>
-          <button id="clearCompletedTasksBtn" class="ghost">Clear Done</button>
-          <button id="profileBtn" class="ghost">Character</button>
-          <button id="completedBtn" class="ghost">Completed</button>
-          <button id="syncNowBtn" class="ghost">Sync</button>
+          <button id="toBuilderBtn" class="ghost">Build Session →</button>
         </div>
       </div>
+      <!-- RIGHT: STANDING TASKS -->
       <div class="card">
         <h2>Standing Tasks</h2>
-        <div class="subhead">Not Broken Down (<span id="unbrokenCount">0</span>)</div>
+        <div class="subhead">Not Broken Down <span id="unbrokenCount">0</span></div>
         <div class="item-list" id="unbrokenList"></div>
-        <div class="subhead" style="margin-top:20px">Broken Down (<span id="brokenCount">0</span>)</div>
+        <div class="subhead" style="margin-top:18px">Broken Down <span id="brokenCount">0</span></div>
         <div class="item-list" id="brokenList"></div>
       </div>
     </div>
-    <div class="center-cta"><button id="toStagePoolBtn">Stage Pool →</button></div>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <div id="objectivesView" class="view">
+    <div class="card">
+      <h2>Objectives</h2>
+      <div class="section-note">Active is capped at <b id="objCapLabel">3</b>. Everything else waits in the Backlog — capture freely, commit narrowly.</div>
+      <div class="form-group">
+        <label>New Objective</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="objTitleInput" placeholder="A multi-day undertaking…">
+          <button id="addObjBtn">Add</button>
+        </div>
+      </div>
+      <div class="subhead" style="margin-top:14px">Active <span id="activeObjCount">0/3</span></div>
+      <div id="activeObjList"></div>
+      <div class="subhead" style="margin-top:18px">Backlog <span id="backlogObjCount">0</span></div>
+      <div id="backlogObjList"></div>
+    </div>
+  </div>
+
+  <!-- OBJECTIVE DETAIL -->
+  <div id="objDetailView" class="view">
+    <div class="card">
+      <h2 id="objDetailTitle">Objective</h2>
+      <div id="objDetailBody"></div>
+      <div class="button-group" style="margin-top:16px">
+        <button id="objDetailBackBtn" class="ghost">← Back</button>
+      </div>
+    </div>
   </div>
 
   <!-- BREAKDOWN -->
@@ -249,32 +344,14 @@ button.danger:hover{background:#8f382e}
     <div class="card">
       <h2>Break the Task into Stages</h2>
       <div id="taskBreakdownInfo"></div>
-      <div class="stage-breakdown-form">
+      <div style="background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:16px">
         <label>Stages — the unit of execution</label>
-        <div id="stageInputs"></div>
+        <div id="stageInputs" style="margin-top:10px"></div>
         <button id="addStageRowBtn" class="ghost">+ Add Stage</button>
       </div>
-      <div class="button-group" style="margin-top:20px">
+      <div class="button-group" style="margin-top:18px">
         <button id="confirmBreakdownBtn">Confirm Breakdown</button>
         <button id="cancelBreakdownBtn" class="ghost">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STAGE POOL -->
-  <div id="stagePoolView" class="view">
-    <div class="main-grid">
-      <div class="card">
-        <h2>Stage Pool</h2>
-        <div class="section-note">Every stage drawn from every broken task, assembled and ready to commit to a window.</div>
-        <div class="button-group">
-          <button id="backToTasksBtn" class="ghost">← Tasks</button>
-          <button id="startSessionFromStagesBtn">Build Session →</button>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Available Stages (<span id="stageCount">0</span>)</h2>
-        <div class="item-list" id="stagePoolList"></div>
       </div>
     </div>
   </div>
@@ -285,21 +362,21 @@ button.danger:hover{background:#8f382e}
       <h2 id="taskDetailTitle">Task</h2>
       <div class="section-note" id="taskDetailMeta"></div>
       <div class="item-list" id="taskDetailStages"></div>
-      <div class="button-group" style="margin-top:20px">
+      <div class="button-group" style="margin-top:18px">
         <button id="taskDetailEditBtn">Edit Stages</button>
-        <button id="taskDetailBackBtn" class="ghost">Back</button>
+        <button id="taskDetailBackBtn" class="ghost">← Back</button>
       </div>
     </div>
   </div>
 
-  <!-- COMPLETED TASKS -->
-  <div id="completedView" class="view">
+  <!-- STAGE POOL -->
+  <div id="stagePoolView" class="view">
     <div class="card">
-      <h2>Completed Tasks</h2>
-      <div class="section-note">Sealed work. Tap any task to expand its stages.</div>
-      <div id="completedList"></div>
+      <h2>Stage Pool <span style="font-size:13px;color:var(--ash)">(<span id="stageCount">0</span>)</span></h2>
+      <div class="section-note">Every live stage. Waiting stages are held aside.</div>
+      <div class="item-list" id="stagePoolList"></div>
       <div class="button-group" style="margin-top:16px">
-        <button id="completedBackBtn" class="ghost">← Back to Tasks</button>
+        <button id="poolToBuilderBtn">Build Session →</button>
       </div>
     </div>
   </div>
@@ -311,6 +388,8 @@ button.danger:hover{background:#8f382e}
       <div class="form-group">
         <label>Focus Window</label>
         <div class="window-selector">
+          <button class="window-btn" data-window="2">2</button>
+          <button class="window-btn" data-window="5">5</button>
           <button class="window-btn" data-window="15">15</button>
           <button class="window-btn" data-window="25">25</button>
           <button class="window-btn" data-window="40">40</button>
@@ -320,9 +399,7 @@ button.danger:hover{background:#8f382e}
       </div>
       <div class="form-group">
         <label id="selectedWindowLabel">No window chosen</label>
-        <div class="selected-list" id="selectedStagesList">
-          <div class="empty-state" style="padding:16px">Choose a window, then commit stages</div>
-        </div>
+        <div class="selected-list" id="selectedStagesList"></div>
       </div>
       <div class="form-group">
         <label>Available Stages</label>
@@ -330,31 +407,25 @@ button.danger:hover{background:#8f382e}
       </div>
       <div class="button-group">
         <button id="startTimerBtn" disabled>Commit &amp; Start</button>
-        <button id="backFromBuilderBtn" class="ghost">Back</button>
       </div>
     </div>
   </div>
 
   <!-- TIMER -->
   <div id="timerView" class="view">
-    <div class="card" style="flex:1;justify-content:space-between">
-      <div>
-        <h2>Locked Session</h2>
-        <div class="timer-display">
-          <div>
-            <div class="timer-value" id="timerDisplay">25:00</div>
-            <div class="timer-sub" id="timerSub">no pause · no stop</div>
-          </div>
-          <div class="timer-stages" id="timerStagesList"></div>
-          <button id="addStageInSessionBtn" class="ghost">+ Add Stage</button>
-        </div>
-      </div>
+    <div class="card">
+      <h2>Locked Session</h2>
+      <div class="timer-value" id="timerDisplay">25:00</div>
+      <div class="timer-sub">no pause · no stop</div>
+      <div id="deficitBanner"></div>
+      <div class="timer-stages" id="timerStagesList"></div>
+      <button id="addStageInSessionBtn" class="ghost" style="margin-top:14px">+ Add Stage</button>
     </div>
   </div>
 
   <!-- RESULT -->
   <div id="resultView" class="view">
-    <div class="card" style="max-width:560px;margin:0 auto">
+    <div class="card" style="max-width:580px;margin:0 auto">
       <h2>Session Sealed</h2>
       <div class="result-card">
         <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ash)">Points Earned</div>
@@ -367,609 +438,1220 @@ button.danger:hover{background:#8f382e}
         <div class="result-line">Daily Total · <span style="color:var(--brass);font-weight:600" id="resultDailyTotal">0</span> XP</div>
       </div>
       <div class="stage-report" id="stageReport"></div>
-      <div class="button-group" style="margin-top:20px">
+      <div class="button-group" style="margin-top:16px">
         <button id="newSessionBtn">Another Session</button>
-        <button id="backToTasksFromResultBtn" class="ghost">Back to Tasks</button>
+        <button id="resultBackBtn" class="ghost">← Dashboard</button>
       </div>
     </div>
   </div>
 
-  <!-- PROFILE -->
+  <!-- WAITING -->
+  <div id="waitingView" class="view">
+    <div class="card">
+      <h2>Waiting On</h2>
+      <div class="section-note">Blocked work, oldest first. Anything past 5 days isn't blocked — it's abandoned.</div>
+      <div id="waitingList"></div>
+    </div>
+  </div>
+
+  <!-- COMPLETED -->
+  <div id="completedView" class="view">
+    <div class="card">
+      <h2>Completed</h2>
+      <div class="tabs">
+        <button class="ctab active" data-ctab="ctasks">Tasks</button>
+        <button class="ctab" data-ctab="cobjs">Objectives</button>
+      </div>
+      <div id="ctasks"><div id="completedTaskList"></div></div>
+      <div id="cobjs" style="display:none"><div id="completedObjList"></div></div>
+    </div>
+  </div>
+
+  <!-- LEDGER -->
+  <div id="ledgerView" class="view">
+    <div class="card">
+      <h2>The Ledger</h2>
+      <div class="tabs">
+        <button class="ltab active" data-ltab="history">History</button>
+        <button class="ltab" data-ltab="week">7 Days</button>
+        <button class="ltab" data-ltab="day">Day Dive</button>
+        <button class="ltab" data-ltab="rocks">Rocks</button>
+      </div>
+      <div id="lhistory" class="ltab-content"><div id="historyBody"></div></div>
+      <div id="lweek" class="ltab-content" style="display:none">
+        <div class="section-note">Each column is a day. Segments are sessions, height by window length.</div>
+        <div id="weekChart" class="chart-wrap"></div>
+        <div class="chart-legend">
+          <span><span class="lg-swatch" style="background:var(--forest)"></span>Clean (≥90%)</span>
+          <span><span class="lg-swatch" style="background:var(--oxide)"></span>Penalized</span>
+          <span><span class="lg-swatch" style="background:var(--forest);background-image:repeating-linear-gradient(45deg,transparent 0,transparent 3px,rgba(232,225,210,.4) 3px,rgba(232,225,210,.4) 5px)"></span>Too easy</span>
+          <span><span class="lg-swatch" style="background:rgba(182,138,90,.18)"></span>Weekend</span>
+        </div>
+      </div>
+      <div id="lday" class="ltab-content" style="display:none">
+        <div class="dive-nav">
+          <button class="ghost" id="divePrev">← Prev</button>
+          <div class="dive-date" id="diveDateLabel">Today</div>
+          <button class="ghost" id="diveNext">Next →</button>
+        </div>
+        <div id="diveBody"></div>
+      </div>
+      <div id="lrocks" class="ltab-content" style="display:none">
+        <div class="section-note">Daily settlement of Big Rocks. Landed pays, dropped bites, blocked is void.</div>
+        <div id="rockLedger"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARACTER -->
   <div id="profileView" class="view">
     <div class="card">
       <h2>Character</h2>
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="stats">Stats</button>
-        <button class="tab-btn" data-tab="history">History</button>
+      <div class="profile-grid">
+        <div class="profile-stat"><div class="profile-stat-value" id="profileLevel">1</div><div class="profile-stat-label">Level</div></div>
+        <div class="profile-stat"><div class="profile-stat-value" id="profileXp">0</div><div class="profile-stat-label">Total XP</div></div>
+        <div class="profile-stat"><div class="profile-stat-value" id="profileSessions">0</div><div class="profile-stat-label">Sessions</div></div>
+        <div class="profile-stat"><div class="profile-stat-value" id="profileAvgAttainment">0%</div><div class="profile-stat-label">Avg Attainment</div></div>
+        <div class="profile-stat"><div class="profile-stat-value" id="profileRockRate">—</div><div class="profile-stat-label">Rock Rate</div></div>
+        <div class="profile-stat"><div class="profile-stat-value" id="profileObjDone">0</div><div class="profile-stat-label">Objectives</div></div>
       </div>
-      <div id="statsTab" class="tab-content">
-        <div class="profile-grid">
-          <div class="profile-stat"><div class="profile-stat-value" id="profileLevel">1</div><div class="profile-stat-label">Level</div></div>
-          <div class="profile-stat"><div class="profile-stat-value" id="profileXp">0</div><div class="profile-stat-label">Total XP</div></div>
-          <div class="profile-stat"><div class="profile-stat-value" id="profileSessions">0</div><div class="profile-stat-label">Sessions</div></div>
-          <div class="profile-stat"><div class="profile-stat-value" id="profileAvgAttainment">0%</div><div class="profile-stat-label">Avg Attainment</div></div>
-        </div>
-        <div class="card">
-          <h2>Ascent to Next Level</h2>
-          <div style="font-size:12px;color:var(--ash);margin-bottom:8px"><span id="xpToNextLevel">0</span> / 1000 XP</div>
-          <div class="xp-bar"><div class="xp-fill" id="xpProgress" style="width:0%"><span id="xpPercent">0%</span></div></div>
-          <div class="section-note" style="margin:12px 0 0">Miss a workday (Mon–Fri) with zero sessions and total XP decays 20%. Weekend sessions earn +10%.</div>
-        </div>
-      </div>
-      <div id="historyTab" class="tab-content" style="display:none">
-        <div class="card">
-          <h2>Recent Sessions</h2>
-          <div class="session-history" id="sessionHistory"></div>
-        </div>
+      <div class="card">
+        <h2>Ascent to Next Level</h2>
+        <div style="font-size:12px;color:var(--ash);margin-bottom:8px"><span id="xpToNextLevel">0</span> / 1000 XP</div>
+        <div class="xp-bar"><div class="xp-fill" id="xpProgress" style="width:0%"><span id="xpPercent">0%</span></div></div>
+        <div class="section-note" style="margin:12px 0 0">Rocks are set before 09:30 and settle at 20:00. Out-of-session work pays 50%. Miss a workday and total XP decays 20%. Weekends pay +10%.</div>
       </div>
     </div>
-    <div class="center-cta"><button id="backToTasksFromProfileBtn" class="ghost">← Back to Tasks</button></div>
   </div>
 </div>
 
-<!-- STAGE PICKER MODAL -->
-<div id="stagePickerModal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">Add a Stage</div>
-    <div class="modal-sub">Choose deliberately. Added stages count as overflow and cannot be removed once in.</div>
-    <div class="modal-list" id="stagePickerList"></div>
-    <div class="modal-actions"><button id="stagePickerCancel" class="ghost">Cancel</button></div>
-  </div>
-</div>
+<!-- MODALS -->
+<div id="stagePickerModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title" id="pickerTitle">Add a Stage</div>
+  <div class="modal-sub" id="pickerSub">Choose deliberately. Added stages cannot be removed once in.</div>
+  <div class="modal-list" id="stagePickerList"></div>
+  <div class="modal-actions"><button id="stagePickerCancel" class="ghost">Cancel</button></div>
+</div></div>
 
-<!-- SPLIT STAGE MODAL (in-session only) -->
-<div id="splitModal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">Split Stage into Steps</div>
-    <div class="modal-sub">In-session only. Steps are a checklist for this one stage — the stage counts as complete only when every step is ticked. One step per line. Clear all lines to revert to a single tick.</div>
-    <div style="font-family:var(--serif);color:var(--sand);font-size:17px;margin-bottom:11px" id="splitStageTitle"></div>
-    <textarea id="splitInput" placeholder="Step one&#10;Step two&#10;Step three" style="min-height:120px;margin-bottom:16px"></textarea>
-    <div class="modal-actions"><button id="splitCancel" class="ghost">Cancel</button><button id="splitConfirm">Save Steps</button></div>
-  </div>
-</div>
+<div id="splitModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title">Split Stage into Steps</div>
+  <div class="modal-sub">In-session only. The stage completes only when every step is ticked. Clear all lines to revert.</div>
+  <div style="font-family:var(--serif);color:var(--sand);font-size:17px;margin-bottom:10px" id="splitStageTitle"></div>
+  <textarea id="splitInput" placeholder="Step one&#10;Step two" style="min-height:110px;margin-bottom:14px"></textarea>
+  <div class="modal-actions"><button id="splitCancel" class="ghost">Cancel</button><button id="splitConfirm">Save Steps</button></div>
+</div></div>
 
-<!-- NOTICE MODAL -->
-<div id="noticeModal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title" id="noticeTitle">Notice</div>
-    <div class="modal-sub" id="noticeBody"></div>
-    <div class="modal-actions"><button id="noticeOk">Understood</button></div>
-  </div>
-</div>
+<div id="waitModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title">Mark as Waiting</div>
+  <div class="modal-sub">Name the blocker. Who or what are you waiting on? A blocker without a name is usually just a hard task.</div>
+  <div style="font-family:var(--serif);color:var(--sand);font-size:17px;margin-bottom:10px" id="waitItemTitle"></div>
+  <input type="text" id="waitReasonInput" placeholder="e.g. waiting on James for the SOW" style="margin-bottom:14px">
+  <div class="modal-actions"><button id="waitCancel" class="ghost">Cancel</button><button id="waitConfirm">Mark Waiting</button></div>
+</div></div>
+
+<div id="objModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title">Attach to Objective</div>
+  <div class="modal-sub">Link this task to a campaign, or leave it standing alone.</div>
+  <div class="modal-list" id="objPickerList"></div>
+  <div class="modal-actions"><button id="objPickCancel" class="ghost">Cancel</button></div>
+</div></div>
+
+<div id="confirmModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title" id="confirmTitle">Confirm</div>
+  <div class="modal-sub" id="confirmBody"></div>
+  <div class="modal-actions"><button id="confirmNo" class="ghost">Cancel</button><button id="confirmYes" class="danger">Confirm</button></div>
+</div></div>
+
+<div id="noticeModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title" id="noticeTitle">Notice</div>
+  <div class="modal-sub" id="noticeBody"></div>
+  <div class="modal-actions"><button id="noticeOk">Understood</button></div>
+</div></div>
 
 <div class="toast" id="toast"></div>
-
 <script>
+/* ================= STATE ================= */
 const state={
-  tasks:[],sessions:[],dailyXp:0,cumulativeXp:0,level:1,
+  objectives:[],tasks:[],sessions:[],rockLog:{},
+  dailyXp:0,cumulativeXp:0,level:1,
   currentDate:null,lastProcessedDate:null,updatedAt:0,
-  selectedWindow:null,selectedStages:[],
-  currentTask:null,breakdownStages:[],
-  currentSession:null,timerInterval:null,timerRunning:false
+  firstUseDate:null,dayOpenXp:0,dayFloor:0,
+  restTokensEarned:0,restTokensSpent:0,consecutiveCleanDays:0,
+  mysteryBonusAvailable:null,mysteryAwardedToday:false,
+  selectedWindow:null,selectedStages:[],currentTask:null,currentObj:null,
+  breakdownStages:[],currentSession:null,timerInterval:null,timerRunning:false,
+  dayFirstSessionRun:false
 };
-const config={xpPerStage:100,penaltyMin:2.5,penaltyMax:3.5,bonusMin:8,bonusMax:10,workdayDecay:0.20,weekendBonus:0.10};
+const config={
+  xpPerStage:100, oosMultiplier:0.5,
+  penaltyMin:2.5, penaltyMax:3.5, penaltyCap:0.75, bonusMin:8, bonusMax:10,
+  workdayDecay:0.20, decayAbsoluteCap:800, weekendBonus:0.10,
+  firstBloodMult:1.5, heatCap:1.5, heatLadder:[1.0,1.1,1.2,1.35,1.5],
+  mysteryOdds:{1.5:0.70, 2.0:0.25, 3.0:0.0333},
+  mysteryMinWindow:25, restTokenCap:3, restTokenEarnDays:3,
+  lockoutStartDay:21, lockoutDuration:7,
+  rockCap:10, rockGateHour:9.5, rockSettleHour:20,
+  rockBonusPerStage:50, rockPenaltyPerStage:50,
+  objActiveCap:3, objBonusPerStage:75, objAbandonPenalty:200,
+  stalledDays:7, stalledDecayEnabled:false,
+  waitCapPerSession:1, waitLockLastFraction:0.25, waitStaleDays:5
+};
+const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays'];
 
-/* ---------- date helpers (local, not UTC) ---------- */
-function localDateStr(d){d=d||new Date();const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;}
-function isWeekend(d){const g=(d||new Date()).getDay();return g===0||g===6;}
-
-/* ---------- storage ---------- */
-function loadState(){
-  const stored=localStorage.getItem('forgeState');
-  if(stored){try{Object.assign(state,JSON.parse(stored));}catch(e){}}
-  const today=localDateStr();
-  if(state.currentDate!==today){state.dailyXp=0;state.currentDate=today;}
-  updateLevelFromXp();
+/* ================= LOCKOUT & MYSTERY ================= */
+function inLockoutPeriod(){
+  if(!state.firstUseDate)return false;
+  const d=daysBetween(localDateStr(new Date(state.firstUseDate)),localDateStr());
+  return d>=config.lockoutStartDay&&d<config.lockoutStartDay+config.lockoutDuration;
 }
+function pickMysteryBonus(){
+  const r=Math.random();let cum=0;
+  for(const [mult,odds]of Object.entries(config.mysteryOdds)){
+    cum+=odds;if(r<=cum)return parseFloat(mult);
+  }
+  return 1.5;
+}
+
+/* ================= HELPERS ================= */
+function localDateStr(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function isWeekend(d){const g=(d||new Date()).getDay();return g===0||g===6;}
+function esc(t){const d=document.createElement('div');d.textContent=t==null?'':t;return d.innerHTML;}
+function nowHours(){const n=new Date();return n.getHours()+n.getMinutes()/60;}
+function daysBetween(a,b){return Math.floor((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);}
+function uid(p){return p+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);}
+function prettyDate(ds){return new Date(ds+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'});}
+function taskUnits(t){return Math.max(1,t.stages.length);}
+function objOf(t){return t.objectiveId?state.objectives.find(o=>o.id===t.objectiveId):null;}
+function tasksOf(o){return state.tasks.filter(t=>t.objectiveId===o.id);}
+function liveStages(){
+  const out=[];
+  state.tasks.forEach(t=>{ if(t.completed||t.waiting)return;
+    t.stages.forEach(s=>{ if(!s.completed&&!s.waiting) out.push({...s,taskId:t.id,taskTitle:t.title,objectiveId:t.objectiveId}); });
+  });
+  return out;
+}
+function findStage(taskId,stageId){const t=state.tasks.find(x=>x.id===taskId);if(!t)return null;return t.stages.find(s=>s.id===stageId)||null;}
+function rockGateOpen(){return nowHours()<config.rockGateHour;}
+function todaysRocks(){const d=localDateStr();return state.tasks.filter(t=>t.starred&&t.starredDate===d&&!t.rockSettled);}
+
+/* ================= STORAGE ================= */
 function saveLocal(){localStorage.setItem('forgeState',JSON.stringify(state));}
 function saveState(){state.updatedAt=Date.now();saveLocal();if(syncReady)scheduleSync();}
-function updateLevelFromXp(){state.level=Math.floor(state.cumulativeXp/1000)+1;}
+function updateLevelFromXp(){state.level=Math.floor(Math.max(0,state.cumulativeXp)/1000)+1;}
+function grantXp(n){
+  if(inLockoutPeriod())return; // XP frozen during lockout
+  state.dailyXp+=n;state.cumulativeXp+=n;
+  state.cumulativeXp=Math.max(state.cumulativeXp,state.dayFloor); // enforce floor
+  updateLevelFromXp();
+}
+function loadState(){
+  const s=localStorage.getItem('forgeState');
+  if(s){try{Object.assign(state,JSON.parse(s));}catch(e){}}
+  if(!state.firstUseDate)state.firstUseDate=new Date().toISOString();
+  const today=localDateStr();
+  if(state.currentDate!==today){
+    state.dailyXp=0;state.currentDate=today;
+    state.dayFirstSessionRun=false;state.mysteryAwardedToday=false;
+    state.dayOpenXp=state.cumulativeXp;state.dayFloor=Math.max(0,Math.floor(state.cumulativeXp*0.20));
+  }
+  updateLevelFromXp();
+}
 
-/* ---------- JsonBin sync (at-rest state only; live sessions never leave the device) ---------- */
+/* ================= SYNC ================= */
 const SYNC={binId:'6a518818da38895dfe4d9185',accessKey:'$2a$10$BwzkBhodKrJYqTeGtMu7mO3UzBV15aKYNsLe7tlCYbViPmjHsuQVq',base:'https://api.jsonbin.io/v3/b'};
 let syncReady=false,pushTimer=null;
-const PERSIST=['tasks','sessions','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt'];
 function persistentState(){const o={};PERSIST.forEach(k=>o[k]=state[k]);return o;}
 function applyPersistent(o){if(!o)return;PERSIST.forEach(k=>{if(o[k]!==undefined)state[k]=o[k];});}
 function setSyncStatus(s){
   const el=document.getElementById('syncStatus');if(!el)return;
-  const map={synced:['◆ synced','#8fb89a'],syncing:['◈ syncing…','var(--camel)'],pending:['◈ saving…','var(--camel)'],offline:['◇ offline','#c96a5f'],local:['◇ local','var(--ash)']};
-  const v=map[s]||map.local;el.textContent=v[0];el.style.color=v[1];
+  const m={synced:['◆ synced','#8fb89a'],syncing:['◈ syncing…','var(--camel)'],pending:['◈ saving…','var(--camel)'],offline:['◇ offline','var(--red)'],local:['◇ local','var(--ash)']};
+  const v=m[s]||m.local;el.textContent=v[0];el.style.color=v[1];
 }
-async function pullRemote(){
-  const r=await fetch(SYNC.base+'/'+SYNC.binId+'/latest',{headers:{'X-Access-Key':SYNC.accessKey}});
-  if(!r.ok)throw new Error('pull '+r.status);
-  const j=await r.json();return j.record;
-}
-async function pushRemote(){
-  const r=await fetch(SYNC.base+'/'+SYNC.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Access-Key':SYNC.accessKey},body:JSON.stringify(persistentState())});
-  if(!r.ok)throw new Error('push '+r.status);return true;
-}
-function scheduleSync(){
-  clearTimeout(pushTimer);setSyncStatus('pending');
-  pushTimer=setTimeout(()=>{pushRemote().then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline'));},2500);
-}
+async function pullRemote(){const r=await fetch(SYNC.base+'/'+SYNC.binId+'/latest',{headers:{'X-Access-Key':SYNC.accessKey}});if(!r.ok)throw new Error('pull');return (await r.json()).record;}
+async function pushRemote(){const r=await fetch(SYNC.base+'/'+SYNC.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Access-Key':SYNC.accessKey},body:JSON.stringify(persistentState())});if(!r.ok)throw new Error('push');return true;}
+function scheduleSync(){clearTimeout(pushTimer);setSyncStatus('pending');pushTimer=setTimeout(()=>{pushRemote().then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline'));},2500);}
 async function bootSync(){
   setSyncStatus('syncing');
   try{
-    const remote=await pullRemote();
-    const remoteUpdated=(remote&&remote.updatedAt)||0;
-    if(remote&&remoteUpdated>(state.updatedAt||0)){applyPersistent(remote);}
-    processDecay();updateLevelFromXp();saveLocal();
-    await pushRemote();
+    const r=await pullRemote();
+    if(r&&(r.updatedAt||0)>(state.updatedAt||0))applyPersistent(r);
+    runDailyEngines();saveLocal();await pushRemote();
     syncReady=true;setSyncStatus('synced');
-    renderTaskPool();renderStagePool();updateHeader();showDecayNoticeIfAny();
-  }catch(e){
-    processDecay();updateLevelFromXp();saveLocal();
-    syncReady=true;setSyncStatus('offline');
-    renderTaskPool();updateHeader();showDecayNoticeIfAny();
-  }
+  }catch(e){ runDailyEngines();saveLocal();syncReady=true;setSyncStatus('offline'); }
+  renderAll();flushNotices();
 }
 async function manualSync(){
   setSyncStatus('syncing');
   try{
     if(!state.timerRunning){
-      const remote=await pullRemote();
-      const remoteUpdated=(remote&&remote.updatedAt)||0;
-      if(remote&&remoteUpdated>(state.updatedAt||0)){
-        applyPersistent(remote);processDecay();updateLevelFromXp();
-        renderTaskPool();renderStagePool();updateHeader();showDecayNoticeIfAny();
-      }
+      const r=await pullRemote();
+      if(r&&(r.updatedAt||0)>(state.updatedAt||0)){applyPersistent(r);runDailyEngines();renderAll();flushNotices();}
     }
     await pushRemote();saveLocal();setSyncStatus('synced');toast('Synced');
   }catch(e){setSyncStatus('offline');toast('Offline — saved locally');}
 }
 
-/* ---------- XP decay for missed workdays ---------- */
+/* ================= DAILY ENGINES ================= */
+const notices=[];
+function runDailyEngines(){ settleRocks(); processDecay(); updateLevelFromXp(); }
+
+/* --- rock settlement (lazy, on open) --- */
+function settleRocks(){
+  const today=localDateStr(), h=nowHours();
+  const pending={};
+  state.tasks.forEach(t=>{
+    if(!t.starred||t.rockSettled||!t.starredDate)return;
+    const isPast=t.starredDate<today;
+    const dueToday=(t.starredDate===today&&h>=config.rockSettleHour);
+    if(isPast||dueToday)(pending[t.starredDate]=pending[t.starredDate]||[]).push(t);
+  });
+  Object.keys(pending).sort().forEach(d=>{
+    let landed=0,dropped=0,voided=0,bonus=0,penalty=0;
+    pending[d].forEach(t=>{
+      const u=taskUnits(t);
+      if(t.waiting){voided++;}
+      else if(t.completed){landed++;bonus+=u*config.rockBonusPerStage;}
+      else{dropped++;penalty+=u*config.rockPenaltyPerStage;}
+      t.rockSettled=true;
+    });
+    const net=bonus-penalty;
+    grantXp(net);
+    state.rockLog[d]={landed,dropped,voided,bonus,penalty,net,total:pending[d].length};
+    notices.push({title:'Rocks Settled · '+prettyDate(d),
+      body:landed+' landed, '+dropped+' dropped, '+voided+' blocked (void). Bonus +'+bonus+', penalty −'+penalty+'. Net '+(net>=0?'+':'')+net+' XP.'});
+  });
+}
+
+/* --- workday decay --- */
 function processDecay(){
   const today=localDateStr();
   if(!state.lastProcessedDate){state.lastProcessedDate=today;return;}
   if(state.lastProcessedDate===today)return;
-  const daysWithSessions=new Set(state.sessions.map(s=>localDateStr(new Date(s.startedAt))));
-  let cursor=new Date(state.lastProcessedDate+'T12:00:00');
-  cursor.setDate(cursor.getDate()+1);
-  const end=new Date(today+'T12:00:00');
-  const missed=[];
-  while(cursor<end){
-    const dow=cursor.getDay();
-    const ds=localDateStr(cursor);
-    if(dow>=1&&dow<=5&&!daysWithSessions.has(ds)){
+  const active=new Set(state.sessions.map(s=>localDateStr(new Date(s.startedAt))));
+  let cur=new Date(state.lastProcessedDate+'T12:00:00');cur.setDate(cur.getDate()+1);
+  const end=new Date(today+'T12:00:00'); const missed=[];
+  while(cur<end){
+    const ds=localDateStr(cur), dow=cur.getDay();
+    if(dow>=1&&dow<=5&&!active.has(ds)){
       const before=state.cumulativeXp;
-      state.cumulativeXp=Math.round(state.cumulativeXp*(1-config.workdayDecay));
-      missed.push({date:ds,before,after:state.cumulativeXp});
+      const decayAmt=Math.min(Math.round(state.cumulativeXp*config.workdayDecay),config.decayAbsoluteCap);
+      // Try to consume a Rest Token first
+      let tokenUsed=false;
+      if(state.restTokensEarned>state.restTokensSpent){
+        state.restTokensSpent++;tokenUsed=true;
+      }else{
+        state.cumulativeXp=Math.max(state.cumulativeXp-decayAmt,state.dayFloor);
+      }
+      missed.push({ds,before,after:state.cumulativeXp,tokenUsed});
     }
-    cursor.setDate(cursor.getDate()+1);
+    cur.setDate(cur.getDate()+1);
   }
   state.lastProcessedDate=today;
   if(missed.length){
     updateLevelFromXp();
-    saveState();
-    state._pendingDecay=missed;
+    const tokenUsedCount=missed.filter(m=>m.tokenUsed).length;
+    const decayedDays=missed.filter(m=>!m.tokenUsed);
+    let msg='Workday decay: ';
+    if(tokenUsedCount)msg+=tokenUsedCount+' token'+(tokenUsedCount>1?'s':'')+' consumed. ';
+    if(decayedDays.length)msg+=''+decayedDays.length+' day'+(decayedDays.length>1?'s':'')+' penalized. ';
+    notices.push({title:'The Forge Cooled',body:msg});
   }
 }
-function showDecayNoticeIfAny(){
-  if(!state._pendingDecay||!state._pendingDecay.length)return;
-  const m=state._pendingDecay;
-  const first=m[0].before,last=m[m.length-1].after;
-  const days=m.map(x=>x.date).join(', ');
-  showNotice('The Forge Cooled',
-    m.length+' workday'+(m.length>1?'s':'')+' passed with no session ('+days+'). '+
-    'Total XP decayed '+(config.workdayDecay*100)+'% each: '+first.toLocaleString()+' → '+last.toLocaleString()+'.');
-  state._pendingDecay=null;
+function flushNotices(){ if(notices.length){const n=notices.shift();showNotice(n.title,n.body,()=>flushNotices());} }
+
+/* ================= OBJECTIVES ================= */
+function objStats(o){
+  const ts=tasksOf(o);
+  let total=0,done=0;
+  ts.forEach(t=>{ if(t.stages.length){total+=t.stages.length;done+=t.stages.filter(s=>s.completed).length;} else {total+=1;done+=t.completed?1:0;} });
+  const pct=total?Math.round(done/total*100):0;
+  return {tasks:ts.length,tasksDone:ts.filter(t=>t.completed).length,total,done,pct};
+}
+function objNextAction(o){
+  for(const t of tasksOf(o)){
+    if(t.completed||t.waiting)continue;
+    const s=t.stages.find(x=>!x.completed&&!x.waiting);
+    if(s)return s.title;
+    if(!t.stages.length)return t.title+' (needs breakdown)';
+  }
+  return null;
+}
+function objLastMovement(o){
+  let last=o.createdAt;
+  state.sessions.forEach(s=>{
+    const ids=new Set(s.stagesPlanned.concat(s.extraStages).filter(x=>x.completed).map(x=>x.id));
+    tasksOf(o).forEach(t=>t.stages.forEach(st=>{ if(ids.has(st.id)&&s.endedAt>last)last=s.endedAt; }));
+  });
+  return last;
+}
+function objStalled(o){
+  if(o.status!=='active')return false;
+  const st=objStats(o); if(!st.done)return daysBetween(localDateStr(new Date(o.createdAt)),localDateStr())>=config.stalledDays;
+  return daysBetween(localDateStr(new Date(objLastMovement(o))),localDateStr())>=config.stalledDays;
+}
+function activeObjs(){return state.objectives.filter(o=>o.status==='active');}
+function addObjective(title){
+  if(!title.trim())return;
+  state.objectives.push({id:uid('obj'),title:title.trim(),status:'backlog',createdAt:new Date().toISOString()});
+  saveState();renderAll();toast('Objective captured to Backlog');
+}
+function promoteObj(id){
+  if(activeObjs().length>=config.objActiveCap){toast('Active is full ('+config.objActiveCap+'). Complete or abandon one first.');return;}
+  const o=state.objectives.find(x=>x.id===id);if(!o)return;
+  o.status='active';o.activatedAt=new Date().toISOString();
+  saveState();renderAll();toast('Objective activated');
+}
+function demoteObj(id){const o=state.objectives.find(x=>x.id===id);if(!o)return;o.status='backlog';saveState();renderAll();toast('Returned to Backlog');}
+function abandonObj(id){
+  const o=state.objectives.find(x=>x.id===id);if(!o)return;
+  askConfirm('Abandon Objective','"'+o.title+'" will be abandoned and cost '+config.objAbandonPenalty+' XP. Its tasks stay, but become unassigned. This is deliberate friction — abandoning should not be free.',()=>{
+    o.status='abandoned';o.abandonedAt=new Date().toISOString();
+    tasksOf(o).forEach(t=>t.objectiveId=null);
+    grantXp(-config.objAbandonPenalty);
+    saveState();renderAll();updateHeader();toast('−'+config.objAbandonPenalty+' XP · objective abandoned');
+  });
+}
+function checkObjComplete(){
+  state.objectives.forEach(o=>{
+    if(o.status!=='active'&&o.status!=='backlog')return;
+    const ts=tasksOf(o);
+    if(ts.length&&ts.every(t=>t.completed)){
+      const st=objStats(o);
+      const bonus=st.total*config.objBonusPerStage;
+      o.status='complete';o.completedAt=new Date().toISOString();o.bonusAwarded=bonus;
+      grantXp(bonus);
+      notices.push({title:'Objective Complete','body':'"'+o.title+'" is finished. '+st.total+' stages across '+ts.length+' tasks. Bonus +'+bonus+' XP.'});
+    }
+  });
+}
+/* ================= TASKS ================= */
+function addTasks(text,objId){
+  text.trim().split('\n').filter(l=>l.trim()).forEach(line=>{
+    const title=line.replace(/^[-•*\d.)\s]+/,'').trim();
+    if(title)state.tasks.push({id:uid('task'),title,objectiveId:objId||null,completed:false,starred:false,waiting:false,stages:[],createdAt:new Date().toISOString()});
+  });
+  saveState();renderAll();document.getElementById('taskPasteInput').value='';
+}
+function deleteTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);saveState();renderAll();}
+
+/* --- rocks --- */
+function toggleStar(id){
+  const t=state.tasks.find(x=>x.id===id);if(!t)return;
+  if(!rockGateOpen()){toast('Rock gate closed — 09:30 has passed');return;}
+  if(t.starred){t.starred=false;t.starredDate=null;t.rockSettled=false;}
+  else{
+    if(todaysRocks().length>=config.rockCap){toast('Rock cap reached ('+config.rockCap+')');return;}
+    t.starred=true;t.starredDate=localDateStr();t.rockSettled=false;
+  }
+  saveState();renderAll();
 }
 
-/* ---------- tasks ---------- */
-function addTasks(text){
-  text.trim().split('\n').filter(l=>l.trim()).forEach(line=>{
-    const title=line.replace(/^[-•*0-9.]+\s*/,'').trim();
-    if(title)state.tasks.push({id:'task_'+Date.now()+'_'+Math.random().toString(36).substr(2,9),title,completed:false,stages:[],createdAt:new Date().toISOString()});
+/* --- waiting --- */
+let waitTarget=null;
+function openWaitModal(kind,taskId,stageId,inSession){
+  if(inSession){
+    const s=state.currentSession;
+    const waived=s.stagesPlanned.filter(x=>x.waiting).length;
+    if(waived>=config.waitCapPerSession){toast('Waiting cap reached — one per session. Finish or miss it.');return;}
+    const total=s.windowMinutes*60000;
+    if((s._remainingMs||0)<=total*config.waitLockLastFraction){toast('Too late — no Waiting in the final quarter of the window');return;}
+  }
+  waitTarget={kind,taskId,stageId,inSession};
+  const t=state.tasks.find(x=>x.id===taskId);
+  const title=kind==='task'?(t?t.title:''):(findStage(taskId,stageId)||{}).title;
+  document.getElementById('waitItemTitle').textContent=title||'';
+  document.getElementById('waitReasonInput').value='';
+  openModal('waitModal');
+  setTimeout(()=>document.getElementById('waitReasonInput').focus(),80);
+}
+function confirmWait(){
+  if(!waitTarget)return;
+  const reason=document.getElementById('waitReasonInput').value.trim();
+  if(!reason){toast('Name the blocker. That is the whole point.');return;}
+  const now=new Date().toISOString();
+  const t=state.tasks.find(x=>x.id===waitTarget.taskId);if(!t){closeModal('waitModal');return;}
+  if(waitTarget.kind==='task'){
+    t.waiting=true;t.waitingReason=reason;t.waitingSince=now;
+    t.stages.forEach(s=>{if(!s.completed){s.waiting=true;s.waitingReason=reason;s.waitingSince=now;s._byTask=true;}});
+  }else{
+    const s=findStage(t.id,waitTarget.stageId);
+    if(s){s.waiting=true;s.waitingReason=reason;s.waitingSince=now;}
+    if(waitTarget.inSession){
+      const cs=state.currentSession;
+      const inS=cs.stagesPlanned.find(x=>x.id===waitTarget.stageId)||cs.extraStages.find(x=>x.id===waitTarget.stageId);
+      if(inS){inS.waiting=true;inS.completed=false;inS.waitingReason=reason;}
+    }
+  }
+  closeModal('waitModal');waitTarget=null;
+  saveState();
+  if(state.timerRunning){renderTimerStages();toast('Stage held. You owe the session a replacement.');}
+  else{renderAll();toast('Marked waiting');}
+}
+function unblock(taskId,stageId){
+  const t=state.tasks.find(x=>x.id===taskId);if(!t)return;
+  if(stageId){const s=findStage(taskId,stageId);if(s){s.waiting=false;s.waitingReason=null;s.waitingSince=null;s._byTask=false;}
+    if(t.waiting&&!t.stages.some(x=>x.waiting))t.waiting=false;}
+  else{t.waiting=false;t.waitingReason=null;t.waitingSince=null;
+    t.stages.forEach(s=>{if(s._byTask){s.waiting=false;s.waitingReason=null;s.waitingSince=null;s._byTask=false;}});}
+  saveState();renderAll();toast('Unblocked');
+}
+function waitingItems(){
+  const out=[];
+  state.tasks.forEach(t=>{
+    if(t.waiting)out.push({kind:'task',taskId:t.id,title:t.title,reason:t.waitingReason,since:t.waitingSince,obj:objOf(t)});
+    else t.stages.forEach(s=>{ if(s.waiting&&!s.completed) out.push({kind:'stage',taskId:t.id,stageId:s.id,title:s.title,taskTitle:t.title,reason:s.waitingReason,since:s.waitingSince,obj:objOf(t)}); });
   });
-  saveState();renderTaskPool();document.getElementById('taskPasteInput').value='';
+  return out.sort((a,b)=>new Date(a.since||0)-new Date(b.since||0));
 }
-function renderTaskPool(){
-  const unbroken=state.tasks.filter(t=>!t.completed&&t.stages.length===0);
-  const broken=state.tasks.filter(t=>!t.completed&&t.stages.length>0);
-  document.getElementById('unbrokenCount').textContent=unbroken.length;
-  document.getElementById('brokenCount').textContent=broken.length;
-  renderTaskSection(document.getElementById('unbrokenList'),unbroken,false);
-  renderTaskSection(document.getElementById('brokenList'),broken,true);
-}
-function renderTaskSection(list,tasks,isBroken){
-  list.innerHTML='';
-  if(!tasks.length){list.innerHTML='<div class="empty-state" style="padding:16px;font-size:14px">'+(isBroken?'Nothing broken down yet':'All tasks broken down')+'</div>';return;}
-  tasks.forEach(task=>{
-    const tot=task.stages.length,dn=task.stages.filter(s=>s.completed).length;
-    const meta=tot?(dn+'/'+tot+' stage'+(tot===1?'':'s')+' done'):'no stages';
-    const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(task.title)+'</div><div class="item-meta">'+meta+'</div></div><div class="item-actions"><button class="bd ghost">'+(isBroken?'Edit':'Breakdown')+'</button><button class="done ghost">Done</button><button class="del ghost">✕</button></div>';
-    el.querySelector('.bd').addEventListener('click',()=>showBreakdown(task.id));
-    el.querySelector('.done').addEventListener('click',()=>completeTaskOOS(task.id));
-    el.querySelector('.del').addEventListener('click',()=>{state.tasks=state.tasks.filter(t=>t.id!==task.id);saveState();renderTaskPool();});
-    const info=el.querySelector('.item-info');info.style.cursor='pointer';
-    info.addEventListener('click',()=>showTaskDetail(task.id,'taskPoolView'));
-    list.appendChild(el);
-  });
-}
-/* ---------- out-of-session completion (50% XP) ---------- */
-function awardOOS(units){const xp=Math.round(units*config.xpPerStage*0.5);state.dailyXp+=xp;state.cumulativeXp+=xp;updateLevelFromXp();return xp;}
+function waitAge(iso){ if(!iso)return 0; return Math.max(0,daysBetween(localDateStr(new Date(iso)),localDateStr())); }
+
+/* --- completion --- */
 function completeStageOOS(taskId,stageId){
-  const task=state.tasks.find(t=>t.id===taskId);if(!task)return;
-  const st=task.stages.find(s=>s.id===stageId);if(!st||st.completed)return;
-  st.completed=true;st.oos=true;
-  const xp=awardOOS(1);
-  if(task.stages.length&&task.stages.every(s=>s.completed)){task.completed=true;task.oos=true;}
-  saveState();renderTaskPool();renderStagePool();updateHeader();
+  const t=state.tasks.find(x=>x.id===taskId);if(!t)return;
+  const s=findStage(taskId,stageId);if(!s||s.completed)return;
+  s.completed=true;s.oos=true;s.waiting=false;
+  const xp=Math.round(config.xpPerStage*config.oosMultiplier);grantXp(xp);
+  if(t.stages.length&&t.stages.every(x=>x.completed)){t.completed=true;t.oos=true;}
+  checkObjComplete();saveState();renderAll();flushNotices();
   toast('+'+xp+' XP · out of session (50%)');
 }
 function completeTaskOOS(taskId){
-  const task=state.tasks.find(t=>t.id===taskId);if(!task||task.completed)return;
+  const t=state.tasks.find(x=>x.id===taskId);if(!t||t.completed)return;
   let units=0;
-  if(task.stages.length){task.stages.forEach(s=>{if(!s.completed){s.completed=true;s.oos=true;units++;}});}
+  if(t.stages.length)t.stages.forEach(s=>{if(!s.completed){s.completed=true;s.oos=true;s.waiting=false;units++;}});
   else units=1;
-  task.completed=true;task.oos=true;
-  const xp=awardOOS(units);
-  saveState();renderTaskPool();renderStagePool();updateHeader();
+  t.completed=true;t.oos=true;t.waiting=false;
+  const xp=Math.round(units*config.xpPerStage*config.oosMultiplier);grantXp(xp);
+  checkObjComplete();saveState();renderAll();flushNotices();
   toast('+'+xp+' XP · out of session (50%)');
 }
 
-/* ---------- task detail ---------- */
-let detailReturnView='stagePoolView';
-function showTaskDetail(taskId,returnView){
-  const task=state.tasks.find(t=>t.id===taskId);if(!task)return;
-  state.currentTask=task;detailReturnView=returnView||'stagePoolView';
-  document.getElementById('taskDetailTitle').textContent=task.title;
-  document.getElementById('taskDetailMeta').textContent=task.stages.length+' stage'+(task.stages.length===1?'':'s')+' attached';
-  const list=document.getElementById('taskDetailStages');list.innerHTML='';
-  if(!task.stages.length){list.innerHTML='<div class="empty-state">No stages yet — break it down</div>';}
-  task.stages.forEach((s,i)=>{
-    const el=document.createElement('div');el.className='item'+(s.completed?' completed':'');
-    el.innerHTML='<div class="item-info"><div class="item-title"><span class="seq" style="color:var(--brass);font-family:var(--serif);margin-right:9px">'+(i+1)+'</span>'+esc(s.title)+(s.completed?' <span style="color:#8fb89a">✓</span>':'')+'</div></div>'+(s.completed?'':'<div class="item-actions"><button class="done ghost">Done</button></div>');
-    const db=el.querySelector('.done');
-    if(db)db.addEventListener('click',()=>{completeStageOOS(task.id,s.id);showTaskDetail(task.id,detailReturnView);});
-    list.appendChild(el);
-  });
-  showView('taskDetailView');
-}
-
-/* ---------- breakdown ---------- */
+/* ================= BREAKDOWN ================= */
 function showBreakdown(taskId){
   state.currentTask=state.tasks.find(t=>t.id===taskId);if(!state.currentTask)return;
-  document.getElementById('taskBreakdownInfo').innerHTML='<div style="padding:13px;background:var(--espresso);border:1px solid var(--line-warm);border-radius:7px;margin-bottom:16px;font-family:var(--serif);font-size:18px;color:var(--sand)">'+esc(state.currentTask.title)+'</div>';
+  document.getElementById('taskBreakdownInfo').innerHTML='<div style="padding:12px;background:var(--espresso);border:1px solid var(--line-warm);border-radius:7px;margin-bottom:14px;font-family:var(--serif);font-size:18px;color:var(--sand)">'+esc(state.currentTask.title)+'</div>';
   state.breakdownStages=state.currentTask.stages.map(s=>({...s}));
   if(!state.breakdownStages.length)state.breakdownStages.push({title:''});
   renderBreakdownForm();showView('breakdownView');
 }
 function renderBreakdownForm(){
   const c=document.getElementById('stageInputs');c.innerHTML='';
-  state.breakdownStages.forEach((stage,idx)=>{
+  state.breakdownStages.forEach((st,i)=>{
     const row=document.createElement('div');row.className='stage-input-row';
-    row.innerHTML='<span class="seq">'+(idx+1)+'</span><input type="text" placeholder="Stage title">'+(state.breakdownStages.length>1?'<button class="rm ghost">Remove</button>':'');
-    const inp=row.querySelector('input');inp.value=stage.title||'';
-    inp.addEventListener('input',e=>{state.breakdownStages[idx].title=e.target.value;});
-    const rm=row.querySelector('.rm');if(rm)rm.addEventListener('click',()=>{state.breakdownStages.splice(idx,1);renderBreakdownForm();});
+    row.innerHTML='<span class="seq">'+(i+1)+'</span><input type="text" placeholder="Stage title">'+(state.breakdownStages.length>1?'<button class="rm ghost">✕</button>':'');
+    const inp=row.querySelector('input');inp.value=st.title||'';
+    inp.addEventListener('input',e=>state.breakdownStages[i].title=e.target.value);
+    const rm=row.querySelector('.rm');if(rm)rm.addEventListener('click',()=>{state.breakdownStages.splice(i,1);renderBreakdownForm();});
     c.appendChild(row);
   });
 }
 function confirmBreakdown(){
   const stages=state.breakdownStages.filter(s=>s.title&&s.title.trim());
   if(!stages.length){toast('Add at least one stage');return;}
-  stages.forEach(s=>{if(!s.id)s.id='stage_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);s.title=s.title.trim();if(s.completed===undefined)s.completed=false;});
+  stages.forEach(s=>{if(!s.id)s.id=uid('stage');s.title=s.title.trim();if(s.completed===undefined)s.completed=false;if(s.waiting===undefined)s.waiting=false;});
   state.currentTask.stages=stages;
-  state.currentTask.completed=stages.length>0&&stages.every(s=>s.completed);
-  saveState();renderTaskPool();renderStagePool();showView('stagePoolView');
-  toast('Task broken into '+stages.length+' stage'+(stages.length===1?'':'s'));
+  state.currentTask.completed=stages.every(s=>s.completed);
+  checkObjComplete();saveState();renderAll();flushNotices();
+  showView('dashView');toast('Broken into '+stages.length+' stage'+(stages.length===1?'':'s'));
 }
 
-/* ---------- stage pool ---------- */
-function allStages(){
-  const out=[];
-  state.tasks.forEach(task=>task.stages.forEach(stage=>out.push({...stage,taskId:task.id,taskTitle:task.title})));
-  return out;
-}
-function renderStagePool(){
-  const list=document.getElementById('stagePoolList');const stages=allStages().filter(s=>!s.completed);
-  document.getElementById('stageCount').textContent=stages.length;
-  list.innerHTML='';
-  if(!stages.length){list.innerHTML='<div class="empty-state">No stages forged yet</div>';return;}
-  stages.forEach(stage=>{
-    const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">from · <span class="parent-link" data-task="'+stage.taskId+'">'+esc(stage.taskTitle)+'</span></div></div><div class="item-actions"><button class="done ghost">Done</button></div>';
-    el.querySelector('.parent-link').addEventListener('click',()=>showTaskDetail(stage.taskId,'stagePoolView'));
-    el.querySelector('.done').addEventListener('click',()=>completeStageOOS(stage.taskId,stage.id));
-    list.appendChild(el);
-  });
-}
-
-/* ---------- session builder ---------- */
+/* ================= SESSION BUILDER ================= */
 function showSessionBuilder(){
   state.selectedStages=[];state.selectedWindow=null;
   document.querySelectorAll('.window-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('selectedWindowLabel').textContent='No window chosen';
-  renderBuilderStages();renderSelectedStages();updateStartTimerBtn();showView('sessionBuilderView');
+  renderBuilderStages();renderSelectedStages();updateStartBtn();showView('sessionBuilderView');
 }
 function renderBuilderStages(){
-  const list=document.getElementById('builderStageList');const stages=allStages().filter(s=>!s.completed);list.innerHTML='';
-  if(!stages.length){list.innerHTML='<div class="empty-state">Break down a task first</div>';return;}
-  stages.forEach(stage=>{
-    const el=document.createElement('div');el.className='item';
-    if(state.selectedStages.find(s=>s.id===stage.id))el.classList.add('selected');
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">from · <span class="parent-link" data-task="'+stage.taskId+'">'+esc(stage.taskTitle)+'</span></div></div>';
-    el.querySelector('.parent-link').addEventListener('click',ev=>{ev.stopPropagation();showTaskDetail(stage.taskId,'sessionBuilderView');});
+  const list=document.getElementById('builderStageList');const stages=liveStages();list.innerHTML='';
+  if(!stages.length){list.innerHTML='<div class="empty-state">No live stages. Break down a task first.</div>';return;}
+  stages.forEach(st=>{
+    const o=st.objectiveId?state.objectives.find(x=>x.id===st.objectiveId):null;
+    const el=document.createElement('div');el.className='item'+(state.selectedStages.find(x=>x.id===st.id)?' selected':'');
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+(o?esc(o.title)+' › ':'')+esc(st.taskTitle)+'</div></div>';
     el.addEventListener('click',()=>{
       if(!state.selectedWindow){toast('Choose a window first');return;}
-      if(state.selectedStages.find(s=>s.id===stage.id))state.selectedStages=state.selectedStages.filter(s=>s.id!==stage.id);
-      else state.selectedStages.push(stage);
-      renderBuilderStages();renderSelectedStages();updateStartTimerBtn();
+      if(state.selectedStages.find(x=>x.id===st.id))state.selectedStages=state.selectedStages.filter(x=>x.id!==st.id);
+      else state.selectedStages.push(st);
+      renderBuilderStages();renderSelectedStages();updateStartBtn();
     });
     list.appendChild(el);
   });
 }
 function renderSelectedStages(){
-  const list=document.getElementById('selectedStagesList');list.innerHTML='';
-  if(!state.selectedStages.length){list.innerHTML='<div class="empty-state" style="padding:16px">No stages committed</div>';return;}
-  state.selectedStages.forEach((stage,idx)=>{
+  const l=document.getElementById('selectedStagesList');l.innerHTML='';
+  if(!state.selectedStages.length){l.innerHTML='<div class="empty-state" style="padding:14px">No stages committed</div>';return;}
+  state.selectedStages.forEach((st,i)=>{
     const el=document.createElement('div');el.className='selected-item';
-    el.innerHTML='<span><span class="seq">'+(idx+1)+'</span>'+esc(stage.title)+'</span><button class="rm ghost" style="padding:4px 9px;font-size:11px">Remove</button>';
-    el.querySelector('.rm').addEventListener('click',()=>{state.selectedStages=state.selectedStages.filter(s=>s.id!==stage.id);renderBuilderStages();renderSelectedStages();updateStartTimerBtn();});
-    list.appendChild(el);
+    el.innerHTML='<span><span class="seq">'+(i+1)+'</span>'+esc(st.title)+'</span><button class="rm ghost" style="padding:4px 8px;font-size:11px">✕</button>';
+    el.querySelector('.rm').addEventListener('click',()=>{state.selectedStages=state.selectedStages.filter(x=>x.id!==st.id);renderBuilderStages();renderSelectedStages();updateStartBtn();});
+    l.appendChild(el);
   });
 }
-function updateStartTimerBtn(){document.getElementById('startTimerBtn').disabled=!state.selectedWindow||!state.selectedStages.length;}
-
-/* ---------- timer ---------- */
+function updateStartBtn(){document.getElementById('startTimerBtn').disabled=!state.selectedWindow||!state.selectedStages.length;}
+/* ================= TIMER ================= */
 function startSession(){
   if(!state.selectedWindow||!state.selectedStages.length)return;
+  const isFirstBlood=!state.dayFirstSessionRun;
+  state.dayFirstSessionRun=true;
+  // Pick mystery bonus if this is the first ≥25m session and we haven't awarded one today
+  if(!state.mysteryAwardedToday&&state.selectedWindow>=config.mysteryMinWindow&&!state.mysteryBonusAvailable){
+    state.mysteryBonusAvailable=pickMysteryBonus();
+  }
   state.currentSession={
-    sessionId:'sess_'+Date.now(),windowMinutes:state.selectedWindow,startedAt:new Date().toISOString(),
-    stagesPlanned:state.selectedStages.map(s=>({id:s.id,title:s.title,completed:false})),
-    extraStages:[],timeRemaining:state.selectedWindow*60
+    sessionId:uid('sess'),windowMinutes:state.selectedWindow,startedAt:new Date().toISOString(),
+    stagesPlanned:state.selectedStages.map(s=>({id:s.id,taskId:s.taskId,title:s.title,completed:false,waiting:false})),
+    extraStages:[],_remainingMs:state.selectedWindow*60000,
+    heat:0,lastStageTick:Date.now(),isFirstBlood
   };
-  showView('timerView');renderTimerStages();startTimer();
+  showView('timerView');renderTimerStages();runTimer();
+}
+function sessionDeficit(){
+  const s=state.currentSession;if(!s)return 0;
+  const waived=s.stagesPlanned.filter(x=>x.waiting).length;
+  const backfilled=s.extraStages.filter(x=>x.isBackfill).length;
+  return Math.max(0,waived-backfilled);
+}
+function renderDeficit(){
+  const b=document.getElementById('deficitBanner');const d=sessionDeficit();
+  b.innerHTML=d?('<div class="deficit-banner"><b>Deficit · '+d+'</b>You held a stage. Add '+d+' replacement'+(d>1?'s':'')+' or it counts as missed.</div>'):'';
+}
+function runTimer(){
+  state.timerRunning=true;
+  const start=Date.now(),total=state.currentSession.windowMinutes*60000;
+  state.timerInterval=setInterval(()=>{
+    const rem=Math.max(0,total-(Date.now()-start));
+    state.currentSession._remainingMs=rem;
+    if(rem===0){clearInterval(state.timerInterval);endSession(false);return;}
+    document.getElementById('timerDisplay').textContent=String(Math.floor(rem/60000)).padStart(2,'0')+':'+String(Math.floor((rem/1000)%60)).padStart(2,'0');
+  },100);
 }
 function renderTimerStages(){
   const list=document.getElementById('timerStagesList');list.innerHTML='';
-  const planned=state.currentSession.stagesPlanned;
-  const extra=state.currentSession.extraStages;
-  planned.concat(extra).forEach(stage=>{
-    const isExtra=extra.includes(stage);
-    const hasSubs=stage.subs&&stage.subs.length;
+  const s=state.currentSession;
+  // Calculate Heat based on completion count and stall
+  const completed=s.stagesPlanned.concat(s.extraStages).filter(st=>st.completed).length;
+  const stallMs=(Date.now()-s.lastStageTick);const stallThresh=(s.windowMinutes*60000)*config.waitLockLastFraction;
+  let heat=Math.min(completed,config.heatLadder.length-1);
+  if(stallMs>stallThresh&&heat>0)heat=Math.max(0,heat-1);
+  s.heat=heat;
+  const flames='🔥'.repeat(Math.max(0,heat)); // 0 flames for tier 0, then 1-4
+  const heatMult=config.heatLadder[heat];
+  
+  s.stagesPlanned.concat(s.extraStages).forEach(st=>{
+    const isExtra=s.extraStages.includes(st);
+    const isBack=!!st.isBackfill;
+    const hasSubs=st.subs&&st.subs.length;
     const el=document.createElement('div');
-    el.className='timer-stage-item'+(stage.completed?' completed':'')+(isExtra?' extra':'');
-    let html='<div class="ts-main"><div class="tick'+(stage.completed?' on':'')+(hasSubs?' derived':'')+'"></div><div class="timer-stage-text">'+esc(stage.title)+'</div>';
-    if(isExtra)html+='<span class="extra-tag">overflow</span>';
-    html+='<button class="split-btn ghost">'+(hasSubs?'Edit steps':'Split')+'</button></div>';
-    if(hasSubs){
-      html+='<div class="substage-list">';
-      stage.subs.forEach((sub,si)=>{html+='<div class="substage-item'+(sub.done?' done':'')+'" data-si="'+si+'"><div class="subtick'+(sub.done?' on':'')+'"></div><div class="substage-text">'+esc(sub.title)+'</div></div>';});
-      html+='</div>';
+    el.className='tsi'+(st.completed?' completed':'')+(st.waiting?' waiting':'')+(isExtra&&!isBack?' extra':'')+(isBack?' backfill':'');
+    let h='<div class="ts-main"><div class="tick'+(st.completed?' on':'')+(hasSubs?' derived':'')+(st.waiting?' dead':'')+'"></div><div class="ts-text">'+esc(st.title)+'</div>';
+    if(st.waiting)h+='<span class="pill wait">waiting</span>';
+    else if(isBack)h+='<span class="pill wait">backfill</span>';
+    else if(isExtra)h+='<span class="pill">overflow</span>';
+    h+='<div class="ts-btns">';
+    if(!st.waiting){
+      h+='<button class="split ghost">'+(hasSubs?'Steps':'Split')+'</button>';
+      if(!st.completed)h+='<button class="wait ghost">Waiting</button>';
     }
-    el.innerHTML=html;
+    h+='</div></div>';
+    if(hasSubs&&!st.waiting){
+      h+='<div class="substage-list">';
+      st.subs.forEach((sb,i)=>{h+='<div class="substage-item'+(sb.done?' done':'')+'" data-i="'+i+'"><div class="subtick'+(sb.done?' on':'')+'"></div><div class="substage-text">'+esc(sb.title)+'</div></div>';});
+      h+='</div>';
+    }
+    el.innerHTML=h;
     const tick=el.querySelector('.tick');
-    if(!hasSubs)tick.addEventListener('click',()=>{stage.completed=!stage.completed;renderTimerStages();checkAllComplete();});
+    if(!hasSubs&&!st.waiting)tick.addEventListener('click',()=>{st.completed=!st.completed;s.lastStageTick=Date.now();renderTimerStages();checkAutoEnd();});
     el.querySelectorAll('.substage-item').forEach(si=>si.addEventListener('click',()=>{
-      const idx=+si.dataset.si;stage.subs[idx].done=!stage.subs[idx].done;
-      stage.completed=stage.subs.every(s=>s.done);renderTimerStages();checkAllComplete();
+      const i=+si.dataset.i;st.subs[i].done=!st.subs[i].done;st.completed=st.subs.every(x=>x.done);s.lastStageTick=Date.now();renderTimerStages();checkAutoEnd();
     }));
-    el.querySelector('.split-btn').addEventListener('click',()=>openSplitModal(stage));
+    const sp=el.querySelector('.split');if(sp)sp.addEventListener('click',()=>openSplit(st));
+    const wt=el.querySelector('.wait');if(wt)wt.addEventListener('click',()=>openWaitModal('stage',st.taskId,st.id,true));
     list.appendChild(el);
   });
+  renderDeficit();
+  // Show Heat status
+  if(completed>0){
+    const heatDiv=document.createElement('div');
+    heatDiv.style.cssText='text-align:center;margin-top:12px;font-size:28px;color:var(--brass);font-weight:600;font-family:var(--serif)';
+    heatDiv.textContent=flames||'—';
+    if(heatMult>1)heatDiv.textContent+=' ×'+heatMult.toFixed(2);
+    list.parentElement.insertBefore(heatDiv,list.nextSibling);
+  }
 }
+/* split */
 let splitTarget=null;
-function openSplitModal(stage){
-  splitTarget=stage;
-  document.getElementById('splitStageTitle').textContent=stage.title;
-  document.getElementById('splitInput').value=(stage.subs||[]).map(s=>s.title).join('\n');
-  openModal('splitModal');
-}
+function openSplit(st){splitTarget=st;document.getElementById('splitStageTitle').textContent=st.title;document.getElementById('splitInput').value=(st.subs||[]).map(x=>x.title).join('\n');openModal('splitModal');}
 function confirmSplit(){
   if(!splitTarget)return;
-  const lines=document.getElementById('splitInput').value.trim().split('\n').map(l=>l.replace(/^[-•*0-9.]+\s*/,'').trim()).filter(Boolean);
-  if(!lines.length){delete splitTarget.subs;}
+  const lines=document.getElementById('splitInput').value.trim().split('\n').map(l=>l.replace(/^[-•*\d.)\s]+/,'').trim()).filter(Boolean);
+  if(!lines.length)delete splitTarget.subs;
   else{
-    const prevDone={};(splitTarget.subs||[]).forEach(s=>prevDone[s.title]=s.done);
-    splitTarget.subs=lines.map(t=>({title:t,done:!!prevDone[t]}));
-    splitTarget.completed=splitTarget.subs.every(s=>s.done);
+    const prev={};(splitTarget.subs||[]).forEach(x=>prev[x.title]=x.done);
+    splitTarget.subs=lines.map(t=>({title:t,done:!!prev[t]}));
+    splitTarget.completed=splitTarget.subs.every(x=>x.done);
   }
-  closeModal('splitModal');splitTarget=null;renderTimerStages();toast('Steps saved');
+  closeModal('splitModal');splitTarget=null;renderTimerStages();checkAutoEnd();toast('Steps saved');
 }
-function startTimer(){
-  state.timerRunning=true;
-  const start=Date.now();const totalMs=state.currentSession.timeRemaining*1000;
-  state.timerInterval=setInterval(()=>{
-    const remaining=Math.max(0,totalMs-(Date.now()-start));
-    state.currentSession._remainingMs=remaining;
-    if(remaining===0){clearInterval(state.timerInterval);endSession(false);return;}
-    const mins=Math.floor(remaining/60000);const secs=Math.floor((remaining/1000)%60);
-    document.getElementById('timerDisplay').textContent=String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
-  },100);
-}
-
-/* ---------- add stage mid-session (modal) ---------- */
+/* add stage in session */
 function openStagePicker(){
-  const inSession=new Set([...state.currentSession.stagesPlanned.map(s=>s.id),...state.currentSession.extraStages.map(s=>s.id)]);
-  const available=allStages().filter(s=>!inSession.has(s.id)&&!s.completed);
+  const s=state.currentSession;
+  const inS=new Set(s.stagesPlanned.map(x=>x.id).concat(s.extraStages.map(x=>x.id)));
+  const avail=liveStages().filter(x=>!inS.has(x.id));
+  const d=sessionDeficit();
+  document.getElementById('pickerTitle').textContent=d?'Backfill a Held Stage':'Add an Overflow Stage';
+  document.getElementById('pickerSub').textContent=d?('You owe '+d+' replacement'+(d>1?'s':'')+'. A backfill clears the debt but earns no overflow bonus.'):'Chosen deliberately. Overflow stages earn a bonus and cannot be removed.';
   const list=document.getElementById('stagePickerList');list.innerHTML='';
-  if(!available.length){list.innerHTML='<div class="empty-state" style="padding:20px">No stages left to draw</div>';}
-  available.forEach(stage=>{
+  if(!avail.length)list.innerHTML='<div class="empty-state" style="padding:18px">No stages left to draw</div>';
+  avail.forEach(st=>{
+    const o=st.objectiveId?state.objectives.find(x=>x.id===st.objectiveId):null;
     const el=document.createElement('div');el.className='modal-pick';
-    el.innerHTML='<div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">'+esc(stage.taskTitle)+'</div>';
+    el.innerHTML='<div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+(o?esc(o.title)+' › ':'')+esc(st.taskTitle)+'</div>';
     el.addEventListener('click',()=>{
-      state.currentSession.extraStages.push({id:stage.id,title:stage.title,completed:false});
-      closeModal('stagePickerModal');renderTimerStages();toast('Overflow stage added');
+      s.extraStages.push({id:st.id,taskId:st.taskId,title:st.title,completed:false,waiting:false,isBackfill:sessionDeficit()>0});
+      closeModal('stagePickerModal');renderTimerStages();
+      toast(sessionDeficit()===0&&s.extraStages[s.extraStages.length-1].isBackfill?'Debt cleared':'Stage added');
     });
     list.appendChild(el);
   });
   openModal('stagePickerModal');
 }
-
-/* ---------- scoring ---------- */
-function checkAllComplete(){
+function checkAutoEnd(){
   const s=state.currentSession;if(!s||!state.timerRunning)return;
-  const all=s.stagesPlanned.concat(s.extraStages);
-  if(all.length&&all.every(x=>x.completed))endSession(true);
+  if(sessionDeficit()>0)return;
+  const live=s.stagesPlanned.filter(x=>!x.waiting).concat(s.extraStages);
+  if(live.length&&live.every(x=>x.completed))endSession(true);
 }
+
+/* ================= SCORING ================= */
 function endSession(auto){
   clearInterval(state.timerInterval);state.timerRunning=false;
-  const planned=state.currentSession.stagesPlanned;
-  const extra=state.currentSession.extraStages;
-  const all=planned.concat(extra);
-  const completed=all.filter(s=>s.completed).length;
-  const total=planned.length+extra.length;
-  const attainment=total?(completed/total)*100:0;
+  const s=state.currentSession;
+  const planned=s.stagesPlanned, extras=s.extraStages;
+  const waived=planned.filter(x=>x.waiting);
+  const backfills=extras.filter(x=>x.isBackfill);
+  const overflow=extras.filter(x=>!x.isBackfill);
+  const deficit=Math.max(0,waived.length-backfills.length);
+  /* denominator is invariant: planned + overflow. Waiting can only SUBSTITUTE, never shrink. */
+  const denom=planned.length+overflow.length;
+  const counted=planned.filter(x=>!x.waiting).concat(backfills,overflow);
+  const completed=counted.filter(x=>x.completed).length;
+  const attainment=denom?(completed/denom)*100:0;
   let penalty=0,bonus=0,timeBonus=0;
-  if(attainment<90){penalty=(100-attainment)*(config.penaltyMin+Math.random()*(config.penaltyMax-config.penaltyMin))/100;}
-  if(extra.length){bonus=extra.length*(config.bonusMin+Math.random()*(config.bonusMax-config.bonusMin))/100;}
+  /* penalty is measured against the 90% clean line, and clamped.
+     Base is what you actually COMPLETED, so XP can never go negative. */
+  if(attainment<90)penalty=Math.min(config.penaltyCap,(90-attainment)*(config.penaltyMin+Math.random()*(config.penaltyMax-config.penaltyMin))/100);
+  if(overflow.length)bonus=overflow.length*(config.bonusMin+Math.random()*(config.bonusMax-config.bonusMin))/100;
   if(auto){
-    const remSec=(state.currentSession._remainingMs||0)/1000;
-    const windowSec=state.currentSession.windowMinutes*60;
-    if(remSec<=300&&windowSec>0)timeBonus=remSec/windowSec;   // ≤5 min left → bonus; >5 min → 0 (went too easy)
+    const rem=(s._remainingMs||0)/1000, win=s.windowMinutes*60;
+    if(rem<=300&&win>0)timeBonus=rem/win;
   }
   const weekend=isWeekend(new Date());
-  const weekendMult=weekend?(1+config.weekendBonus):1;
-  const baseXp=planned.length*config.xpPerStage;
-  const xpEarned=Math.round(baseXp*(1-penalty)*(1+bonus)*(1+timeBonus)*weekendMult);
-  Object.assign(state.currentSession,{
-    endedAt:new Date().toISOString(),completed,auto:!!auto,
+  const base=completed*config.xpPerStage;
+  const heat=s.heat||0;
+  const heatMult=config.heatLadder[heat]||1.0;
+  const firstBloodMult=s.isFirstBlood&&!inLockoutPeriod()?config.firstBloodMult:1.0;
+  let mysteryMult=1.0;
+  if(state.mysteryBonusAvailable&&!inLockoutPeriod()){
+    mysteryMult=state.mysteryBonusAvailable;
+    state.mysteryAwardedToday=true;
+    state.mysteryBonusAvailable=null;
+  }
+  const xp=Math.max(0,Math.round(base*heatMult*(1-penalty)*(1+bonus)*(1+timeBonus)*(weekend?1+config.weekendBonus:1)*firstBloodMult*mysteryMult));
+  Object.assign(s,{endedAt:new Date().toISOString(),completed,denom,auto:!!auto,deficit,xpLocked:inLockoutPeriod(),
+    waivedCount:waived.length,backfillCount:backfills.length,overflowCount:overflow.length,
     attainmentPercent:Math.round(attainment),penaltyPercent:+(penalty*100).toFixed(1),
-    bonusPercent:+(bonus*100).toFixed(1),timeBonusPercent:+(timeBonus*100).toFixed(1),weekend,xpEarned
-  });
-  state.sessions.push(state.currentSession);
-  state.dailyXp+=xpEarned;state.cumulativeXp+=xpEarned;updateLevelFromXp();
-  markCompletion();
-  saveState();
-  showResults(attainment,penalty,bonus,timeBonus,weekend,xpEarned);
+    bonusPercent:+(bonus*100).toFixed(1),timeBonusPercent:+(timeBonus*100).toFixed(1),
+    heatLevel:heat,heatMult:heatMult.toFixed(2),firstBlood:s.isFirstBlood,firstBloodMult:firstBloodMult.toFixed(2),
+    mysteryMult:mysteryMult.toFixed(2),
+    weekend,xpEarned:xp});
+  state.sessions.push(s);
+  grantXp(xp);
+  markCompletion();checkObjComplete();updateRestTokens();
+  saveState();showResults(attainment,penalty,bonus,timeBonus,weekend,xp);flushNotices();
+}
+function updateRestTokens(){
+  // After a session, check if it was clean (≥90% and not xpLocked)
+  const s=state.currentSession;
+  if(!s||s.xpLocked)return; // Don't count locked sessions
+  if(s.attainmentPercent>=90){
+    state.consecutiveCleanDays++;
+    // Award token every 3 clean sessions
+    if(state.consecutiveCleanDays%config.restTokenEarnDays===0&&state.restTokensEarned<config.restTokenCap){
+      state.restTokensEarned++;
+      notices.push({title:'Rest Token Earned!',body:'Completed '+config.restTokenEarnDays+' clean sessions. You now have 1 free pass against decay.'});
+    }
+  }else{
+    state.consecutiveCleanDays=0; // Break the streak
+  }
 }
 function markCompletion(){
-  const done=state.currentSession.stagesPlanned.concat(state.currentSession.extraStages).filter(s=>s.completed);
-  const doneIds=new Set(done.map(s=>s.id));
-  state.tasks.forEach(task=>{
-    task.stages.forEach(st=>{if(doneIds.has(st.id))st.completed=true;});
-    if(task.stages.length&&task.stages.every(st=>st.completed))task.completed=true;
+  const s=state.currentSession;
+  const done=new Set(s.stagesPlanned.concat(s.extraStages).filter(x=>x.completed).map(x=>x.id));
+  state.tasks.forEach(t=>{
+    t.stages.forEach(st=>{if(done.has(st.id)){st.completed=true;st.waiting=false;}});
+    if(t.stages.length&&t.stages.every(st=>st.completed)){t.completed=true;t.waiting=false;}
   });
 }
-function showResults(att,pen,bon,timeBon,weekend,xp){
-  document.getElementById('resultAttainment').textContent=Math.round(att);
-  document.getElementById('resultXp').textContent=xp;
-  document.getElementById('resultDailyTotal').textContent=state.dailyXp;
-  const pe=document.getElementById('resultPenalty'),be=document.getElementById('resultBonus'),we=document.getElementById('resultWeekend'),te=document.getElementById('resultTimeBonus');
-  if(pen>0){pe.style.display='block';document.getElementById('penaltyValue').textContent=(pen*100).toFixed(1);}else pe.style.display='none';
-  if(bon>0){be.style.display='block';document.getElementById('bonusValue').textContent=(bon*100).toFixed(1);}else be.style.display='none';
-  if(timeBon>0){te.style.display='block';document.getElementById('timeBonusValue').textContent=(timeBon*100).toFixed(1);}else te.style.display='none';
-  we.style.display=weekend?'block':'none';
-  renderStageReport();
-  showView('resultView');updateHeader();
+function showResults(att,pen,bon,tb,wk,xp){
+  const s=state.currentSession;
+  if(inLockoutPeriod()){
+    document.getElementById('resultAttainment').textContent='—';
+    document.getElementById('resultXp').innerHTML='<div style="font-size:18px;color:var(--amber)">Training Mode</div><div style="font-size:12px;color:var(--ash)">XP Locked</div>';
+    document.getElementById('resultDailyTotal').textContent='—';
+    document.querySelectorAll('.result-detail').forEach(e=>e.style.display='none');
+  }else{
+    document.getElementById('resultAttainment').textContent=Math.round(att);
+    document.getElementById('resultXp').textContent=xp;
+    document.getElementById('resultDailyTotal').textContent=state.dailyXp;
+    const show=(id,vid,val)=>{const e=document.getElementById(id);if(val>0){e.style.display='block';document.getElementById(vid).textContent=(val*100).toFixed(1);}else e.style.display='none';};
+    show('resultPenalty','penaltyValue',pen);show('resultBonus','bonusValue',bon);show('resultTimeBonus','timeBonusValue',tb);
+    document.getElementById('resultWeekend').style.display=wk?'block':'none';
+    // Add multiplier breakdown
+    let breakdown='<div style="font-size:11px;color:var(--ash);margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><b style="color:var(--camel)">Multiplier Breakdown</b><br>';
+    breakdown+='Base: '+s.completed+' completed × 100 = '+(s.completed*100)+'<br>';
+    if(s.heatLevel>0)breakdown+='Heat '+(s.heatLevel)+': ×'+s.heatMult+'<br>';
+    if(s.firstBlood)breakdown+='First Blood: ×'+s.firstBloodMult+'<br>';
+    if(parseFloat(s.mysteryMult)>1)breakdown+='🎰 Mystery: ×'+s.mysteryMult+'<br>';
+    if(pen>0)breakdown+='Penalty: −'+(pen*100).toFixed(1)+'%<br>';
+    if(bon>0)breakdown+='Overflow: +'+(bon*100).toFixed(1)+'%<br>';
+    if(tb>0)breakdown+='Time: +'+(tb*100).toFixed(1)+'%<br>';
+    if(wk)breakdown+='Weekend: +10%<br>';
+    breakdown+='</div>';
+    document.getElementById('resultXp').innerHTML=xp+breakdown;
+  }
+  renderStageReport();showView('resultView');updateHeader();
 }
-function renderStageReport(){
-  const c=document.getElementById('stageReport');c.innerHTML='';
-  const s=state.currentSession;if(!s)return;
-  const extra=s.extraStages;
-  s.stagesPlanned.concat(extra).forEach(st=>{
-    const isExtra=extra.includes(st);
-    const subInfo=(st.subs&&st.subs.length)?'<span class="ov">'+st.subs.filter(x=>x.done).length+'/'+st.subs.length+' steps</span>':'';
-    const row=document.createElement('div');
-    row.className='report-row '+(st.completed?'done':'miss');
-    row.innerHTML='<span class="mark">'+(st.completed?'✓':'✕')+'</span><span class="txt">'+esc(st.title)+'</span>'+subInfo+(isExtra?'<span class="ov">overflow</span>':'');
-    c.appendChild(row);
+function stageReportHtml(s){
+  let h='';
+  s.stagesPlanned.concat(s.extraStages).forEach(st=>{
+    const isExtra=s.extraStages.includes(st);
+    const cls=st.waiting?'wait':(st.completed?'done':'miss');
+    const mark=st.waiting?'⏸':(st.completed?'✓':'✕');
+    const sub=(st.subs&&st.subs.length)?'<span class="pill">'+st.subs.filter(x=>x.done).length+'/'+st.subs.length+' steps</span>':'';
+    let tag='';
+    if(st.waiting)tag='<span class="pill wait">held</span>';
+    else if(st.isBackfill)tag='<span class="pill wait">backfill</span>';
+    else if(isExtra)tag='<span class="pill">overflow</span>';
+    h+='<div class="report-row '+cls+'"><span class="mark">'+mark+'</span><span class="txt">'+esc(st.title)+'</span>'+sub+tag+'</div>';
   });
+  if(s.deficit>0)h+='<div class="report-row miss"><span class="mark">!</span><span class="txt">'+s.deficit+' held stage'+(s.deficit>1?'s':'')+' never backfilled — counted as missed</span></div>';
+  return h;
 }
-function showCompleted(){
-  const list=document.getElementById('completedList');list.innerHTML='';
-  const done=state.tasks.filter(t=>t.completed);
-  if(!done.length){list.innerHTML='<div class="empty-state">No sealed tasks yet</div>';showView('completedView');return;}
-  done.forEach(task=>{
-    const acc=document.createElement('div');acc.className='accordion';
-    const head=document.createElement('div');head.className='accordion-head';
-    head.innerHTML='<div class="accordion-title"><span class="chk">✓</span>'+esc(task.title)+'</div><div class="accordion-right"><span class="accordion-meta">'+task.stages.length+' stage'+(task.stages.length===1?'':'s')+(task.oos?' · out of session':'')+'</span><span class="chev">▸</span></div>';
-    const body=document.createElement('div');body.className='accordion-body';
-    task.stages.forEach(s=>{const st=document.createElement('div');st.className='accordion-stage';st.innerHTML='<span class="chk">✓</span>'+esc(s.title);body.appendChild(st);});
-    head.addEventListener('click',()=>acc.classList.toggle('open'));
-    acc.appendChild(head);acc.appendChild(body);list.appendChild(acc);
-  });
-  showView('completedView');
+function renderStageReport(){document.getElementById('stageReport').innerHTML=stageReportHtml(state.currentSession);}
+/* ================= RENDER ================= */
+function renderAll(){
+  renderDashObjectives();renderRockPanel();renderObjSelect();renderTaskLists();
+  renderStagePool();renderObjectives();renderWaiting();renderCompleted();updateHeader();updateWaitBadge();
 }
-
-/* ---------- profile ---------- */
-function showProfile(){updateProfileStats();updateSessionHistory();showView('profileView');}
-function updateProfileStats(){
-  document.getElementById('profileLevel').textContent=state.level;
-  document.getElementById('profileXp').textContent=state.cumulativeXp.toLocaleString();
-  document.getElementById('profileSessions').textContent=state.sessions.length;
-  const avg=state.sessions.length?Math.round(state.sessions.reduce((a,s)=>a+s.attainmentPercent,0)/state.sessions.length):0;
-  document.getElementById('profileAvgAttainment').textContent=avg+'%';
-  const inLevel=state.cumulativeXp%1000;
-  document.getElementById('xpToNextLevel').textContent=inLevel;
-  const pct=(inLevel/1000)*100;
-  document.getElementById('xpProgress').style.width=pct+'%';
-  document.getElementById('xpPercent').textContent=Math.round(pct)+'%';
+function updateHeader(){
+  document.getElementById('dailyXpDisplay').textContent=state.dailyXp;
+  document.getElementById('levelDisplay').textContent=state.level;
+  document.getElementById('totalXpDisplay').textContent=state.cumulativeXp.toLocaleString();
 }
-function updateSessionHistory(){
-  const c=document.getElementById('sessionHistory');c.innerHTML='';
-  if(!state.sessions.length){c.innerHTML='<div class="empty-state">No sessions logged</div>';return;}
-  [...state.sessions].reverse().slice(0,25).forEach(s=>{
-    const date=new Date(s.startedAt).toLocaleString();
-    const el=document.createElement('div');el.className='session-item';
-    el.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:5px"><div>'+s.windowMinutes+' min · '+s.stagesPlanned.length+' stage'+(s.stagesPlanned.length===1?'':'s')+(s.weekend?' · wknd':'')+'</div><div class="session-xp">+'+s.xpEarned+'</div></div><div style="font-size:11px;color:var(--ash)">'+date+' · attainment '+s.attainmentPercent+'%</div>';
+function updateWaitBadge(){
+  const n=waitingItems().length;const b=document.getElementById('waitBadge');
+  b.style.display=n?'inline-block':'none';b.textContent=n;
+}
+/* dashboard: objectives (read-only) */
+function renderDashObjectives(){
+  const c=document.getElementById('dashObjectives');const act=activeObjs();c.innerHTML='';
+  if(!act.length){c.innerHTML='<div class="empty-state">No active objectives. Promote up to '+config.objActiveCap+'.</div>';return;}
+  act.forEach(o=>{
+    const st=objStats(o),next=objNextAction(o),stalled=objStalled(o);
+    const days=daysBetween(localDateStr(new Date(o.createdAt)),localDateStr());
+    const el=document.createElement('div');el.className='obj-card'+(stalled?' stalled':'');
+    el.innerHTML='<div class="obj-head"><div class="obj-title">'+esc(o.title)+'</div>'+(stalled?'<span class="pill stale">stalled</span>':'')+'</div>'
+      +'<div class="obj-bar"><div class="obj-fill" style="width:'+st.pct+'%"></div></div>'
+      +'<div class="obj-meta"><span>'+st.done+'/'+st.total+' stages · '+st.pct+'%</span><span>'+days+'d open</span></div>'
+      +(next?'<div class="obj-next"><b>Next Action</b>'+esc(next)+'</div>':'<div class="obj-next"><b>Next Action</b><span style="color:var(--ash)">nothing live — add a task</span></div>');
+    el.addEventListener('click',()=>showObjDetail(o.id));
     c.appendChild(el);
   });
 }
+/* rocks panel */
+function renderRockPanel(){
+  const c=document.getElementById('rockPanel');
+  const rocks=todaysRocks();const open=rockGateOpen();
+  let h='<div class="rock-panel"><div class="rock-head"><span>★ Today\'s Big Rocks</span><span>'+rocks.length+'/'+config.rockCap+'</span></div>';
+  if(!rocks.length)h+='<div style="font-size:12px;color:var(--ash)">'+(open?'Star up to '+config.rockCap+' tasks before 09:30.':'No rocks set. The gate has closed.')+'</div>';
+  else{
+    h+='<div class="rock-list">';
+    rocks.forEach(t=>{h+='<div class="rock-item'+(t.completed?' done':'')+(t.waiting?' waiting':'')+'"><span>★</span><span>'+esc(t.title)+'</span></div>';});
+    h+='</div>';
+  }
+  h+='<div class="gate-note'+(open?'':' locked')+'">'+(open?'Gate open until 09:30. Star and unstar freely until then.':'Gate closed. Locked until 20:00 settlement.')+'</div></div>';
+  c.innerHTML=h;
+}
+/* objective select on dashboard */
+function renderObjSelect(){
+  const s=document.getElementById('taskObjSelect');const cur=s.value;
+  s.innerHTML='<option value="">— Unassigned —</option>';
+  activeObjs().forEach(o=>{const op=document.createElement('option');op.value=o.id;op.textContent=o.title;s.appendChild(op);});
+  if(cur)s.value=cur;
+}
+/* standing tasks */
+function renderTaskLists(){
+  const live=state.tasks.filter(t=>!t.completed&&!t.waiting);
+  const unb=live.filter(t=>!t.stages.length), brk=live.filter(t=>t.stages.length);
+  document.getElementById('unbrokenCount').textContent=unb.length;
+  document.getElementById('brokenCount').textContent=brk.length;
+  taskSection(document.getElementById('unbrokenList'),unb,false);
+  taskSection(document.getElementById('brokenList'),brk,true);
+}
+function taskSection(list,tasks,isBroken){
+  list.innerHTML='';
+  if(!tasks.length){list.innerHTML='<div class="empty-state" style="padding:14px;font-size:14px">'+(isBroken?'Nothing broken down':'All broken down')+'</div>';return;}
+  tasks.forEach(t=>{
+    const o=objOf(t);const tot=t.stages.length,dn=t.stages.filter(s=>s.completed).length;
+    const meta=(o?esc(o.title)+' · ':'')+(tot?dn+'/'+tot+' stages':'no stages');
+    const el=document.createElement('div');el.className='item'+(t.starred?' rock':'');
+    el.innerHTML='<div class="item-info"><div class="item-title">'+(t.starred?'<span style="color:var(--brass)">★ </span>':'')+esc(t.title)+'</div><div class="item-meta">'+meta+'</div></div>'
+      +'<div class="item-actions">'
+      +'<button class="st iconbtn'+(t.starred?' on':'')+'" title="Big Rock">★</button>'
+      +'<button class="bd ghost">'+(isBroken?'Edit':'Break')+'</button>'
+      +'<button class="lk iconbtn" title="Objective">⛓</button>'
+      +'<button class="wt iconbtn" title="Waiting">⏸</button>'
+      +'<button class="dn ghost">Done</button>'
+      +'<button class="dl iconbtn" title="Delete">✕</button></div>';
+    el.querySelector('.st').addEventListener('click',()=>toggleStar(t.id));
+    el.querySelector('.bd').addEventListener('click',()=>showBreakdown(t.id));
+    el.querySelector('.lk').addEventListener('click',()=>openObjPicker(t.id));
+    el.querySelector('.wt').addEventListener('click',()=>openWaitModal('task',t.id,null,false));
+    el.querySelector('.dn').addEventListener('click',()=>completeTaskOOS(t.id));
+    el.querySelector('.dl').addEventListener('click',()=>deleteTask(t.id));
+    const inf=el.querySelector('.item-info');inf.style.cursor='pointer';
+    inf.addEventListener('click',()=>showTaskDetail(t.id,'dashView'));
+    list.appendChild(el);
+  });
+}
+/* stage pool */
+function renderStagePool(){
+  const list=document.getElementById('stagePoolList');const stages=liveStages();
+  document.getElementById('stageCount').textContent=stages.length;list.innerHTML='';
+  if(!stages.length){list.innerHTML='<div class="empty-state">No live stages</div>';return;}
+  stages.forEach(st=>{
+    const o=st.objectiveId?state.objectives.find(x=>x.id===st.objectiveId):null;
+    const el=document.createElement('div');el.className='item';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+(o?esc(o.title)+' › ':'')+'<span class="parent-link">'+esc(st.taskTitle)+'</span></div></div>'
+      +'<div class="item-actions"><button class="wt iconbtn" title="Waiting">⏸</button><button class="dn ghost">Done</button></div>';
+    el.querySelector('.parent-link').addEventListener('click',()=>showTaskDetail(st.taskId,'stagePoolView'));
+    el.querySelector('.wt').addEventListener('click',()=>openWaitModal('stage',st.taskId,st.id,false));
+    el.querySelector('.dn').addEventListener('click',()=>completeStageOOS(st.taskId,st.id));
+    list.appendChild(el);
+  });
+}
+/* objectives view */
+function renderObjectives(){
+  document.getElementById('objCapLabel').textContent=config.objActiveCap;
+  const act=activeObjs(),back=state.objectives.filter(o=>o.status==='backlog');
+  document.getElementById('activeObjCount').textContent=act.length+'/'+config.objActiveCap;
+  document.getElementById('backlogObjCount').textContent=back.length;
+  objList(document.getElementById('activeObjList'),act,true);
+  objList(document.getElementById('backlogObjList'),back,false);
+}
+function objList(c,objs,isActive){
+  c.innerHTML='';
+  if(!objs.length){c.innerHTML='<div class="empty-state" style="padding:16px">'+(isActive?'Nothing active. Promote from the Backlog.':'Backlog is empty.')+'</div>';return;}
+  objs.forEach(o=>{
+    const st=objStats(o),stalled=objStalled(o);
+    const el=document.createElement('div');el.className='obj-card'+(stalled?' stalled':'');
+    el.innerHTML='<div class="obj-head"><div class="obj-title">'+esc(o.title)+'</div>'+(stalled?'<span class="pill stale">stalled</span>':'')+'</div>'
+      +'<div class="obj-bar"><div class="obj-fill" style="width:'+st.pct+'%"></div></div>'
+      +'<div class="obj-meta"><span>'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span></div>'
+      +'<div class="button-group" style="margin-top:11px">'
+      +(isActive?'<button class="dm ghost">→ Backlog</button>':'<button class="pm">Activate</button>')
+      +'<button class="op ghost">Open</button><button class="ab ghost">Abandon</button></div>';
+    const pm=el.querySelector('.pm');if(pm)pm.addEventListener('click',()=>promoteObj(o.id));
+    const dm=el.querySelector('.dm');if(dm)dm.addEventListener('click',()=>demoteObj(o.id));
+    el.querySelector('.op').addEventListener('click',()=>showObjDetail(o.id));
+    el.querySelector('.ab').addEventListener('click',()=>abandonObj(o.id));
+    c.appendChild(el);
+  });
+}
+function showObjDetail(id){
+  const o=state.objectives.find(x=>x.id===id);if(!o)return;state.currentObj=o;
+  const st=objStats(o);
+  document.getElementById('objDetailTitle').textContent=o.title;
+  let h='<div class="obj-bar"><div class="obj-fill" style="width:'+st.pct+'%"></div></div>'
+    +'<div class="obj-meta" style="margin-bottom:16px"><span>'+st.tasksDone+'/'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span><span>'+o.status+'</span></div>';
+  const ts=tasksOf(o);
+  if(!ts.length)h+='<div class="empty-state">No tasks attached yet</div>';
+  else{h+='<div class="item-list">';
+    ts.forEach(t=>{const dn=t.stages.filter(s=>s.completed).length;
+      h+='<div class="item'+(t.completed?' completed':'')+(t.waiting?' waiting':'')+'"><div class="item-info"><div class="item-title">'+(t.completed?'✓ ':'')+esc(t.title)+'</div><div class="item-meta">'+(t.stages.length?dn+'/'+t.stages.length+' stages':'no stages')+(t.waiting?' · waiting: '+esc(t.waitingReason):'')+'</div></div></div>';});
+    h+='</div>';}
+  document.getElementById('objDetailBody').innerHTML=h;
+  showView('objDetailView');
+}
+/* objective picker */
+let objPickTask=null;
+function openObjPicker(taskId){
+  objPickTask=taskId;const list=document.getElementById('objPickerList');list.innerHTML='';
+  const none=document.createElement('div');none.className='modal-pick';
+  none.innerHTML='<div class="item-title">— Unassigned —</div><div class="item-meta">Standing alone</div>';
+  none.addEventListener('click',()=>{const t=state.tasks.find(x=>x.id===objPickTask);if(t)t.objectiveId=null;closeModal('objModal');saveState();renderAll();});
+  list.appendChild(none);
+  state.objectives.filter(o=>o.status==='active'||o.status==='backlog').forEach(o=>{
+    const el=document.createElement('div');el.className='modal-pick';
+    el.innerHTML='<div class="item-title">'+esc(o.title)+'</div><div class="item-meta">'+o.status+'</div>';
+    el.addEventListener('click',()=>{const t=state.tasks.find(x=>x.id===objPickTask);if(t)t.objectiveId=o.id;closeModal('objModal');checkObjComplete();saveState();renderAll();flushNotices();toast('Linked');});
+    list.appendChild(el);
+  });
+  openModal('objModal');
+}
+/* task detail */
+let detailReturn='dashView';
+function showTaskDetail(taskId,ret){
+  const t=state.tasks.find(x=>x.id===taskId);if(!t)return;
+  state.currentTask=t;detailReturn=ret||'dashView';
+  const o=objOf(t);
+  document.getElementById('taskDetailTitle').textContent=t.title;
+  document.getElementById('taskDetailMeta').textContent=(o?o.title+' › ':'')+t.stages.length+' stage'+(t.stages.length===1?'':'s')+(t.starred?' · ★ Big Rock':'');
+  const l=document.getElementById('taskDetailStages');l.innerHTML='';
+  if(!t.stages.length)l.innerHTML='<div class="empty-state">No stages — break it down</div>';
+  t.stages.forEach((s,i)=>{
+    const el=document.createElement('div');el.className='item'+(s.completed?' completed':'')+(s.waiting?' waiting':'');
+    el.innerHTML='<div class="item-info"><div class="item-title"><span class="seq">'+(i+1)+'</span>'+esc(s.title)+(s.completed?' ✓':'')+'</div>'+(s.waiting?'<div class="item-meta">waiting: '+esc(s.waitingReason)+'</div>':'')+'</div>'
+      +(s.completed?'':'<div class="item-actions">'+(s.waiting?'<button class="ub ghost">Unblock</button>':'<button class="dn ghost">Done</button>')+'</div>');
+    const dn=el.querySelector('.dn');if(dn)dn.addEventListener('click',()=>{completeStageOOS(t.id,s.id);showTaskDetail(t.id,detailReturn);});
+    const ub=el.querySelector('.ub');if(ub)ub.addEventListener('click',()=>{unblock(t.id,s.id);showTaskDetail(t.id,detailReturn);});
+    l.appendChild(el);
+  });
+  showView('taskDetailView');
+}
+/* waiting view */
+function renderWaiting(){
+  const c=document.getElementById('waitingList');const items=waitingItems();c.innerHTML='';
+  if(!items.length){c.innerHTML='<div class="empty-state">Nothing blocked. Clean board.</div>';return;}
+  const l=document.createElement('div');l.className='item-list';
+  items.forEach(it=>{
+    const age=waitAge(it.since),stale=age>=config.waitStaleDays;
+    const el=document.createElement('div');el.className='item waiting';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(it.title)+'</div>'
+      +'<div class="item-meta">'+(it.obj?esc(it.obj.title)+' › ':'')+(it.kind==='stage'?esc(it.taskTitle)+' · ':'')+'<b style="color:var(--amber)">'+esc(it.reason||'—')+'</b></div></div>'
+      +'<div class="item-actions"><span class="pill '+(stale?'stale':'wait')+'">'+age+'d</span><button class="ub ghost">Unblock</button></div>';
+    el.querySelector('.ub').addEventListener('click',()=>unblock(it.taskId,it.stageId));
+    l.appendChild(el);
+  });
+  c.appendChild(l);
+}
+/* completed */
+function renderCompleted(){
+  const tl=document.getElementById('completedTaskList');const done=state.tasks.filter(t=>t.completed);tl.innerHTML='';
+  if(!done.length)tl.innerHTML='<div class="empty-state">No sealed tasks yet</div>';
+  done.forEach(t=>{
+    const acc=document.createElement('div');acc.className='accordion';
+    const o=objOf(t);
+    acc.innerHTML='<div class="accordion-head"><div class="accordion-title"><span class="chk">✓</span>'+(t.starred?'★ ':'')+esc(t.title)+'</div><div class="accordion-right"><span class="accordion-meta">'+(o?esc(o.title)+' · ':'')+t.stages.length+' stages'+(t.oos?' · OOS':'')+'</span><span class="chev">▸</span></div></div>'
+      +'<div class="accordion-body">'+(t.stages.length?t.stages.map(s=>'<div class="accordion-stage"><span class="chk">✓</span>'+esc(s.title)+'</div>').join(''):'<div class="accordion-stage">No stages</div>')+'</div>';
+    acc.querySelector('.accordion-head').addEventListener('click',()=>acc.classList.toggle('open'));
+    tl.appendChild(acc);
+  });
+  const ol=document.getElementById('completedObjList');const dobj=state.objectives.filter(o=>o.status==='complete'||o.status==='abandoned');ol.innerHTML='';
+  if(!dobj.length)ol.innerHTML='<div class="empty-state">No objectives closed yet</div>';
+  dobj.forEach(o=>{
+    const st=objStats(o);const ab=o.status==='abandoned';
+    const el=document.createElement('div');el.className='obj-card'+(ab?'':' done');
+    el.innerHTML='<div class="obj-head"><div class="obj-title">'+(ab?'✕ ':'✓ ')+esc(o.title)+'</div><span class="pill '+(ab?'stale':'rockp')+'">'+(ab?'abandoned':'+'+(o.bonusAwarded||0)+' XP')+'</span></div>'
+      +'<div class="obj-meta"><span>'+st.tasks+' tasks · '+st.total+' stages</span></div>';
+    ol.appendChild(el);
+  });
+}
+/* ================= LEDGER ================= */
+const openSess=new Set();let diveDate=null;
+function sessionClass(s){ if(s.attainmentPercent>=90)return (s.auto&&(s.timeBonusPercent||0)===0)?'easy':'good'; return 'bad'; }
+function sessionsByDate(){const m={};state.sessions.forEach(s=>{const d=localDateStr(new Date(s.startedAt));(m[d]=m[d]||[]).push(s);});return m;}
+function dayAbbr(d){return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];}
+function sessionRowHtml(s){
+  const cls=sessionClass(s);
+  const t=new Date(s.startedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const flags=[];if(s.auto)flags.push('auto');if(s.weekend)flags.push('wknd');if(cls==='easy')flags.push('too easy');
+  if(s.waivedCount)flags.push(s.waivedCount+' held');if(s.deficit)flags.push(s.deficit+' unbackfilled');
+  let m=t+' · '+s.attainmentPercent+'%';
+  if(s.penaltyPercent>0)m+=' · −'+s.penaltyPercent+'%';
+  if(s.bonusPercent>0)m+=' · +'+s.bonusPercent+'%';
+  if(s.timeBonusPercent>0)m+=' · time +'+s.timeBonusPercent+'%';
+  if(flags.length)m+=' · '+flags.join(' · ');
+  const open=openSess.has(s.sessionId);
+  return '<div class="session-row" data-sid="'+s.sessionId+'"><div class="sr-main"><span class="sdot '+cls+'"></span>'
+    +'<div class="sr-info"><div class="sr-title">'+s.windowMinutes+'m · '+s.completed+'/'+(s.denom||s.stagesPlanned.length)+' stages</div>'
+    +'<div class="sr-meta">'+m+'</div></div><div class="sr-xp">+'+s.xpEarned+'</div></div>'
+    +(open?'<div class="sr-detail">'+stageReportHtml(s)+'</div>':'')+'</div>';
+}
+function bindRows(scope,rerender){
+  document.querySelectorAll(scope+' .sr-main').forEach(el=>el.addEventListener('click',()=>{
+    const id=el.parentElement.dataset.sid;
+    if(openSess.has(id))openSess.delete(id);else openSess.add(id);
+    rerender();
+  }));
+}
+function renderHistory(){
+  const c=document.getElementById('historyBody');
+  if(!state.sessions.length){c.innerHTML='<div class="empty-state">No sessions logged</div>';return;}
+  const map=sessionsByDate();let h='';
+  Object.keys(map).sort((a,b)=>b.localeCompare(a)).forEach(d=>{
+    const ss=map[d].slice().sort((a,b)=>new Date(b.startedAt)-new Date(a.startedAt));
+    const tot=ss.reduce((a,s)=>a+s.windowMinutes,0), clean=ss.filter(s=>s.attainmentPercent>=90).length;
+    h+='<div class="hist-day"><div class="hist-day-head">'+prettyDate(d)+'<span>'+tot+'m focused · '+clean+'/'+ss.length+' clean</span></div>';
+    ss.forEach(s=>h+=sessionRowHtml(s));h+='</div>';
+  });
+  c.innerHTML=h;bindRows('#historyBody',renderHistory);
+}
+function last7(){const out=[],t=new Date(localDateStr()+'T12:00:00');for(let i=6;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);out.push(localDateStr(d));}return out;}
+function renderWeek(){
+  const days=last7(),map=sessionsByDate(),H=230;
+  const totals=days.map(d=>(map[d]||[]).reduce((a,s)=>a+s.windowMinutes,0));
+  const max=Math.max(60,...totals);let cols='';
+  days.forEach((d,i)=>{
+    const dd=new Date(d+'T12:00:00'),wk=dd.getDay()===0||dd.getDay()===6;
+    const ss=(map[d]||[]).slice().sort((a,b)=>new Date(a.startedAt)-new Date(b.startedAt));
+    let segs='';ss.forEach(s=>{const h=Math.max(8,Math.round(s.windowMinutes/max*H));segs+='<div class="seg '+sessionClass(s)+'" style="height:'+h+'px" data-sid="'+s.sessionId+'" title="'+s.windowMinutes+'m · '+s.attainmentPercent+'%"></div>';});
+    const clean=ss.filter(s=>s.attainmentPercent>=90).length;
+    cols+='<div class="chart-col'+(d===localDateStr()?' col-today':'')+'"><div class="col-bararea'+(wk?' weekend':'')+'">'+segs+'</div>'
+      +'<div class="col-total">'+(totals[i]?totals[i]+'m':'—')+'</div><div class="col-label">'+dayAbbr(dd)+'<br>'+(ss.length?clean+'/'+ss.length:'')+'</div></div>';
+  });
+  document.getElementById('weekChart').innerHTML='<div class="chart-yaxis"><span>'+max+'m</span><span>'+Math.round(max/2)+'m</span><span>0</span></div><div class="chart-cols">'+cols+'</div>';
+  document.querySelectorAll('#weekChart .seg').forEach(sg=>sg.addEventListener('click',()=>{
+    switchLtab('history');openSess.add(sg.dataset.sid);renderHistory();
+    const r=document.querySelector('#historyBody .session-row[data-sid="'+sg.dataset.sid+'"]');if(r)r.scrollIntoView({behavior:'smooth',block:'center'});
+  }));
+}
+function renderDive(ds){
+  diveDate=ds||localDateStr();
+  document.getElementById('diveDateLabel').textContent=(diveDate===localDateStr()?'Today · ':'')+prettyDate(diveDate);
+  const ss=(sessionsByDate()[diveDate]||[]).slice().sort((a,b)=>new Date(a.startedAt)-new Date(b.startedAt));
+  const tot=ss.reduce((a,s)=>a+s.windowMinutes,0),clean=ss.filter(s=>s.attainmentPercent>=90).length;
+  const xp=ss.reduce((a,s)=>a+s.xpEarned,0),max=Math.max(60,tot),H=260;
+  const rock=state.rockLog[diveDate];
+  let h='<div class="dive-summary"><div><div class="ds-v">'+tot+'m</div><div class="ds-l">Focused</div></div>'
+    +'<div><div class="ds-v">'+(ss.length?clean+'/'+ss.length:'0')+'</div><div class="ds-l">Clean</div></div>'
+    +'<div><div class="ds-v">'+xp+'</div><div class="ds-l">Session XP</div></div>'
+    +(rock?'<div><div class="ds-v" style="color:'+(rock.net>=0?'var(--green)':'var(--red)')+'">'+(rock.net>=0?'+':'')+rock.net+'</div><div class="ds-l">Rocks</div></div>':'')
+    +'</div>';
+  if(ss.length){
+    let segs='';ss.forEach(s=>{const hh=Math.max(26,Math.round(s.windowMinutes/max*H));const t=new Date(s.startedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      segs+='<div class="dive-seg '+sessionClass(s)+'" style="height:'+hh+'px" data-sid="'+s.sessionId+'"><span class="seg-lbl">'+s.windowMinutes+'m · '+s.attainmentPercent+'% · '+t+'</span></div>';});
+    h+='<div class="dive-chart"><div class="dive-col">'+segs+'</div></div>';
+  }
+  h+='<div id="diveList">'+(ss.length?ss.slice().reverse().map(sessionRowHtml).join(''):'<div class="empty-state">No sessions this day</div>')+'</div>';
+  document.getElementById('diveBody').innerHTML=h;
+  bindRows('#diveList',()=>renderDive(diveDate));
+  document.querySelectorAll('.dive-seg').forEach(sg=>sg.addEventListener('click',()=>{openSess.add(sg.dataset.sid);renderDive(diveDate);}));
+}
+function renderRockLedger(){
+  const c=document.getElementById('rockLedger');const days=Object.keys(state.rockLog).sort((a,b)=>b.localeCompare(a));
+  if(!days.length){c.innerHTML='<div class="empty-state">No rocks settled yet</div>';return;}
+  let h='';
+  days.forEach(d=>{const r=state.rockLog[d];
+    h+='<div class="session-row"><div class="sr-main" style="cursor:default"><span class="sdot '+(r.net>=0?'good':'bad')+'"></span>'
+      +'<div class="sr-info"><div class="sr-title">'+prettyDate(d)+' · '+r.landed+'/'+r.total+' landed</div>'
+      +'<div class="sr-meta">'+r.dropped+' dropped · '+r.voided+' blocked (void) · bonus +'+r.bonus+' · penalty −'+r.penalty+'</div></div>'
+      +'<div class="sr-xp" style="color:'+(r.net>=0?'var(--green)':'var(--red)')+'">'+(r.net>=0?'+':'')+r.net+'</div></div></div>';
+  });
+  c.innerHTML=h;
+}
+function switchLtab(n){
+  document.querySelectorAll('.ltab').forEach(b=>b.classList.toggle('active',b.dataset.ltab===n));
+  document.querySelectorAll('.ltab-content').forEach(c=>c.style.display='none');
+  document.getElementById('l'+n).style.display='block';
+  if(n==='history')renderHistory();else if(n==='week')renderWeek();else if(n==='day')renderDive(diveDate);else if(n==='rocks')renderRockLedger();
+}
+/* character */
+function renderProfile(){
+  document.getElementById('profileLevel').textContent=state.level;
+  const xpDisplay=inLockoutPeriod()?'LOCKED':''+state.cumulativeXp.toLocaleString();
+  document.getElementById('profileXp').textContent=xpDisplay;
+  document.getElementById('profileSessions').textContent=state.sessions.length;
+  const avg=state.sessions.filter(s=>!s.xpLocked).length?Math.round(state.sessions.filter(s=>!s.xpLocked).reduce((a,s)=>a+s.attainmentPercent,0)/state.sessions.filter(s=>!s.xpLocked).length):0;
+  document.getElementById('profileAvgAttainment').textContent=avg+'%';
+  let land=0,tot=0;Object.values(state.rockLog).forEach(r=>{land+=r.landed;tot+=r.landed+r.dropped;});
+  document.getElementById('profileRockRate').textContent=tot?Math.round(land/tot*100)+'%':'—';
+  document.getElementById('profileObjDone').textContent=state.objectives.filter(o=>o.status==='complete').length;
+  const inLvl=Math.max(0,state.cumulativeXp)%1000,pct=inLvl/10;
+  document.getElementById('xpToNextLevel').textContent=inLvl;
+  document.getElementById('xpProgress').style.width=pct+'%';
+  document.getElementById('xpPercent').textContent=Math.round(pct)+'%';
+  // Rest Tokens display
+  const tokensAvail=state.restTokensEarned-state.restTokensSpent;
+  document.querySelectorAll('#profileXp').forEach(e=>{
+    if(!e.innerHTML.includes('Rest Tokens')){
+      const note='<div style="font-size:11px;color:var(--ash);margin-top:8px"><b style="color:var(--camel)">Rest Tokens</b>: '+tokensAvail+'/'+config.restTokenCap+'</div>';
+      e.innerHTML+=note;
+    }
+  });
+  // Lockout banner if active
+  if(inLockoutPeriod()){
+    const d=daysBetween(localDateStr(new Date(state.firstUseDate)),localDateStr());
+    const remaining=config.lockoutStartDay+config.lockoutDuration-d;
+    const banner='<div style="background:var(--amber);color:#17120c;padding:12px;border-radius:6px;margin:12px 0;text-align:center;font-weight:600">Training Week · '+remaining+' days until XP resumes</div>';
+    document.querySelector('.profile-grid').insertAdjacentHTML('afterend',banner);
+  }
+}
 
-/* ---------- modal + toast ---------- */
+/* ================= UI PLUMBING ================= */
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('#nav button[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+  if(id==='ledgerView')switchLtab('history');
+  if(id==='profileView')renderProfile();
+  if(id==='dashView'){renderDashObjectives();renderRockPanel();}
+}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function showNotice(title,body){document.getElementById('noticeTitle').textContent=title;document.getElementById('noticeBody').textContent=body;openModal('noticeModal');}
-let toastTimer;
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
+let noticeCb=null;
+function showNotice(t,b,cb){document.getElementById('noticeTitle').textContent=t;document.getElementById('noticeBody').textContent=b;noticeCb=cb||null;openModal('noticeModal');}
+let confirmCb=null;
+function askConfirm(t,b,cb){document.getElementById('confirmTitle').textContent=t;document.getElementById('confirmBody').textContent=b;confirmCb=cb;openModal('confirmModal');}
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 
-/* ---------- ui helpers ---------- */
-function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function updateHeader(){document.getElementById('dailyXpDisplay').textContent=state.dailyXp;document.getElementById('levelDisplay').textContent=state.level;document.getElementById('totalXpDisplay').textContent=state.cumulativeXp.toLocaleString();}
-function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
-
-/* ---------- listeners ---------- */
-document.getElementById('addTasksBtn').addEventListener('click',()=>{const t=document.getElementById('taskPasteInput').value;if(t.trim())addTasks(t);});
-document.getElementById('clearCompletedTasksBtn').addEventListener('click',()=>{state.tasks=state.tasks.filter(t=>!t.completed);saveState();renderTaskPool();});
-document.getElementById('profileBtn').addEventListener('click',showProfile);
-document.getElementById('completedBtn').addEventListener('click',showCompleted);
-document.getElementById('completedBackBtn').addEventListener('click',()=>{renderTaskPool();showView('taskPoolView');});
+/* ================= LISTENERS ================= */
+document.querySelectorAll('#nav button[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 document.getElementById('syncNowBtn').addEventListener('click',manualSync);
-document.getElementById('toStagePoolBtn').addEventListener('click',()=>{renderStagePool();showView('stagePoolView');});
+document.getElementById('addTasksBtn').addEventListener('click',()=>{const v=document.getElementById('taskPasteInput').value;if(v.trim())addTasks(v,document.getElementById('taskObjSelect').value||null);});
+document.getElementById('addObjBtn').addEventListener('click',()=>{const i=document.getElementById('objTitleInput');addObjective(i.value);i.value='';});
+document.getElementById('dashToObjBtn').addEventListener('click',()=>showView('objectivesView'));
+document.getElementById('toBuilderBtn').addEventListener('click',showSessionBuilder);
+document.getElementById('poolToBuilderBtn').addEventListener('click',showSessionBuilder);
+document.getElementById('objDetailBackBtn').addEventListener('click',()=>showView('objectivesView'));
 document.getElementById('confirmBreakdownBtn').addEventListener('click',confirmBreakdown);
-document.getElementById('cancelBreakdownBtn').addEventListener('click',()=>showView('taskPoolView'));
+document.getElementById('cancelBreakdownBtn').addEventListener('click',()=>showView('dashView'));
 document.getElementById('addStageRowBtn').addEventListener('click',()=>{state.breakdownStages.push({title:''});renderBreakdownForm();});
-document.getElementById('backToTasksBtn').addEventListener('click',()=>showView('taskPoolView'));
 document.getElementById('taskDetailEditBtn').addEventListener('click',()=>showBreakdown(state.currentTask.id));
-document.getElementById('taskDetailBackBtn').addEventListener('click',()=>{
-  if(detailReturnView==='stagePoolView')renderStagePool();
-  else if(detailReturnView==='sessionBuilderView'){renderBuilderStages();renderSelectedStages();}
-  else renderTaskPool();
-  showView(detailReturnView);
-});
-document.getElementById('startSessionFromStagesBtn').addEventListener('click',showSessionBuilder);
-document.querySelectorAll('.window-btn').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.window-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  state.selectedWindow=parseInt(btn.dataset.window);
+document.getElementById('taskDetailBackBtn').addEventListener('click',()=>showView(detailReturn));
+document.querySelectorAll('.window-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.window-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+  state.selectedWindow=parseInt(b.dataset.window);
   document.getElementById('selectedWindowLabel').textContent=state.selectedWindow+' minute window — commit your stages';
-  renderBuilderStages();updateStartTimerBtn();
+  renderBuilderStages();updateStartBtn();
 }));
 document.getElementById('startTimerBtn').addEventListener('click',startSession);
-document.getElementById('backFromBuilderBtn').addEventListener('click',()=>showView('stagePoolView'));
 document.getElementById('addStageInSessionBtn').addEventListener('click',openStagePicker);
 document.getElementById('stagePickerCancel').addEventListener('click',()=>closeModal('stagePickerModal'));
 document.getElementById('splitConfirm').addEventListener('click',confirmSplit);
 document.getElementById('splitCancel').addEventListener('click',()=>{closeModal('splitModal');splitTarget=null;});
-document.getElementById('noticeOk').addEventListener('click',()=>closeModal('noticeModal'));
+document.getElementById('waitConfirm').addEventListener('click',confirmWait);
+document.getElementById('waitCancel').addEventListener('click',()=>{closeModal('waitModal');waitTarget=null;});
+document.getElementById('waitReasonInput').addEventListener('keydown',e=>{if(e.key==='Enter')confirmWait();});
+document.getElementById('objPickCancel').addEventListener('click',()=>closeModal('objModal'));
 document.getElementById('newSessionBtn').addEventListener('click',showSessionBuilder);
-document.getElementById('backToTasksFromResultBtn').addEventListener('click',()=>showView('taskPoolView'));
-document.getElementById('backToTasksFromProfileBtn').addEventListener('click',()=>showView('taskPoolView'));
-document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
-  btn.classList.add('active');document.getElementById(btn.dataset.tab+'Tab').style.display='block';
+document.getElementById('resultBackBtn').addEventListener('click',()=>showView('dashView'));
+document.getElementById('noticeOk').addEventListener('click',()=>{closeModal('noticeModal');const c=noticeCb;noticeCb=null;if(c)setTimeout(c,180);});
+document.getElementById('confirmYes').addEventListener('click',()=>{closeModal('confirmModal');const c=confirmCb;confirmCb=null;if(c)c();});
+document.getElementById('confirmNo').addEventListener('click',()=>{closeModal('confirmModal');confirmCb=null;});
+document.querySelectorAll('.ltab').forEach(b=>b.addEventListener('click',()=>switchLtab(b.dataset.ltab)));
+document.getElementById('divePrev').addEventListener('click',()=>{const d=new Date((diveDate||localDateStr())+'T12:00:00');d.setDate(d.getDate()-1);renderDive(localDateStr(d));});
+document.getElementById('diveNext').addEventListener('click',()=>{const d=new Date((diveDate||localDateStr())+'T12:00:00');d.setDate(d.getDate()+1);renderDive(localDateStr(d));});
+document.querySelectorAll('.ctab').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+  document.getElementById('ctasks').style.display=b.dataset.ctab==='ctasks'?'block':'none';
+  document.getElementById('cobjs').style.display=b.dataset.ctab==='cobjs'?'block':'none';
 }));
 
-/* ---------- init ---------- */
-loadState();renderTaskPool();updateHeader();   /* offline-first paint */
-bootSync();                                     /* reconcile with JsonBin, then decay notice */
+/* ================= INIT ================= */
+loadState();renderAll();bootSync();
 </script>
 </body>
 </html>
