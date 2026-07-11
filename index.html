@@ -76,6 +76,33 @@ button.danger:hover{background:#8f382e}
 .item-meta{font-size:11px;color:var(--ash);letter-spacing:.3px}
 .item-actions{display:flex;gap:7px;flex-shrink:0}
 .item-actions button{padding:6px 11px;font-size:11px}
+.parent-link{color:var(--camel);cursor:pointer;border-bottom:1px dotted var(--line-warm);transition:.15s}
+.parent-link:hover{color:var(--sand);border-bottom-color:var(--camel)}
+.item.completed{border-color:var(--forest);background:rgba(36,53,43,0.28)}
+.item.completed .item-title{color:var(--ash)}
+/* completed-tasks accordion */
+.accordion{background:var(--obsidian);border:1px solid var(--forest);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.accordion-head{padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:10px}
+.accordion-head:hover{background:rgba(36,53,43,0.18)}
+.accordion-title{font-size:14px;font-weight:500;color:var(--bone)}
+.accordion-title .chk,.accordion-stage .chk{color:#8fb89a;margin-right:8px}
+.accordion-right{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.accordion-meta{font-size:11px;color:var(--ash)}
+.chev{color:var(--ash);transition:.2s;font-size:11px}
+.accordion.open .chev{transform:rotate(90deg)}
+.accordion-body{display:none;padding:0 14px 14px;flex-direction:column;gap:7px}
+.accordion.open .accordion-body{display:flex}
+.accordion-stage{font-size:13px;color:var(--ash);padding:9px 12px;background:var(--charcoal);border-radius:6px;border-left:2px solid var(--forest)}
+/* result stage report */
+.stage-report{display:flex;flex-direction:column;gap:7px;margin:18px 0 4px;text-align:left}
+.report-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;font-size:13px}
+.report-row.done{border-color:var(--forest)}
+.report-row .mark{width:16px;flex-shrink:0;text-align:center;font-weight:700}
+.report-row.done .mark{color:#8fb89a}
+.report-row.miss .mark{color:#c96a5f}
+.report-row .txt{flex:1}
+.report-row.miss .txt{color:var(--ash);text-decoration:line-through}
+.report-row .ov{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--camel);border:1px solid var(--line-warm);padding:2px 6px;border-radius:4px}
 
 /* window selector */
 .window-selector{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:9px;margin-bottom:16px}
@@ -95,7 +122,19 @@ button.danger:hover{background:#8f382e}
 @media(max-width:760px){.timer-value{font-size:60px}}
 .timer-sub{text-align:center;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ash);margin-top:-14px}
 .timer-stages{display:flex;flex-direction:column;gap:9px;flex:1}
-.timer-stage-item{display:flex;align-items:center;gap:13px;padding:12px;background:var(--obsidian);border:1px solid var(--line);border-radius:7px;transition:.15s}
+.timer-stage-item{display:flex;flex-direction:column;padding:12px;background:var(--obsidian);border:1px solid var(--line);border-radius:7px;transition:.15s}
+.ts-main{display:flex;align-items:center;gap:13px}
+.split-btn{padding:5px 10px;font-size:11px;margin-left:auto;flex-shrink:0}
+.tick.derived{opacity:.45;cursor:default}
+.substage-list{display:flex;flex-direction:column;gap:6px;margin:11px 0 2px 35px}
+.substage-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--charcoal);border:1px solid var(--line);border-radius:6px;cursor:pointer;transition:.15s}
+.substage-item:hover{border-color:var(--line-warm)}
+.substage-item.done{border-color:var(--forest);background:rgba(36,53,43,0.25)}
+.subtick{width:17px;height:17px;border:1px solid var(--camel);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.subtick.on{background:var(--forest);border-color:var(--forest)}
+.subtick.on::after{content:"✓";color:var(--sand);font-size:11px}
+.substage-text{flex:1;font-size:13px}
+.substage-item.done .substage-text{color:var(--ash);text-decoration:line-through}
 .timer-stage-item.completed{background:rgba(36,53,43,0.35);border-color:var(--forest)}
 .timer-stage-item.extra{border-left:3px solid var(--camel)}
 .tick{width:22px;height:22px;border:1px solid var(--camel);border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;background:transparent}
@@ -189,6 +228,7 @@ button.danger:hover{background:#8f382e}
           <button id="addTasksBtn">Add Tasks</button>
           <button id="clearCompletedTasksBtn" class="ghost">Clear Done</button>
           <button id="profileBtn" class="ghost">Character</button>
+          <button id="completedBtn" class="ghost">Completed</button>
           <button id="syncNowBtn" class="ghost">Sync</button>
         </div>
       </div>
@@ -231,6 +271,31 @@ button.danger:hover{background:#8f382e}
       <div class="card">
         <h2>Available Stages (<span id="stageCount">0</span>)</h2>
         <div class="item-list" id="stagePoolList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK DETAIL -->
+  <div id="taskDetailView" class="view">
+    <div class="card">
+      <h2 id="taskDetailTitle">Task</h2>
+      <div class="section-note" id="taskDetailMeta"></div>
+      <div class="item-list" id="taskDetailStages"></div>
+      <div class="button-group" style="margin-top:20px">
+        <button id="taskDetailEditBtn">Edit Stages</button>
+        <button id="taskDetailBackBtn" class="ghost">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETED TASKS -->
+  <div id="completedView" class="view">
+    <div class="card">
+      <h2>Completed Tasks</h2>
+      <div class="section-note">Sealed work. Tap any task to expand its stages.</div>
+      <div id="completedList"></div>
+      <div class="button-group" style="margin-top:16px">
+        <button id="completedBackBtn" class="ghost">← Back to Tasks</button>
       </div>
     </div>
   </div>
@@ -296,6 +361,7 @@ button.danger:hover{background:#8f382e}
         <div class="result-detail" id="resultWeekend" style="display:none"><span class="bonus">Weekend bonus · +10%</span></div>
         <div class="result-line">Daily Total · <span style="color:var(--brass);font-weight:600" id="resultDailyTotal">0</span> XP</div>
       </div>
+      <div class="stage-report" id="stageReport"></div>
       <div class="button-group" style="margin-top:20px">
         <button id="newSessionBtn">Another Session</button>
         <button id="backToTasksFromResultBtn" class="ghost">Back to Tasks</button>
@@ -346,6 +412,17 @@ button.danger:hover{background:#8f382e}
   </div>
 </div>
 
+<!-- SPLIT STAGE MODAL (in-session only) -->
+<div id="splitModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">Split Stage into Steps</div>
+    <div class="modal-sub">In-session only. Steps are a checklist for this one stage — the stage counts as complete only when every step is ticked. One step per line. Clear all lines to revert to a single tick.</div>
+    <div style="font-family:var(--serif);color:var(--sand);font-size:17px;margin-bottom:11px" id="splitStageTitle"></div>
+    <textarea id="splitInput" placeholder="Step one&#10;Step two&#10;Step three" style="min-height:120px;margin-bottom:16px"></textarea>
+    <div class="modal-actions"><button id="splitCancel" class="ghost">Cancel</button><button id="splitConfirm">Save Steps</button></div>
+  </div>
+</div>
+
 <!-- NOTICE MODAL -->
 <div id="noticeModal" class="modal-overlay">
   <div class="modal">
@@ -365,7 +442,7 @@ const state={
   currentTask:null,breakdownStages:[],
   currentSession:null,timerInterval:null,timerRunning:false
 };
-const config={xpPerStage:100,penaltyMin:5,penaltyMax:7,bonusMin:8,bonusMax:10,workdayDecay:0.20,weekendBonus:0.10};
+const config={xpPerStage:100,penaltyMin:2.5,penaltyMax:3.5,bonusMin:8,bonusMax:10,workdayDecay:0.20,weekendBonus:0.10};
 
 /* ---------- date helpers (local, not UTC) ---------- */
 function localDateStr(d){d=d||new Date();const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;}
@@ -491,12 +568,33 @@ function renderTaskPool(){
   list.innerHTML='';
   if(!available.length){list.innerHTML='<div class="empty-state">The muster is empty</div>';return;}
   available.forEach(task=>{
+    const tot=task.stages.length,dn=task.stages.filter(s=>s.completed).length;
+    const meta=tot?(dn+'/'+tot+' stage'+(tot===1?'':'s')+' done'):'0 stages';
     const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(task.title)+'</div><div class="item-meta">'+task.stages.length+' stage'+(task.stages.length===1?'':'s')+'</div></div><div class="item-actions"><button class="bd ghost">Breakdown</button><button class="del ghost">Delete</button></div>';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(task.title)+'</div><div class="item-meta">'+meta+'</div></div><div class="item-actions"><button class="bd ghost">Breakdown</button><button class="del ghost">Delete</button></div>';
     el.querySelector('.bd').addEventListener('click',()=>showBreakdown(task.id));
     el.querySelector('.del').addEventListener('click',()=>{state.tasks=state.tasks.filter(t=>t.id!==task.id);saveState();renderTaskPool();});
+    const info=el.querySelector('.item-info');info.style.cursor='pointer';
+    info.addEventListener('click',()=>showTaskDetail(task.id,'taskPoolView'));
     list.appendChild(el);
   });
+}
+
+/* ---------- task detail ---------- */
+let detailReturnView='stagePoolView';
+function showTaskDetail(taskId,returnView){
+  const task=state.tasks.find(t=>t.id===taskId);if(!task)return;
+  state.currentTask=task;detailReturnView=returnView||'stagePoolView';
+  document.getElementById('taskDetailTitle').textContent=task.title;
+  document.getElementById('taskDetailMeta').textContent=task.stages.length+' stage'+(task.stages.length===1?'':'s')+' attached';
+  const list=document.getElementById('taskDetailStages');list.innerHTML='';
+  if(!task.stages.length){list.innerHTML='<div class="empty-state">No stages yet — break it down</div>';}
+  task.stages.forEach((s,i)=>{
+    const el=document.createElement('div');el.className='item'+(s.completed?' completed':'');
+    el.innerHTML='<div class="item-info"><div class="item-title"><span class="seq" style="color:var(--brass);font-family:var(--serif);margin-right:9px">'+(i+1)+'</span>'+esc(s.title)+(s.completed?' <span style="color:#8fb89a">✓</span>':'')+'</div></div>';
+    list.appendChild(el);
+  });
+  showView('taskDetailView');
 }
 
 /* ---------- breakdown ---------- */
@@ -521,8 +619,10 @@ function renderBreakdownForm(){
 function confirmBreakdown(){
   const stages=state.breakdownStages.filter(s=>s.title&&s.title.trim());
   if(!stages.length){toast('Add at least one stage');return;}
-  stages.forEach(s=>{if(!s.id)s.id='stage_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);s.title=s.title.trim();});
-  state.currentTask.stages=stages;saveState();renderTaskPool();renderStagePool();showView('stagePoolView');
+  stages.forEach(s=>{if(!s.id)s.id='stage_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);s.title=s.title.trim();if(s.completed===undefined)s.completed=false;});
+  state.currentTask.stages=stages;
+  state.currentTask.completed=stages.length>0&&stages.every(s=>s.completed);
+  saveState();renderTaskPool();renderStagePool();showView('stagePoolView');
   toast('Task broken into '+stages.length+' stage'+(stages.length===1?'':'s'));
 }
 
@@ -533,13 +633,14 @@ function allStages(){
   return out;
 }
 function renderStagePool(){
-  const list=document.getElementById('stagePoolList');const stages=allStages();
+  const list=document.getElementById('stagePoolList');const stages=allStages().filter(s=>!s.completed);
   document.getElementById('stageCount').textContent=stages.length;
   list.innerHTML='';
   if(!stages.length){list.innerHTML='<div class="empty-state">No stages forged yet</div>';return;}
   stages.forEach(stage=>{
     const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">from · '+esc(stage.taskTitle)+'</div></div>';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">from · <span class="parent-link" data-task="'+stage.taskId+'">'+esc(stage.taskTitle)+'</span></div></div>';
+    el.querySelector('.parent-link').addEventListener('click',()=>showTaskDetail(stage.taskId,'stagePoolView'));
     list.appendChild(el);
   });
 }
@@ -552,12 +653,13 @@ function showSessionBuilder(){
   renderBuilderStages();renderSelectedStages();updateStartTimerBtn();showView('sessionBuilderView');
 }
 function renderBuilderStages(){
-  const list=document.getElementById('builderStageList');const stages=allStages();list.innerHTML='';
+  const list=document.getElementById('builderStageList');const stages=allStages().filter(s=>!s.completed);list.innerHTML='';
   if(!stages.length){list.innerHTML='<div class="empty-state">Break down a task first</div>';return;}
   stages.forEach(stage=>{
     const el=document.createElement('div');el.className='item';
     if(state.selectedStages.find(s=>s.id===stage.id))el.classList.add('selected');
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">'+esc(stage.taskTitle)+'</div></div>';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">from · <span class="parent-link" data-task="'+stage.taskId+'">'+esc(stage.taskTitle)+'</span></div></div>';
+    el.querySelector('.parent-link').addEventListener('click',ev=>{ev.stopPropagation();showTaskDetail(stage.taskId,'sessionBuilderView');});
     el.addEventListener('click',()=>{
       if(!state.selectedWindow){toast('Choose a window first');return;}
       if(state.selectedStages.find(s=>s.id===stage.id))state.selectedStages=state.selectedStages.filter(s=>s.id!==stage.id);
@@ -595,11 +697,45 @@ function renderTimerStages(){
   const extra=state.currentSession.extraStages;
   planned.concat(extra).forEach(stage=>{
     const isExtra=extra.includes(stage);
-    const el=document.createElement('div');el.className='timer-stage-item'+(stage.completed?' completed':'')+(isExtra?' extra':'');
-    el.innerHTML='<div class="tick'+(stage.completed?' on':'')+'"></div><div class="timer-stage-text">'+esc(stage.title)+'</div>'+(isExtra?'<span class="extra-tag">overflow</span>':'');
-    el.querySelector('.tick').addEventListener('click',()=>{stage.completed=!stage.completed;renderTimerStages();});
+    const hasSubs=stage.subs&&stage.subs.length;
+    const el=document.createElement('div');
+    el.className='timer-stage-item'+(stage.completed?' completed':'')+(isExtra?' extra':'');
+    let html='<div class="ts-main"><div class="tick'+(stage.completed?' on':'')+(hasSubs?' derived':'')+'"></div><div class="timer-stage-text">'+esc(stage.title)+'</div>';
+    if(isExtra)html+='<span class="extra-tag">overflow</span>';
+    html+='<button class="split-btn ghost">'+(hasSubs?'Edit steps':'Split')+'</button></div>';
+    if(hasSubs){
+      html+='<div class="substage-list">';
+      stage.subs.forEach((sub,si)=>{html+='<div class="substage-item'+(sub.done?' done':'')+'" data-si="'+si+'"><div class="subtick'+(sub.done?' on':'')+'"></div><div class="substage-text">'+esc(sub.title)+'</div></div>';});
+      html+='</div>';
+    }
+    el.innerHTML=html;
+    const tick=el.querySelector('.tick');
+    if(!hasSubs)tick.addEventListener('click',()=>{stage.completed=!stage.completed;renderTimerStages();});
+    el.querySelectorAll('.substage-item').forEach(si=>si.addEventListener('click',()=>{
+      const idx=+si.dataset.si;stage.subs[idx].done=!stage.subs[idx].done;
+      stage.completed=stage.subs.every(s=>s.done);renderTimerStages();
+    }));
+    el.querySelector('.split-btn').addEventListener('click',()=>openSplitModal(stage));
     list.appendChild(el);
   });
+}
+let splitTarget=null;
+function openSplitModal(stage){
+  splitTarget=stage;
+  document.getElementById('splitStageTitle').textContent=stage.title;
+  document.getElementById('splitInput').value=(stage.subs||[]).map(s=>s.title).join('\n');
+  openModal('splitModal');
+}
+function confirmSplit(){
+  if(!splitTarget)return;
+  const lines=document.getElementById('splitInput').value.trim().split('\n').map(l=>l.replace(/^[-•*0-9.]+\s*/,'').trim()).filter(Boolean);
+  if(!lines.length){delete splitTarget.subs;}
+  else{
+    const prevDone={};(splitTarget.subs||[]).forEach(s=>prevDone[s.title]=s.done);
+    splitTarget.subs=lines.map(t=>({title:t,done:!!prevDone[t]}));
+    splitTarget.completed=splitTarget.subs.every(s=>s.done);
+  }
+  closeModal('splitModal');splitTarget=null;renderTimerStages();toast('Steps saved');
 }
 function startTimer(){
   state.timerRunning=true;
@@ -615,7 +751,7 @@ function startTimer(){
 /* ---------- add stage mid-session (modal) ---------- */
 function openStagePicker(){
   const inSession=new Set([...state.currentSession.stagesPlanned.map(s=>s.id),...state.currentSession.extraStages.map(s=>s.id)]);
-  const available=allStages().filter(s=>!inSession.has(s.id));
+  const available=allStages().filter(s=>!inSession.has(s.id)&&!s.completed);
   const list=document.getElementById('stagePickerList');list.innerHTML='';
   if(!available.length){list.innerHTML='<div class="empty-state" style="padding:20px">No stages left to draw</div>';}
   available.forEach(stage=>{
@@ -652,8 +788,18 @@ function endSession(){
     bonusPercent:+(bonus*100).toFixed(1),weekend,xpEarned
   });
   state.sessions.push(state.currentSession);
-  state.dailyXp+=xpEarned;state.cumulativeXp+=xpEarned;updateLevelFromXp();saveState();
+  state.dailyXp+=xpEarned;state.cumulativeXp+=xpEarned;updateLevelFromXp();
+  markCompletion();
+  saveState();
   showResults(attainment,penalty,bonus,weekend,xpEarned);
+}
+function markCompletion(){
+  const done=state.currentSession.stagesPlanned.concat(state.currentSession.extraStages).filter(s=>s.completed);
+  const doneIds=new Set(done.map(s=>s.id));
+  state.tasks.forEach(task=>{
+    task.stages.forEach(st=>{if(doneIds.has(st.id))st.completed=true;});
+    if(task.stages.length&&task.stages.every(st=>st.completed))task.completed=true;
+  });
 }
 function showResults(att,pen,bon,weekend,xp){
   document.getElementById('resultAttainment').textContent=Math.round(att);
@@ -663,7 +809,36 @@ function showResults(att,pen,bon,weekend,xp){
   if(pen>0){pe.style.display='block';document.getElementById('penaltyValue').textContent=(pen*100).toFixed(1);}else pe.style.display='none';
   if(bon>0){be.style.display='block';document.getElementById('bonusValue').textContent=(bon*100).toFixed(1);}else be.style.display='none';
   we.style.display=weekend?'block':'none';
+  renderStageReport();
   showView('resultView');updateHeader();
+}
+function renderStageReport(){
+  const c=document.getElementById('stageReport');c.innerHTML='';
+  const s=state.currentSession;if(!s)return;
+  const extra=s.extraStages;
+  s.stagesPlanned.concat(extra).forEach(st=>{
+    const isExtra=extra.includes(st);
+    const subInfo=(st.subs&&st.subs.length)?'<span class="ov">'+st.subs.filter(x=>x.done).length+'/'+st.subs.length+' steps</span>':'';
+    const row=document.createElement('div');
+    row.className='report-row '+(st.completed?'done':'miss');
+    row.innerHTML='<span class="mark">'+(st.completed?'✓':'✕')+'</span><span class="txt">'+esc(st.title)+'</span>'+subInfo+(isExtra?'<span class="ov">overflow</span>':'');
+    c.appendChild(row);
+  });
+}
+function showCompleted(){
+  const list=document.getElementById('completedList');list.innerHTML='';
+  const done=state.tasks.filter(t=>t.completed);
+  if(!done.length){list.innerHTML='<div class="empty-state">No sealed tasks yet</div>';showView('completedView');return;}
+  done.forEach(task=>{
+    const acc=document.createElement('div');acc.className='accordion';
+    const head=document.createElement('div');head.className='accordion-head';
+    head.innerHTML='<div class="accordion-title"><span class="chk">✓</span>'+esc(task.title)+'</div><div class="accordion-right"><span class="accordion-meta">'+task.stages.length+' stage'+(task.stages.length===1?'':'s')+'</span><span class="chev">▸</span></div>';
+    const body=document.createElement('div');body.className='accordion-body';
+    task.stages.forEach(s=>{const st=document.createElement('div');st.className='accordion-stage';st.innerHTML='<span class="chk">✓</span>'+esc(s.title);body.appendChild(st);});
+    head.addEventListener('click',()=>acc.classList.toggle('open'));
+    acc.appendChild(head);acc.appendChild(body);list.appendChild(acc);
+  });
+  showView('completedView');
 }
 
 /* ---------- profile ---------- */
@@ -707,12 +882,21 @@ function esc(t){const d=document.createElement('div');d.textContent=t;return d.i
 document.getElementById('addTasksBtn').addEventListener('click',()=>{const t=document.getElementById('taskPasteInput').value;if(t.trim())addTasks(t);});
 document.getElementById('clearCompletedTasksBtn').addEventListener('click',()=>{state.tasks=state.tasks.filter(t=>!t.completed);saveState();renderTaskPool();});
 document.getElementById('profileBtn').addEventListener('click',showProfile);
+document.getElementById('completedBtn').addEventListener('click',showCompleted);
+document.getElementById('completedBackBtn').addEventListener('click',()=>{renderTaskPool();showView('taskPoolView');});
 document.getElementById('syncNowBtn').addEventListener('click',manualSync);
 document.getElementById('toStagePoolBtn').addEventListener('click',()=>{renderStagePool();showView('stagePoolView');});
 document.getElementById('confirmBreakdownBtn').addEventListener('click',confirmBreakdown);
 document.getElementById('cancelBreakdownBtn').addEventListener('click',()=>showView('taskPoolView'));
 document.getElementById('addStageRowBtn').addEventListener('click',()=>{state.breakdownStages.push({title:''});renderBreakdownForm();});
 document.getElementById('backToTasksBtn').addEventListener('click',()=>showView('taskPoolView'));
+document.getElementById('taskDetailEditBtn').addEventListener('click',()=>showBreakdown(state.currentTask.id));
+document.getElementById('taskDetailBackBtn').addEventListener('click',()=>{
+  if(detailReturnView==='stagePoolView')renderStagePool();
+  else if(detailReturnView==='sessionBuilderView'){renderBuilderStages();renderSelectedStages();}
+  else renderTaskPool();
+  showView(detailReturnView);
+});
 document.getElementById('startSessionFromStagesBtn').addEventListener('click',showSessionBuilder);
 document.querySelectorAll('.window-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.window-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
@@ -724,6 +908,8 @@ document.getElementById('startTimerBtn').addEventListener('click',startSession);
 document.getElementById('backFromBuilderBtn').addEventListener('click',()=>showView('stagePoolView'));
 document.getElementById('addStageInSessionBtn').addEventListener('click',openStagePicker);
 document.getElementById('stagePickerCancel').addEventListener('click',()=>closeModal('stagePickerModal'));
+document.getElementById('splitConfirm').addEventListener('click',confirmSplit);
+document.getElementById('splitCancel').addEventListener('click',()=>{closeModal('splitModal');splitTarget=null;});
 document.getElementById('noticeOk').addEventListener('click',()=>closeModal('noticeModal'));
 document.getElementById('newSessionBtn').addEventListener('click',showSessionBuilder);
 document.getElementById('backToTasksFromResultBtn').addEventListener('click',()=>showView('taskPoolView'));
