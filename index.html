@@ -167,7 +167,7 @@ button.danger:hover{background:#8f382e}
   <header>
     <div class="brand">
       <h1>The Forge</h1>
-      <div class="tag">Execution Layer</div>
+      <div class="tag">Execution Layer · <span id="syncStatus" style="letter-spacing:1px;color:var(--ash)">◇ local</span></div>
     </div>
     <div class="header-stats">
       <div class="stat"><div class="stat-value" id="dailyXpDisplay">0</div><div class="stat-label">Today</div></div>
@@ -189,6 +189,7 @@ button.danger:hover{background:#8f382e}
           <button id="addTasksBtn">Add Tasks</button>
           <button id="clearCompletedTasksBtn" class="ghost">Clear Done</button>
           <button id="profileBtn" class="ghost">Character</button>
+          <button id="syncNowBtn" class="ghost">Sync</button>
         </div>
       </div>
       <div class="card">
@@ -359,7 +360,7 @@ button.danger:hover{background:#8f382e}
 <script>
 const state={
   tasks:[],sessions:[],dailyXp:0,cumulativeXp:0,level:1,
-  currentDate:null,lastProcessedDate:null,
+  currentDate:null,lastProcessedDate:null,updatedAt:0,
   selectedWindow:null,selectedStages:[],
   currentTask:null,breakdownStages:[],
   currentSession:null,timerInterval:null,timerRunning:false
@@ -376,11 +377,66 @@ function loadState(){
   if(stored){try{Object.assign(state,JSON.parse(stored));}catch(e){}}
   const today=localDateStr();
   if(state.currentDate!==today){state.dailyXp=0;state.currentDate=today;}
-  processDecay();
   updateLevelFromXp();
 }
-function saveState(){localStorage.setItem('forgeState',JSON.stringify(state));}
+function saveLocal(){localStorage.setItem('forgeState',JSON.stringify(state));}
+function saveState(){state.updatedAt=Date.now();saveLocal();if(syncReady)scheduleSync();}
 function updateLevelFromXp(){state.level=Math.floor(state.cumulativeXp/1000)+1;}
+
+/* ---------- JsonBin sync (at-rest state only; live sessions never leave the device) ---------- */
+const SYNC={binId:'6a518818da38895dfe4d9185',accessKey:'$2a$10$BwzkBhodKrJYqTeGtMu7mO3UzBV15aKYNsLe7tlCYbViPmjHsuQVq',base:'https://api.jsonbin.io/v3/b'};
+let syncReady=false,pushTimer=null;
+const PERSIST=['tasks','sessions','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt'];
+function persistentState(){const o={};PERSIST.forEach(k=>o[k]=state[k]);return o;}
+function applyPersistent(o){if(!o)return;PERSIST.forEach(k=>{if(o[k]!==undefined)state[k]=o[k];});}
+function setSyncStatus(s){
+  const el=document.getElementById('syncStatus');if(!el)return;
+  const map={synced:['◆ synced','#8fb89a'],syncing:['◈ syncing…','var(--camel)'],pending:['◈ saving…','var(--camel)'],offline:['◇ offline','#c96a5f'],local:['◇ local','var(--ash)']};
+  const v=map[s]||map.local;el.textContent=v[0];el.style.color=v[1];
+}
+async function pullRemote(){
+  const r=await fetch(SYNC.base+'/'+SYNC.binId+'/latest',{headers:{'X-Access-Key':SYNC.accessKey}});
+  if(!r.ok)throw new Error('pull '+r.status);
+  const j=await r.json();return j.record;
+}
+async function pushRemote(){
+  const r=await fetch(SYNC.base+'/'+SYNC.binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Access-Key':SYNC.accessKey},body:JSON.stringify(persistentState())});
+  if(!r.ok)throw new Error('push '+r.status);return true;
+}
+function scheduleSync(){
+  clearTimeout(pushTimer);setSyncStatus('pending');
+  pushTimer=setTimeout(()=>{pushRemote().then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline'));},2500);
+}
+async function bootSync(){
+  setSyncStatus('syncing');
+  try{
+    const remote=await pullRemote();
+    const remoteUpdated=(remote&&remote.updatedAt)||0;
+    if(remote&&remoteUpdated>(state.updatedAt||0)){applyPersistent(remote);}
+    processDecay();updateLevelFromXp();saveLocal();
+    await pushRemote();
+    syncReady=true;setSyncStatus('synced');
+    renderTaskPool();renderStagePool();updateHeader();showDecayNoticeIfAny();
+  }catch(e){
+    processDecay();updateLevelFromXp();saveLocal();
+    syncReady=true;setSyncStatus('offline');
+    renderTaskPool();updateHeader();showDecayNoticeIfAny();
+  }
+}
+async function manualSync(){
+  setSyncStatus('syncing');
+  try{
+    if(!state.timerRunning){
+      const remote=await pullRemote();
+      const remoteUpdated=(remote&&remote.updatedAt)||0;
+      if(remote&&remoteUpdated>(state.updatedAt||0)){
+        applyPersistent(remote);processDecay();updateLevelFromXp();
+        renderTaskPool();renderStagePool();updateHeader();showDecayNoticeIfAny();
+      }
+    }
+    await pushRemote();saveLocal();setSyncStatus('synced');toast('Synced');
+  }catch(e){setSyncStatus('offline');toast('Offline — saved locally');}
+}
 
 /* ---------- XP decay for missed workdays ---------- */
 function processDecay(){
@@ -651,6 +707,7 @@ function esc(t){const d=document.createElement('div');d.textContent=t;return d.i
 document.getElementById('addTasksBtn').addEventListener('click',()=>{const t=document.getElementById('taskPasteInput').value;if(t.trim())addTasks(t);});
 document.getElementById('clearCompletedTasksBtn').addEventListener('click',()=>{state.tasks=state.tasks.filter(t=>!t.completed);saveState();renderTaskPool();});
 document.getElementById('profileBtn').addEventListener('click',showProfile);
+document.getElementById('syncNowBtn').addEventListener('click',manualSync);
 document.getElementById('toStagePoolBtn').addEventListener('click',()=>{renderStagePool();showView('stagePoolView');});
 document.getElementById('confirmBreakdownBtn').addEventListener('click',confirmBreakdown);
 document.getElementById('cancelBreakdownBtn').addEventListener('click',()=>showView('taskPoolView'));
@@ -678,7 +735,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',
 }));
 
 /* ---------- init ---------- */
-loadState();renderTaskPool();updateHeader();showDecayNoticeIfAny();
+loadState();renderTaskPool();updateHeader();   /* offline-first paint */
+bootSync();                                     /* reconcile with JsonBin, then decay notice */
 </script>
 </body>
 </html>
