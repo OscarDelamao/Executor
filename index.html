@@ -216,7 +216,23 @@ button.danger:hover{background:#8f382e}
 .dive-col{width:min(260px,72%);display:flex;flex-direction:column-reverse;border-left:1px solid var(--line);border-bottom:1px solid var(--line)}
 .dive-seg{width:100%;border-top:1px solid rgba(0,0,0,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:26px}
 .dive-seg:hover{filter:brightness(1.25)}
-.seg-lbl{font-size:11px;color:var(--bone);padding:2px 6px;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.ts-title{font-size:14px;font-weight:500}
+.ts-obj{font-size:11px;color:var(--ash)}
+.ts-due{font-size:12px;color:var(--camel);cursor:pointer;padding:4px 6px;border-radius:4px;border:1px solid transparent}
+.ts-due:hover{border-color:var(--line-warm)}
+.ts-status{font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:3px 6px;border-radius:4px}
+.ts-status.today{background:rgba(95,174,122,.2);color:var(--forest)}
+.ts-status.overdue{background:rgba(201,106,95,.2);color:var(--oxide)}
+.ts-status.upcoming{background:rgba(138,133,128,.15);color:var(--ash)}
+.ts-status.done{background:rgba(36,53,43,.3);color:var(--forest)}
+.all-task-row{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 0.5fr;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:7px;margin-bottom:9px;background:var(--obsidian)}
+.all-task-row.overdue{background:rgba(201,106,95,.08);border-color:var(--oxide)}
+.all-task-row.done{background:rgba(36,53,43,.18)}
+.all-task-actions{display:flex;gap:6px}
+.all-task-actions button{padding:5px 10px;font-size:10px}
+/* stage breadcrumb */
+.stage-breadcrumb{font-size:11px;color:var(--ash);display:flex;gap:6px;align-items:center}
+.stage-breadcrumb span{color:var(--camel)}
 /* rocks banner */
 .rock-panel{background:var(--espresso);border:1px solid var(--line-warm);border-radius:8px;padding:14px;margin-bottom:14px}
 .rock-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--camel);font-weight:600;margin-bottom:9px}
@@ -263,6 +279,7 @@ button.danger:hover{background:#8f382e}
 
   <div class="nav" id="nav">
     <button data-view="dashView" class="active">Dashboard</button>
+    <button data-view="allTasksView">All Tasks</button>
     <button data-view="objectivesView">Objectives</button>
     <button data-view="stagePoolView">Stages</button>
     <button data-view="waitingView">Waiting<span class="badge amber" id="waitBadge" style="display:none">0</span></button>
@@ -271,6 +288,23 @@ button.danger:hover{background:#8f382e}
     <button data-view="profileView">Character</button>
     <button id="syncNowBtn">Sync</button>
   </div>
+  <!-- ALL TASKS -->
+  <div id="allTasksView" class="view">
+    <div class="card">
+      <h2>All Tasks</h2>
+      <div class="section-note">Tasks with due dates. Click a due date to reschedule. Overdue tasks shown in red.</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-size:11px;color:var(--ash);text-transform:uppercase;letter-spacing:1px">Sort by: <select id="allTasksSort" style="background:var(--obsidian);border:1px solid var(--line);color:var(--bone);padding:4px 8px;border-radius:4px;font-size:11px">
+          <option value="due-asc">Due Date (nearest first)</option>
+          <option value="due-desc">Due Date (farthest first)</option>
+          <option value="title">Title</option>
+          <option value="status">Status</option>
+        </select></div>
+      </div>
+      <div id="allTasksList"></div>
+    </div>
+  </div>
+
   <!-- DASHBOARD -->
   <div id="dashView" class="view active">
     <div class="dash">
@@ -288,6 +322,10 @@ button.danger:hover{background:#8f382e}
         <div class="form-group">
           <label>Add Tasks</label>
           <textarea id="taskPasteInput" placeholder="Paste or type tasks, one per line…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Due Date (default today)</label>
+          <input type="date" id="taskDueInput">
         </div>
         <div class="form-group">
           <label>Attach to Objective (optional)</label>
@@ -568,6 +606,13 @@ button.danger:hover{background:#8f382e}
   <div class="modal-actions"><button id="noticeOk">Understood</button></div>
 </div></div>
 
+<div id="dueDateModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title">Reschedule Task</div>
+  <div class="modal-sub" id="dueDateTaskName"></div>
+  <input type="date" id="dueDateInput" style="margin-bottom:14px">
+  <div class="modal-actions"><button id="dueDateCancel" class="ghost">Cancel</button><button id="dueDateConfirm">Save</button></div>
+</div></div>
+
 <div class="toast" id="toast"></div>
 <script>
 /* ================= STATE ================= */
@@ -825,14 +870,81 @@ function checkObjComplete(){
   });
 }
 /* ================= TASKS ================= */
-function addTasks(text,objId){
+function addTasks(text,objId,dueDate){
   text.trim().split('\n').filter(l=>l.trim()).forEach(line=>{
     const title=line.replace(/^[-•*\d.)\s]+/,'').trim();
-    if(title)state.tasks.push({id:uid('task'),title,objectiveId:objId||null,completed:false,starred:false,waiting:false,stages:[],createdAt:new Date().toISOString()});
+    if(title)state.tasks.push({id:uid('task'),title,objectiveId:objId||null,completed:false,starred:false,waiting:false,stages:[],dueDate:dueDate||null,createdAt:new Date().toISOString()});
   });
   saveState();renderAll();document.getElementById('taskPasteInput').value='';
 }
 function deleteTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);saveState();renderAll();}
+
+/* --- stage breadcrumbs --- */
+function stageBreadcrumb(stage){
+  const t=state.tasks.find(x=>x.id===stage.taskId);if(!t)return stage.title;
+  const o=objOf(t);
+  const obj=o?esc(o.title):'—';
+  return '<div class="stage-breadcrumb"><span>'+obj+'</span><span>›</span><span>'+esc(t.title)+'</span></div>';
+}
+
+/* --- all tasks view --- */
+function taskStatus(task){
+  const today=localDateStr();
+  if(task.completed)return 'done';
+  if(!task.dueDate||task.dueDate===today)return 'today';
+  if(task.dueDate<today)return 'overdue';
+  return 'upcoming';
+}
+let dueDateEditTask=null;
+function openDueDateEdit(taskId){
+  const t=state.tasks.find(x=>x.id===taskId);if(!t)return;
+  dueDateEditTask=taskId;
+  document.getElementById('dueDateTaskName').textContent=esc(t.title);
+  document.getElementById('dueDateInput').value=t.dueDate||localDateStr();
+  openModal('dueDateModal');
+}
+function confirmDueDate(){
+  if(!dueDateEditTask)return;
+  const newDate=document.getElementById('dueDateInput').value;
+  const t=state.tasks.find(x=>x.id===dueDateEditTask);
+  if(t){t.dueDate=newDate||null;saveState();renderAll();renderAllTasks();}
+  closeModal('dueDateModal');dueDateEditTask=null;
+}
+function renderAllTasks(){
+  const list=document.getElementById('allTasksList');
+  if(!state.tasks.length){list.innerHTML='<div class="empty-state">No tasks created yet</div>';return;}
+  const sort=document.getElementById('allTasksSort').value||'due-asc';
+  let tasks=[...state.tasks];
+  const today=localDateStr();
+  // Sort
+  if(sort==='due-asc')tasks.sort((a,b)=>{
+    const adue=a.dueDate||today,bdue=b.dueDate||today;
+    return adue.localeCompare(bdue);
+  });else if(sort==='due-desc')tasks.sort((a,b)=>{
+    const adue=a.dueDate||today,bdue=b.dueDate||today;
+    return bdue.localeCompare(adue);
+  });else if(sort==='title')tasks.sort((a,b)=>a.title.localeCompare(b.title));
+  else if(sort==='status')tasks.sort((a,b)=>taskStatus(a).localeCompare(taskStatus(b)));
+  // Render
+  list.innerHTML='';
+  tasks.forEach(t=>{
+    const st=taskStatus(t);
+    const o=objOf(t);
+    const stageCount=t.stages.length;
+    const row=document.createElement('div');
+    row.className='all-task-row '+st+(t.completed?' done':'');
+    const dueStr=t.dueDate?new Date(t.dueDate+'T12:00:00').toLocaleDateString([],{month:'short',day:'numeric'}):'-';
+    row.innerHTML='<div class="ts-title">'+(t.starred?'★ ':'')+esc(t.title)+'<div class="ts-obj">'+(o?esc(o.title):'-')+' · '+stageCount+' stage'+(stageCount===1?'':'s')+'</div></div>'
+      +'<div class="ts-due" style="text-align:center">'+dueStr+'</div>'
+      +'<div><span class="ts-status '+st+'">'+st.toUpperCase()+'</span></div>'
+      +'<div class="all-task-actions"><button class="ed ghost" style="padding:5px 10px;font-size:10px">Edit</button><button class="dl ghost" style="padding:5px 10px;font-size:10px">Delete</button></div>';
+    row.querySelector('.ts-due').addEventListener('click',()=>openDueDateEdit(t.id));
+    row.querySelector('.ed').addEventListener('click',()=>showBreakdown(t.id));
+    row.querySelector('.dl').addEventListener('click',()=>{deleteTask(t.id);renderAllTasks();});
+    list.appendChild(row);
+  });
+}
+
 
 /* --- rocks --- */
 function toggleStar(id){
@@ -966,9 +1078,8 @@ function renderBuilderStages(){
   const list=document.getElementById('builderStageList');const stages=liveStages();list.innerHTML='';
   if(!stages.length){list.innerHTML='<div class="empty-state">No live stages. Break down a task first.</div>';return;}
   stages.forEach(st=>{
-    const o=st.objectiveId?state.objectives.find(x=>x.id===st.objectiveId):null;
     const el=document.createElement('div');el.className='item'+(state.selectedStages.find(x=>x.id===st.id)?' selected':'');
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+(o?esc(o.title)+' › ':'')+esc(st.taskTitle)+'</div></div>';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+stageBreadcrumb(st)+'</div></div>';
     el.addEventListener('click',()=>{
       if(!state.selectedWindow){toast('Choose a window first');return;}
       if(state.selectedStages.find(x=>x.id===st.id))state.selectedStages=state.selectedStages.filter(x=>x.id!==st.id);
@@ -1067,6 +1178,9 @@ function renderTimerStages(){
     }));
     const sp=el.querySelector('.split');if(sp)sp.addEventListener('click',()=>openSplit(st));
     const wt=el.querySelector('.wait');if(wt)wt.addEventListener('click',()=>openWaitModal('stage',st.taskId,st.id,true));
+    // Add breadcrumb after element
+    const bc=document.createElement('div');bc.className='item-meta';bc.innerHTML=stageBreadcrumb(st);
+    el.appendChild(bc);
     list.appendChild(el);
   });
   renderDeficit();
@@ -1233,7 +1347,11 @@ function stageReportHtml(s){
     if(st.waiting)tag='<span class="pill wait">held</span>';
     else if(st.isBackfill)tag='<span class="pill wait">backfill</span>';
     else if(isExtra)tag='<span class="pill">overflow</span>';
-    h+='<div class="report-row '+cls+'"><span class="mark">'+mark+'</span><span class="txt">'+esc(st.title)+'</span>'+sub+tag+'</div>';
+    // Get task for breadcrumb
+    const t=state.tasks.find(x=>x.id===st.taskId);
+    const o=t?objOf(t):null;
+    const bc=o?esc(o.title)+' › ':'';
+    h+='<div class="report-row '+cls+'"><span class="mark">'+mark+'</span><span class="txt">'+esc(st.title)+'<br><span style="font-size:10px;color:var(--ash)">'+bc+(t?esc(t.title):'—')+'</span></span>'+sub+tag+'</div>';
   });
   if(s.deficit>0)h+='<div class="report-row miss"><span class="mark">!</span><span class="txt">'+s.deficit+' held stage'+(s.deficit>1?'s':'')+' never backfilled — counted as missed</span></div>';
   return h;
@@ -1242,7 +1360,7 @@ function renderStageReport(){document.getElementById('stageReport').innerHTML=st
 /* ================= RENDER ================= */
 function renderAll(){
   renderDashObjectives();renderRockPanel();renderObjSelect();renderTaskLists();
-  renderStagePool();renderObjectives();renderWaiting();renderCompleted();updateHeader();updateWaitBadge();
+  renderStagePool();renderObjectives();renderWaiting();renderCompleted();renderAllTasks();updateHeader();updateWaitBadge();
 }
 function updateHeader(){
   document.getElementById('dailyXpDisplay').textContent=state.dailyXp;
@@ -1292,7 +1410,8 @@ function renderObjSelect(){
 }
 /* standing tasks */
 function renderTaskLists(){
-  const live=state.tasks.filter(t=>!t.completed&&!t.waiting);
+  const today=localDateStr();
+  const live=state.tasks.filter(t=>!t.completed&&!t.waiting&&(t.dueDate===null||t.dueDate===today));
   const unb=live.filter(t=>!t.stages.length), brk=live.filter(t=>t.stages.length);
   document.getElementById('unbrokenCount').textContent=unb.length;
   document.getElementById('brokenCount').textContent=brk.length;
@@ -1331,11 +1450,10 @@ function renderStagePool(){
   document.getElementById('stageCount').textContent=stages.length;list.innerHTML='';
   if(!stages.length){list.innerHTML='<div class="empty-state">No live stages</div>';return;}
   stages.forEach(st=>{
-    const o=st.objectiveId?state.objectives.find(x=>x.id===st.objectiveId):null;
     const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+(o?esc(o.title)+' › ':'')+'<span class="parent-link">'+esc(st.taskTitle)+'</span></div></div>'
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+stageBreadcrumb(st)+'</div></div>'
       +'<div class="item-actions"><button class="wt iconbtn" title="Waiting">⏸</button><button class="dn ghost">Done</button></div>';
-    el.querySelector('.parent-link').addEventListener('click',()=>showTaskDetail(st.taskId,'stagePoolView'));
+    el.querySelector('.parent-link')?.addEventListener('click',()=>showTaskDetail(st.taskId,'stagePoolView'));
     el.querySelector('.wt').addEventListener('click',()=>openWaitModal('stage',st.taskId,st.id,false));
     el.querySelector('.dn').addEventListener('click',()=>completeStageOOS(st.taskId,st.id));
     list.appendChild(el);
@@ -1610,7 +1728,15 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 /* ================= LISTENERS ================= */
 document.querySelectorAll('#nav button[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 document.getElementById('syncNowBtn').addEventListener('click',manualSync);
-document.getElementById('addTasksBtn').addEventListener('click',()=>{const v=document.getElementById('taskPasteInput').value;if(v.trim())addTasks(v,document.getElementById('taskObjSelect').value||null);});
+document.getElementById('addTasksBtn').addEventListener('click',()=>{
+  const v=document.getElementById('taskPasteInput').value;
+  const dueDate=document.getElementById('taskDueInput').value||null;
+  if(v.trim())addTasks(v,document.getElementById('taskObjSelect').value||null,dueDate);
+});
+document.getElementById('taskDueInput').valueAsDate=new Date();
+document.getElementById('allTasksSort').addEventListener('change',renderAllTasks);
+document.getElementById('dueDateCancel').addEventListener('click',()=>closeModal('dueDateModal'));
+document.getElementById('dueDateConfirm').addEventListener('click',confirmDueDate);
 document.getElementById('addObjBtn').addEventListener('click',()=>{const i=document.getElementById('objTitleInput');addObjective(i.value);i.value='';});
 document.getElementById('dashToObjBtn').addEventListener('click',()=>showView('objectivesView'));
 document.getElementById('toBuilderBtn').addEventListener('click',showSessionBuilder);
