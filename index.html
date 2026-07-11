@@ -48,6 +48,7 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
 .card{background:var(--charcoal);border:1px solid var(--line);border-radius:10px;padding:22px;display:flex;flex-direction:column;box-shadow:0 1px 0 rgba(255,255,255,0.02) inset}
 .card h2{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:.4px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line);color:var(--sand)}
 .section-note{font-size:12px;color:var(--ash);margin-bottom:16px;line-height:1.6}
+.subhead{font-size:10px;color:var(--camel);text-transform:uppercase;letter-spacing:2px;font-weight:600;padding-bottom:8px;margin-bottom:12px;border-bottom:1px solid var(--line)}
 
 /* forms */
 .form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
@@ -233,8 +234,11 @@ button.danger:hover{background:#8f382e}
         </div>
       </div>
       <div class="card">
-        <h2>Standing Tasks (<span id="taskCount">0</span>)</h2>
-        <div class="item-list" id="taskList"></div>
+        <h2>Standing Tasks</h2>
+        <div class="subhead">Not Broken Down (<span id="unbrokenCount">0</span>)</div>
+        <div class="item-list" id="unbrokenList"></div>
+        <div class="subhead" style="margin-top:20px">Broken Down (<span id="brokenCount">0</span>)</div>
+        <div class="item-list" id="brokenList"></div>
       </div>
     </div>
     <div class="center-cta"><button id="toStagePoolBtn">Stage Pool →</button></div>
@@ -358,6 +362,7 @@ button.danger:hover{background:#8f382e}
         <div class="result-detail">Attainment · <span id="resultAttainment">0</span>%</div>
         <div class="result-detail" id="resultPenalty" style="display:none"><span class="penalty">Overcommit penalty · −<span id="penaltyValue">0</span>%</span></div>
         <div class="result-detail" id="resultBonus" style="display:none"><span class="bonus">Overflow bonus · +<span id="bonusValue">0</span>%</span></div>
+        <div class="result-detail" id="resultTimeBonus" style="display:none"><span class="bonus">Time bonus · +<span id="timeBonusValue">0</span>%</span></div>
         <div class="result-detail" id="resultWeekend" style="display:none"><span class="bonus">Weekend bonus · +10%</span></div>
         <div class="result-line">Daily Total · <span style="color:var(--brass);font-weight:600" id="resultDailyTotal">0</span> XP</div>
       </div>
@@ -562,22 +567,49 @@ function addTasks(text){
   saveState();renderTaskPool();document.getElementById('taskPasteInput').value='';
 }
 function renderTaskPool(){
-  const list=document.getElementById('taskList');
-  const available=state.tasks.filter(t=>!t.completed);
-  document.getElementById('taskCount').textContent=available.length;
+  const unbroken=state.tasks.filter(t=>!t.completed&&t.stages.length===0);
+  const broken=state.tasks.filter(t=>!t.completed&&t.stages.length>0);
+  document.getElementById('unbrokenCount').textContent=unbroken.length;
+  document.getElementById('brokenCount').textContent=broken.length;
+  renderTaskSection(document.getElementById('unbrokenList'),unbroken,false);
+  renderTaskSection(document.getElementById('brokenList'),broken,true);
+}
+function renderTaskSection(list,tasks,isBroken){
   list.innerHTML='';
-  if(!available.length){list.innerHTML='<div class="empty-state">The muster is empty</div>';return;}
-  available.forEach(task=>{
+  if(!tasks.length){list.innerHTML='<div class="empty-state" style="padding:16px;font-size:14px">'+(isBroken?'Nothing broken down yet':'All tasks broken down')+'</div>';return;}
+  tasks.forEach(task=>{
     const tot=task.stages.length,dn=task.stages.filter(s=>s.completed).length;
-    const meta=tot?(dn+'/'+tot+' stage'+(tot===1?'':'s')+' done'):'0 stages';
+    const meta=tot?(dn+'/'+tot+' stage'+(tot===1?'':'s')+' done'):'no stages';
     const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(task.title)+'</div><div class="item-meta">'+meta+'</div></div><div class="item-actions"><button class="bd ghost">Breakdown</button><button class="del ghost">Delete</button></div>';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(task.title)+'</div><div class="item-meta">'+meta+'</div></div><div class="item-actions"><button class="bd ghost">'+(isBroken?'Edit':'Breakdown')+'</button><button class="done ghost">Done</button><button class="del ghost">✕</button></div>';
     el.querySelector('.bd').addEventListener('click',()=>showBreakdown(task.id));
+    el.querySelector('.done').addEventListener('click',()=>completeTaskOOS(task.id));
     el.querySelector('.del').addEventListener('click',()=>{state.tasks=state.tasks.filter(t=>t.id!==task.id);saveState();renderTaskPool();});
     const info=el.querySelector('.item-info');info.style.cursor='pointer';
     info.addEventListener('click',()=>showTaskDetail(task.id,'taskPoolView'));
     list.appendChild(el);
   });
+}
+/* ---------- out-of-session completion (50% XP) ---------- */
+function awardOOS(units){const xp=Math.round(units*config.xpPerStage*0.5);state.dailyXp+=xp;state.cumulativeXp+=xp;updateLevelFromXp();return xp;}
+function completeStageOOS(taskId,stageId){
+  const task=state.tasks.find(t=>t.id===taskId);if(!task)return;
+  const st=task.stages.find(s=>s.id===stageId);if(!st||st.completed)return;
+  st.completed=true;st.oos=true;
+  const xp=awardOOS(1);
+  if(task.stages.length&&task.stages.every(s=>s.completed)){task.completed=true;task.oos=true;}
+  saveState();renderTaskPool();renderStagePool();updateHeader();
+  toast('+'+xp+' XP · out of session (50%)');
+}
+function completeTaskOOS(taskId){
+  const task=state.tasks.find(t=>t.id===taskId);if(!task||task.completed)return;
+  let units=0;
+  if(task.stages.length){task.stages.forEach(s=>{if(!s.completed){s.completed=true;s.oos=true;units++;}});}
+  else units=1;
+  task.completed=true;task.oos=true;
+  const xp=awardOOS(units);
+  saveState();renderTaskPool();renderStagePool();updateHeader();
+  toast('+'+xp+' XP · out of session (50%)');
 }
 
 /* ---------- task detail ---------- */
@@ -591,7 +623,9 @@ function showTaskDetail(taskId,returnView){
   if(!task.stages.length){list.innerHTML='<div class="empty-state">No stages yet — break it down</div>';}
   task.stages.forEach((s,i)=>{
     const el=document.createElement('div');el.className='item'+(s.completed?' completed':'');
-    el.innerHTML='<div class="item-info"><div class="item-title"><span class="seq" style="color:var(--brass);font-family:var(--serif);margin-right:9px">'+(i+1)+'</span>'+esc(s.title)+(s.completed?' <span style="color:#8fb89a">✓</span>':'')+'</div></div>';
+    el.innerHTML='<div class="item-info"><div class="item-title"><span class="seq" style="color:var(--brass);font-family:var(--serif);margin-right:9px">'+(i+1)+'</span>'+esc(s.title)+(s.completed?' <span style="color:#8fb89a">✓</span>':'')+'</div></div>'+(s.completed?'':'<div class="item-actions"><button class="done ghost">Done</button></div>');
+    const db=el.querySelector('.done');
+    if(db)db.addEventListener('click',()=>{completeStageOOS(task.id,s.id);showTaskDetail(task.id,detailReturnView);});
     list.appendChild(el);
   });
   showView('taskDetailView');
@@ -639,8 +673,9 @@ function renderStagePool(){
   if(!stages.length){list.innerHTML='<div class="empty-state">No stages forged yet</div>';return;}
   stages.forEach(stage=>{
     const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">from · <span class="parent-link" data-task="'+stage.taskId+'">'+esc(stage.taskTitle)+'</span></div></div>';
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(stage.title)+'</div><div class="item-meta">from · <span class="parent-link" data-task="'+stage.taskId+'">'+esc(stage.taskTitle)+'</span></div></div><div class="item-actions"><button class="done ghost">Done</button></div>';
     el.querySelector('.parent-link').addEventListener('click',()=>showTaskDetail(stage.taskId,'stagePoolView'));
+    el.querySelector('.done').addEventListener('click',()=>completeStageOOS(stage.taskId,stage.id));
     list.appendChild(el);
   });
 }
@@ -710,10 +745,10 @@ function renderTimerStages(){
     }
     el.innerHTML=html;
     const tick=el.querySelector('.tick');
-    if(!hasSubs)tick.addEventListener('click',()=>{stage.completed=!stage.completed;renderTimerStages();});
+    if(!hasSubs)tick.addEventListener('click',()=>{stage.completed=!stage.completed;renderTimerStages();checkAllComplete();});
     el.querySelectorAll('.substage-item').forEach(si=>si.addEventListener('click',()=>{
       const idx=+si.dataset.si;stage.subs[idx].done=!stage.subs[idx].done;
-      stage.completed=stage.subs.every(s=>s.done);renderTimerStages();
+      stage.completed=stage.subs.every(s=>s.done);renderTimerStages();checkAllComplete();
     }));
     el.querySelector('.split-btn').addEventListener('click',()=>openSplitModal(stage));
     list.appendChild(el);
@@ -742,7 +777,8 @@ function startTimer(){
   const start=Date.now();const totalMs=state.currentSession.timeRemaining*1000;
   state.timerInterval=setInterval(()=>{
     const remaining=Math.max(0,totalMs-(Date.now()-start));
-    if(remaining===0){clearInterval(state.timerInterval);endSession();return;}
+    state.currentSession._remainingMs=remaining;
+    if(remaining===0){clearInterval(state.timerInterval);endSession(false);return;}
     const mins=Math.floor(remaining/60000);const secs=Math.floor((remaining/1000)%60);
     document.getElementById('timerDisplay').textContent=String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
   },100);
@@ -767,7 +803,12 @@ function openStagePicker(){
 }
 
 /* ---------- scoring ---------- */
-function endSession(){
+function checkAllComplete(){
+  const s=state.currentSession;if(!s||!state.timerRunning)return;
+  const all=s.stagesPlanned.concat(s.extraStages);
+  if(all.length&&all.every(x=>x.completed))endSession(true);
+}
+function endSession(auto){
   clearInterval(state.timerInterval);state.timerRunning=false;
   const planned=state.currentSession.stagesPlanned;
   const extra=state.currentSession.extraStages;
@@ -775,23 +816,28 @@ function endSession(){
   const completed=all.filter(s=>s.completed).length;
   const total=planned.length+extra.length;
   const attainment=total?(completed/total)*100:0;
-  let penalty=0,bonus=0;
+  let penalty=0,bonus=0,timeBonus=0;
   if(attainment<90){penalty=(100-attainment)*(config.penaltyMin+Math.random()*(config.penaltyMax-config.penaltyMin))/100;}
   if(extra.length){bonus=extra.length*(config.bonusMin+Math.random()*(config.bonusMax-config.bonusMin))/100;}
+  if(auto){
+    const remSec=(state.currentSession._remainingMs||0)/1000;
+    const windowSec=state.currentSession.windowMinutes*60;
+    if(remSec<=300&&windowSec>0)timeBonus=remSec/windowSec;   // ≤5 min left → bonus; >5 min → 0 (went too easy)
+  }
   const weekend=isWeekend(new Date());
   const weekendMult=weekend?(1+config.weekendBonus):1;
   const baseXp=planned.length*config.xpPerStage;
-  const xpEarned=Math.round(baseXp*(1-penalty)*(1+bonus)*weekendMult);
+  const xpEarned=Math.round(baseXp*(1-penalty)*(1+bonus)*(1+timeBonus)*weekendMult);
   Object.assign(state.currentSession,{
-    endedAt:new Date().toISOString(),completed,
+    endedAt:new Date().toISOString(),completed,auto:!!auto,
     attainmentPercent:Math.round(attainment),penaltyPercent:+(penalty*100).toFixed(1),
-    bonusPercent:+(bonus*100).toFixed(1),weekend,xpEarned
+    bonusPercent:+(bonus*100).toFixed(1),timeBonusPercent:+(timeBonus*100).toFixed(1),weekend,xpEarned
   });
   state.sessions.push(state.currentSession);
   state.dailyXp+=xpEarned;state.cumulativeXp+=xpEarned;updateLevelFromXp();
   markCompletion();
   saveState();
-  showResults(attainment,penalty,bonus,weekend,xpEarned);
+  showResults(attainment,penalty,bonus,timeBonus,weekend,xpEarned);
 }
 function markCompletion(){
   const done=state.currentSession.stagesPlanned.concat(state.currentSession.extraStages).filter(s=>s.completed);
@@ -801,13 +847,14 @@ function markCompletion(){
     if(task.stages.length&&task.stages.every(st=>st.completed))task.completed=true;
   });
 }
-function showResults(att,pen,bon,weekend,xp){
+function showResults(att,pen,bon,timeBon,weekend,xp){
   document.getElementById('resultAttainment').textContent=Math.round(att);
   document.getElementById('resultXp').textContent=xp;
   document.getElementById('resultDailyTotal').textContent=state.dailyXp;
-  const pe=document.getElementById('resultPenalty'),be=document.getElementById('resultBonus'),we=document.getElementById('resultWeekend');
+  const pe=document.getElementById('resultPenalty'),be=document.getElementById('resultBonus'),we=document.getElementById('resultWeekend'),te=document.getElementById('resultTimeBonus');
   if(pen>0){pe.style.display='block';document.getElementById('penaltyValue').textContent=(pen*100).toFixed(1);}else pe.style.display='none';
   if(bon>0){be.style.display='block';document.getElementById('bonusValue').textContent=(bon*100).toFixed(1);}else be.style.display='none';
+  if(timeBon>0){te.style.display='block';document.getElementById('timeBonusValue').textContent=(timeBon*100).toFixed(1);}else te.style.display='none';
   we.style.display=weekend?'block':'none';
   renderStageReport();
   showView('resultView');updateHeader();
@@ -832,7 +879,7 @@ function showCompleted(){
   done.forEach(task=>{
     const acc=document.createElement('div');acc.className='accordion';
     const head=document.createElement('div');head.className='accordion-head';
-    head.innerHTML='<div class="accordion-title"><span class="chk">✓</span>'+esc(task.title)+'</div><div class="accordion-right"><span class="accordion-meta">'+task.stages.length+' stage'+(task.stages.length===1?'':'s')+'</span><span class="chev">▸</span></div>';
+    head.innerHTML='<div class="accordion-title"><span class="chk">✓</span>'+esc(task.title)+'</div><div class="accordion-right"><span class="accordion-meta">'+task.stages.length+' stage'+(task.stages.length===1?'':'s')+(task.oos?' · out of session':'')+'</span><span class="chev">▸</span></div>';
     const body=document.createElement('div');body.className='accordion-body';
     task.stages.forEach(s=>{const st=document.createElement('div');st.className='accordion-stage';st.innerHTML='<span class="chk">✓</span>'+esc(s.title);body.appendChild(st);});
     head.addEventListener('click',()=>acc.classList.toggle('open'));
