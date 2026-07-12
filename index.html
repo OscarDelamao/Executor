@@ -233,6 +233,126 @@ button.danger:hover{background:#8f382e}
 /* stage breadcrumb */
 .stage-breadcrumb{font-size:11px;color:var(--ash);display:flex;gap:6px;align-items:center}
 .stage-breadcrumb span{color:var(--camel)}
+
+/* ============ REWARDS ============ */
+.rnr-badge .stat-value{color:var(--green);font-variant-numeric:tabular-nums}
+.rnr-banner{background:linear-gradient(90deg,rgba(36,53,43,.55),rgba(36,53,43,.18));border:1px solid var(--green);border-radius:10px;padding:16px 20px;margin-bottom:18px;display:flex;flex-direction:column;gap:2px}
+.rnr-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--green);font-weight:600}
+.rnr-clock{font-family:var(--serif);font-size:38px;font-weight:600;color:var(--bone);line-height:1.1;font-variant-numeric:tabular-nums}
+.rnr-sub{font-size:12px;color:var(--ash)}
+.rnr-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+.wallet-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.wallet-stat{background:var(--obsidian);border:1px solid var(--line);border-radius:8px;padding:14px;text-align:center}
+.wallet-value{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--brass);line-height:1}
+.wallet-value.muted{color:var(--sand);font-size:22px}
+.wallet-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ash);margin-top:5px}
+@media(max-width:700px){.wallet-summary{grid-template-columns:1fr 1fr}}
+
+.rtabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
+.rtab{background:transparent;border:1px solid transparent;color:var(--ash);padding:7px 14px;border-radius:6px;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:600}
+.rtab:hover{background:rgba(182,138,90,.06);color:var(--bone)}
+.rtab.active{color:var(--brass);border-color:var(--line-warm);background:rgba(182,138,90,.08)}
+
+.allowance-cap{background:var(--obsidian);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:18px}
+.allowance-cap-head{display:flex;justify-content:space-between;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--camel);margin-bottom:8px;font-weight:600}
+.allowance-cap-note{font-size:11px;color:var(--ash);margin-top:8px;line-height:1.5}
+.xp-bar.slim{height:6px;margin:0}
+.xp-bar.slim .xp-fill{height:6px}
+
+.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.reward-card{position:relative;background:var(--obsidian);border:1px solid var(--line);border-radius:9px;padding:16px;display:flex;flex-direction:column;gap:9px}
+.reward-card.afford{border-color:var(--line-warm);background:linear-gradient(180deg,rgba(182,138,90,.05),var(--obsidian))}
+.reward-card.pinned{border-color:var(--brass)}
+.pin-btn{position:absolute;top:10px;right:10px;background:transparent;color:var(--ash);padding:2px 5px;font-size:15px;line-height:1}
+.pin-btn:hover{background:transparent;color:var(--brass)}
+.pin-btn.on{color:var(--brass)}
+.reward-name{font-family:var(--serif);font-size:18px;color:var(--sand);font-weight:600;padding-right:24px;line-height:1.25}
+.reward-desc{font-size:12px;color:var(--ash);line-height:1.55;flex:1}
+.reward-meta{display:flex;gap:5px;flex-wrap:wrap}
+.reward-cost,.reward-after{display:flex;justify-content:space-between;font-size:12px;color:var(--ash);padding-top:9px;border-top:1px solid var(--line)}
+.reward-cost b{color:var(--brass);font-family:var(--serif);font-size:15px}
+.reward-after b{color:var(--sand)}
+.reward-after{border-top:none;padding-top:0}
+.reward-gap{font-size:11px;color:var(--camel);letter-spacing:.5px}
+.reward-limits{font-size:10px;color:var(--ash);letter-spacing:.5px}
+.reward-card .buy{width:100%;margin-top:2px}
+.reward-card .buy.locked{background:transparent;border:1px solid var(--line);color:var(--ash);cursor:not-allowed;font-size:11px}
+
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.inv-card{background:var(--obsidian);border:1px solid var(--line);border-radius:9px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.inv-card.running{border-color:var(--green);background:linear-gradient(180deg,rgba(36,53,43,.28),var(--obsidian))}
+.inv-card.stale{border-color:var(--amber)}
+.inv-name{font-family:var(--serif);font-size:17px;color:var(--sand);font-weight:600}
+.inv-running{font-size:15px;color:var(--green);font-variant-numeric:tabular-nums;font-weight:600}
+.inv-line{font-size:13px;color:var(--bone)}
+.inv-line b{color:var(--brass)}
+.inv-meta{font-size:11px;color:var(--ash)}
+.inv-nudge{font-size:11px;color:var(--amber);line-height:1.5}
+.inv-actions{display:flex;gap:7px;margin-top:4px}
+.inv-actions button{flex:1;font-size:11px;padding:8px 10px}
+.inv-past{display:flex;flex-direction:column;gap:6px}
+.past-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;font-size:13px}
+.past-meta{display:block;font-size:11px;color:var(--ash);margin-top:2px}
+
+.txn-filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+.txn-f{background:transparent;border:1px solid var(--line);color:var(--ash);padding:5px 11px;font-size:10px;letter-spacing:1px;text-transform:uppercase;border-radius:5px}
+.txn-f:hover{background:rgba(182,138,90,.06);color:var(--bone)}
+.txn-f.active{color:var(--brass);border-color:var(--line-warm);background:rgba(182,138,90,.08)}
+.txn-day{font-size:10px;letter-spacing:2px;color:var(--camel);font-weight:600;margin:18px 0 9px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.txn-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;margin-bottom:6px}
+.txn-amt{font-family:var(--serif);font-size:16px;font-weight:600;min-width:92px;font-variant-numeric:tabular-nums}
+.txn-amt.pos{color:var(--green)}
+.txn-amt.neg{color:var(--red)}
+.txn-amt.zero{color:var(--ash)}
+.txn-body{flex:1;min-width:0}
+.txn-desc{font-size:13px;color:var(--bone)}
+.txn-bal{font-size:11px;color:var(--brass);margin-top:2px}
+
+.calib{background:var(--obsidian);border:1px solid var(--line-warm);border-radius:8px;padding:16px;margin-bottom:18px}
+.calib-head{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--camel);font-weight:600;margin-bottom:8px}
+.calib-rate{font-family:var(--serif);font-size:26px;color:var(--brass);font-weight:600;margin-bottom:12px}
+.calib-rate span{font-family:var(--sans);font-size:11px;color:var(--ash);letter-spacing:1px}
+.calib-rows{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.calib-row{display:grid;grid-template-columns:1.4fr 60px 1.6fr;gap:8px;align-items:center;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.cr-name{color:var(--bone)}
+.cr-n{color:var(--sand);text-align:right;font-variant-numeric:tabular-nums}
+.cr-v{font-size:11px}
+.cr-v.good{color:var(--green)}
+.cr-v.bad{color:var(--amber)}
+.calib-note{font-size:11px;color:var(--ash);line-height:1.55}
+@media(max-width:600px){.calib-row{grid-template-columns:1fr 55px;}.cr-v{grid-column:span 2;padding-left:0}}
+.manage-settings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:700px){.manage-settings{grid-template-columns:1fr}}
+.manage-list{display:flex;flex-direction:column;gap:7px}
+.manage-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;background:var(--obsidian);border:1px solid var(--line);border-radius:7px}
+.manage-row.archived{opacity:.5}
+.manage-name{font-size:14px;color:var(--bone)}
+.manage-meta{font-size:11px;color:var(--ash);margin-top:3px}
+.manage-actions{display:flex;gap:6px}
+.manage-actions button{padding:6px 11px;font-size:10px}
+
+.reward-target{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.rt-name{font-family:var(--serif);font-size:19px;color:var(--sand);font-weight:600;margin-bottom:7px}
+.rt-nums{font-size:12px;color:var(--ash);margin-bottom:7px}
+.rt-gap{font-size:11px;color:var(--camel);margin-top:7px;margin-bottom:11px}
+.rt-ready{font-size:12px;color:var(--green);margin-bottom:11px;line-height:1.5}
+.rt-none{font-size:12px;color:var(--ash);line-height:1.6;margin-bottom:11px}
+.reward-target button{width:100%}
+
+.modal.wide{max-width:640px}
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.editor-grid .span2{grid-column:span 2}
+.editor-grid .chk label{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--bone)}
+.editor-grid .chk input{width:auto}
+@media(max-width:600px){.editor-grid{grid-template-columns:1fr}.editor-grid .span2{grid-column:span 1}}
+.modal-sub{white-space:pre-line}
+@media(max-width:760px){
+  .header-stats{gap:14px}
+  .lifetime-hdr{display:none}
+  .stat-value{font-size:20px}
+}
 /* rocks banner */
 .rock-panel{background:var(--espresso);border:1px solid var(--line-warm);border-radius:8px;padding:14px;margin-bottom:14px}
 .rock-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--camel);font-weight:600;margin-bottom:9px}
@@ -271,9 +391,11 @@ button.danger:hover{background:#8f382e}
       <div class="tag">Execution Layer · <span id="syncStatus" style="color:var(--ash)">◇ local</span></div>
     </div>
     <div class="header-stats">
+      <div class="stat rnr-badge" id="rnrHeaderBadge" style="display:none"><div class="stat-value">--:--</div><div class="stat-label">R&amp;R</div></div>
       <div class="stat"><div class="stat-value" id="dailyXpDisplay">0</div><div class="stat-label">Today</div></div>
+      <div class="stat wallet-hdr"><div class="stat-value" id="availXpDisplay">0</div><div class="stat-label">Available</div></div>
       <div class="stat"><div class="stat-value" id="levelDisplay">1</div><div class="stat-label">Level</div></div>
-      <div class="stat"><div class="stat-value" id="totalXpDisplay">0</div><div class="stat-label">Total XP</div></div>
+      <div class="stat lifetime-hdr"><div class="stat-value" id="totalXpDisplay">0</div><div class="stat-label">Lifetime</div></div>
     </div>
   </header>
 
@@ -283,6 +405,7 @@ button.danger:hover{background:#8f382e}
     <button data-view="objectivesView">Objectives</button>
     <button data-view="stagePoolView">Stages</button>
     <button data-view="waitingView">Waiting<span class="badge amber" id="waitBadge" style="display:none">0</span></button>
+    <button data-view="rewardsView">Rewards<span class="badge amber" id="rewardBadge" style="display:none">0</span></button>
     <button data-view="ledgerView">Ledger</button>
     <button data-view="completedView">Completed</button>
     <button data-view="profileView">Character</button>
@@ -307,6 +430,7 @@ button.danger:hover{background:#8f382e}
 
   <!-- DASHBOARD -->
   <div id="dashView" class="view active">
+    <div id="dashRnR" class="rnr-banner" style="display:none"></div>
     <div class="dash">
       <!-- LEFT: ACTIVE OBJECTIVES -->
       <div class="card">
@@ -314,6 +438,7 @@ button.danger:hover{background:#8f382e}
         <div class="section-note">Observe. Read-only here — manage in Objectives.</div>
         <div id="dashObjectives"></div>
         <button id="dashToObjBtn" class="ghost" style="margin-top:6px">Manage Objectives →</button>
+        <div id="dashRewardTarget" class="reward-target" style="display:none"></div>
       </div>
       <!-- CENTRE: INPUT + ROCKS -->
       <div class="card">
@@ -541,6 +666,25 @@ button.danger:hover{background:#8f382e}
     </div>
   </div>
 
+  <!-- REWARDS -->
+  <div id="rewardsView" class="view">
+    <div class="card">
+      <h2>Rewards</h2>
+      <div class="section-note">Lifetime XP is the record and never falls. Available XP is the part you may spend. Buying a reward does not cost you a single point of standing — it costs you the right to buy it twice.</div>
+      <div class="wallet-summary" id="walletSummary"></div>
+      <div class="rtabs">
+        <button class="rtab active" data-rtab="store">Store</button>
+        <button class="rtab" data-rtab="inventory">Inventory</button>
+        <button class="rtab" data-rtab="transactions">Transactions</button>
+        <button class="rtab" data-rtab="manage">Manage</button>
+      </div>
+      <div id="rewardStore"></div>
+      <div id="rewardInventory" style="display:none"></div>
+      <div id="rewardTransactions" style="display:none"></div>
+      <div id="rewardManagement" style="display:none"></div>
+    </div>
+  </div>
+
   <!-- CHARACTER -->
   <div id="profileView" class="view">
     <div class="card">
@@ -557,7 +701,12 @@ button.danger:hover{background:#8f382e}
         <h2>Ascent to Next Level</h2>
         <div style="font-size:12px;color:var(--ash);margin-bottom:8px"><span id="xpToNextLevel">0</span> / 1000 XP</div>
         <div class="xp-bar"><div class="xp-fill" id="xpProgress" style="width:0%"><span id="xpPercent">0%</span></div></div>
-        <div class="section-note" style="margin:12px 0 0">Rocks are set before 09:30 and settle at 20:00. Out-of-session work pays 50%. Miss a workday and total XP decays 20%. Weekends pay +10%.</div>
+        <div class="section-note" style="margin:12px 0 0">Rocks are set before 12:00 and settle at 20:00. Out-of-session work pays 50%. Miss a workday and total XP decays 20%. Weekends pay +10%.</div>
+      </div>
+      <div class="card">
+        <h2>Spoils of the Forge</h2>
+        <div class="section-note">What the work bought. Not what it proved — that is the number above.</div>
+        <div class="profile-grid" id="spoilsGrid"></div>
       </div>
     </div>
   </div>
@@ -613,6 +762,38 @@ button.danger:hover{background:#8f382e}
   <div class="modal-actions"><button id="dueDateCancel" class="ghost">Cancel</button><button id="dueDateConfirm">Save</button></div>
 </div></div>
 
+<div id="redeemModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title" id="redeemTitle">Redeem</div>
+  <div class="modal-sub" id="redeemSub"></div>
+  <div id="redeemBody"></div>
+  <div class="modal-actions"><button id="redeemCancel" class="ghost">Cancel</button><button id="redeemConfirm">Confirm</button></div>
+</div></div>
+
+<div id="rewardEditorModal" class="modal-overlay"><div class="modal wide">
+  <div class="modal-title" id="rewardEditorTitle">New Reward</div>
+  <div class="modal-sub">Price it honestly. A reward you can buy every day is a wage, not a reward.</div>
+  <div class="editor-grid">
+    <div class="form-group span2"><label>Name</label><input type="text" id="reName" placeholder="e.g. 60 Minutes on the Bow"></div>
+    <div class="form-group span2"><label>Description</label><input type="text" id="reDesc" placeholder="What it actually is"></div>
+    <div class="form-group"><label>Type</label><select id="reType">
+      <option value="duration">Duration</option>
+      <option value="cash_allowance">Cash allowance</option>
+      <option value="meal">Meal</option>
+      <option value="consumable">Consumable</option>
+      <option value="custom">Custom</option>
+    </select></div>
+    <div class="form-group"><label>XP cost</label><input type="number" id="reCost" min="1" step="50" value="1000"></div>
+    <div class="form-group" id="reDurationWrap"><label>Duration (minutes)</label><input type="number" id="reDuration" min="1" step="5"></div>
+    <div class="form-group" id="reCashWrap"><label>Cash value (AUD)</label><input type="number" id="reCash" min="1" step="5"></div>
+    <div class="form-group"><label>Daily limit</label><input type="number" id="reDaily" min="1" placeholder="none"></div>
+    <div class="form-group"><label>Weekly limit</label><input type="number" id="reWeekly" min="1" placeholder="none"></div>
+    <div class="form-group"><label>Monthly limit</label><input type="number" id="reMonthly" min="1" placeholder="none"></div>
+    <div class="form-group"><label>Inventory cap</label><input type="number" id="reCap" min="1" value="5"></div>
+    <div class="form-group span2 chk"><label><input type="checkbox" id="reActive" checked> Active in the Store</label></div>
+  </div>
+  <div class="modal-actions"><button id="reCancel" class="ghost">Cancel</button><button id="reSave">Save Reward</button></div>
+</div></div>
+
 <div class="toast" id="toast"></div>
 <script>
 /* ================= STATE ================= */
@@ -623,6 +804,13 @@ const state={
   firstUseDate:null,dayOpenXp:0,dayFloor:0,
   restTokensEarned:0,restTokensSpent:0,consecutiveCleanDays:0,
   mysteryBonusAvailable:null,mysteryAwardedToday:false,
+  /* --- wallet & rewards --- */
+  spendableXp:0,
+  rewardCatalogue:[],rewardInventory:[],xpTransactions:[],rewardRedemptions:[],
+  rewardSettings:{xpPerDollar:150,monthlyAllowanceCapAud:150,rewardRefundRate:0.80,requireRedemptionNotes:false},
+  walletMigratedV1:false,catalogueSeededV1:false,pinnedRewardId:null,
+  rewardIntroSeen:false,
+  /* --- ephemeral --- */
   selectedWindow:null,selectedStages:[],currentTask:null,currentObj:null,
   breakdownStages:[],currentSession:null,timerInterval:null,timerRunning:false,
   dayFirstSessionRun:false
@@ -635,13 +823,14 @@ const config={
   mysteryOdds:{1.5:0.70, 2.0:0.25, 3.0:0.0333},
   mysteryMinWindow:25, restTokenCap:3, restTokenEarnDays:3,
   lockoutStartDay:21, lockoutDuration:7,
-  rockCap:10, rockGateHour:9.5, rockSettleHour:20,
+  rockCap:10, rockGateHour:12, rockSettleHour:20,
   rockBonusPerStage:50, rockPenaltyPerStage:50,
   objActiveCap:3, objBonusPerStage:75, objAbandonPenalty:200,
   stalledDays:7, stalledDecayEnabled:false,
-  waitCapPerSession:1, waitLockLastFraction:0.25, waitStaleDays:5
+  waitCapPerSession:1, waitLockLastFraction:0.25, waitStaleDays:5,
+  txnPageSize:60, purchaseCooldownMinutes:30, allowanceNudgeDays:7
 };
-const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays'];
+const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen'];
 
 /* ================= LOCKOUT & MYSTERY ================= */
 function inLockoutPeriod(){
@@ -683,22 +872,91 @@ function todaysRocks(){const d=localDateStr();return state.tasks.filter(t=>t.sta
 function saveLocal(){localStorage.setItem('forgeState',JSON.stringify(state));}
 function saveState(){state.updatedAt=Date.now();saveLocal();if(syncReady)scheduleSync();}
 function updateLevelFromXp(){state.level=Math.floor(Math.max(0,state.cumulativeXp)/1000)+1;}
-function grantXp(n){
-  if(inLockoutPeriod())return; // XP frozen during lockout
-  state.dailyXp+=n;state.cumulativeXp+=n;
-  state.cumulativeXp=Math.max(state.cumulativeXp,state.dayFloor); // enforce floor
+
+/* ================= THE WALLET =================
+   Lifetime XP (cumulativeXp)  → permanent. Level, State, proof. Purchases NEVER touch it.
+   Available XP (spendableXp)  → the wallet. Spent on rewards. Never below zero.
+   Every mutation of the wallet goes through postWalletTransaction. No exceptions. */
+
+function postWalletTransaction({type,amountXp,lifetimeXpChange=0,sourceType=null,sourceId=null,rewardId=null,inventoryItemId=null,description='',allowNegative=false}){
+  const balanceBefore=state.spendableXp;
+  const proposed=balanceBefore+amountXp;
+  if(!allowNegative&&proposed<0)return{success:false,message:'Insufficient available XP.'};
+  state.spendableXp=Math.max(0,proposed);
+  const actual=state.spendableXp-balanceBefore;
+  state.xpTransactions.unshift({
+    id:uid('txn'),type,amountXp:actual,
+    balanceBefore,balanceAfter:state.spendableXp,
+    lifetimeXpChange,
+    sourceType,sourceId,rewardId,inventoryItemId,
+    description:description||'',
+    createdAt:new Date().toISOString()
+  });
+  return{success:true,actualAmount:actual};
+}
+
+function awardXp(amount,sourceType,sourceId,description){
+  if(amount<=0)return;
+  state.dailyXp+=amount;
+  state.cumulativeXp+=amount;
+  state.cumulativeXp=Math.max(state.cumulativeXp,state.dayFloor);
+  postWalletTransaction({type:'earn',amountXp:amount,lifetimeXpChange:amount,sourceType,sourceId,description});
   updateLevelFromXp();
 }
+
+function penalizeXp(amount,sourceType,sourceId,description){
+  const penalty=Math.abs(amount);
+  if(penalty<=0)return;
+  const lifetimeBefore=state.cumulativeXp;
+  state.dailyXp-=penalty;
+  state.cumulativeXp=Math.max(state.dayFloor,state.cumulativeXp-penalty);
+  /* allowNegative lets the wallet DRAIN to zero rather than the penalty being
+     rejected outright. A penalty bigger than the wallet empties it — it does not bounce.
+     postWalletTransaction clamps at 0 and records the amount actually removed. */
+  postWalletTransaction({
+    type:'penalty',amountXp:-penalty,
+    lifetimeXpChange:state.cumulativeXp-lifetimeBefore,
+    sourceType,sourceId,description,allowNegative:true
+  });
+  updateLevelFromXp();
+}
+
+/* Legacy entry point. All existing call sites route through here. */
+function grantXp(n,sourceType,sourceId,description){
+  if(inLockoutPeriod())return; // XP frozen during Training Week
+  if(n>0)awardXp(n,sourceType||'system',sourceId||null,description||'XP earned');
+  else if(n<0)penalizeXp(-n,sourceType||'system',sourceId||null,description||'XP penalty');
+}
+
+function migrateXpWallet(){
+  if(state.walletMigratedV1)return;
+  const opening=Math.max(0,state.cumulativeXp);
+  state.spendableXp=0;
+  if(opening>0){
+    postWalletTransaction({type:'migration',amountXp:opening,lifetimeXpChange:0,
+      sourceType:'system',description:'Opening balance from previously earned XP'});
+  }
+  state.walletMigratedV1=true;
+}
+
 function loadState(){
   const s=localStorage.getItem('forgeState');
   if(s){try{Object.assign(state,JSON.parse(s));}catch(e){}}
   if(!state.firstUseDate)state.firstUseDate=new Date().toISOString();
+  if(!state.rewardSettings)state.rewardSettings={xpPerDollar:150,monthlyAllowanceCapAud:150,rewardRefundRate:0.80,requireRedemptionNotes:false};
+  if(state.rewardSettings.rewardRefundRate==null)state.rewardSettings.rewardRefundRate=0.80;
+  if(!Array.isArray(state.rewardCatalogue))state.rewardCatalogue=[];
+  if(!Array.isArray(state.rewardInventory))state.rewardInventory=[];
+  if(!Array.isArray(state.xpTransactions))state.xpTransactions=[];
+  if(!Array.isArray(state.rewardRedemptions))state.rewardRedemptions=[];
   const today=localDateStr();
   if(state.currentDate!==today){
     state.dailyXp=0;state.currentDate=today;
     state.dayFirstSessionRun=false;state.mysteryAwardedToday=false;
     state.dayOpenXp=state.cumulativeXp;state.dayFloor=Math.max(0,Math.floor(state.cumulativeXp*0.20));
   }
+  seedRewardCatalogue();
+  migrateXpWallet();
   updateLevelFromXp();
 }
 
@@ -738,7 +996,7 @@ async function manualSync(){
 
 /* ================= DAILY ENGINES ================= */
 const notices=[];
-function runDailyEngines(){ settleRocks(); processDecay(); updateLevelFromXp(); }
+function runDailyEngines(){ seedRewardCatalogue(); migrateXpWallet(); settleRocks(); processDecay(); expireRnR(); updateLevelFromXp(); }
 
 /* --- rock settlement (lazy, on open) --- */
 function settleRocks(){
@@ -760,7 +1018,10 @@ function settleRocks(){
       t.rockSettled=true;
     });
     const net=bonus-penalty;
-    grantXp(net);
+    if(!inLockoutPeriod()){
+      if(bonus>0)awardXp(bonus,'rock',d,'Rocks landed · '+prettyDate(d));
+      if(penalty>0)penalizeXp(penalty,'rock',d,'Rocks dropped · '+prettyDate(d));
+    }
     state.rockLog[d]={landed,dropped,voided,bonus,penalty,net,total:pending[d].length};
     notices.push({title:'Rocks Settled · '+prettyDate(d),
       body:landed+' landed, '+dropped+' dropped, '+voided+' blocked (void). Bonus +'+bonus+', penalty −'+penalty+'. Net '+(net>=0?'+':'')+net+' XP.'});
@@ -785,7 +1046,11 @@ function processDecay(){
       if(state.restTokensEarned>state.restTokensSpent){
         state.restTokensSpent++;tokenUsed=true;
       }else{
+        const lifeBefore=state.cumulativeXp;
         state.cumulativeXp=Math.max(state.cumulativeXp-decayAmt,state.dayFloor);
+        postWalletTransaction({type:'penalty',amountXp:-decayAmt,
+          lifetimeXpChange:state.cumulativeXp-lifeBefore,
+          sourceType:'decay',sourceId:ds,description:'Workday decay · '+prettyDate(ds)});
       }
       missed.push({ds,before,after:state.cumulativeXp,tokenUsed});
     }
@@ -852,7 +1117,7 @@ function abandonObj(id){
   askConfirm('Abandon Objective','"'+o.title+'" will be abandoned and cost '+config.objAbandonPenalty+' XP. Its tasks stay, but become unassigned. This is deliberate friction — abandoning should not be free.',()=>{
     o.status='abandoned';o.abandonedAt=new Date().toISOString();
     tasksOf(o).forEach(t=>t.objectiveId=null);
-    grantXp(-config.objAbandonPenalty);
+    grantXp(-config.objAbandonPenalty,'objective',o.id,'Abandoned: '+o.title);
     saveState();renderAll();updateHeader();toast('−'+config.objAbandonPenalty+' XP · objective abandoned');
   });
 }
@@ -864,7 +1129,7 @@ function checkObjComplete(){
       const st=objStats(o);
       const bonus=st.total*config.objBonusPerStage;
       o.status='complete';o.completedAt=new Date().toISOString();o.bonusAwarded=bonus;
-      grantXp(bonus);
+      grantXp(bonus,'objective',o.id,'Objective complete: '+o.title);
       notices.push({title:'Objective Complete','body':'"'+o.title+'" is finished. '+st.total+' stages across '+ts.length+' tasks. Bonus +'+bonus+' XP.'});
     }
   });
@@ -949,7 +1214,7 @@ function renderAllTasks(){
 /* --- rocks --- */
 function toggleStar(id){
   const t=state.tasks.find(x=>x.id===id);if(!t)return;
-  if(!rockGateOpen()){toast('Rock gate closed — 09:30 has passed');return;}
+  if(!rockGateOpen()){toast('Rock gate closed — 12:00 has passed');return;}
   if(t.starred){t.starred=false;t.starredDate=null;t.rockSettled=false;}
   else{
     if(todaysRocks().length>=config.rockCap){toast('Rock cap reached ('+config.rockCap+')');return;}
@@ -1022,7 +1287,7 @@ function completeStageOOS(taskId,stageId){
   const t=state.tasks.find(x=>x.id===taskId);if(!t)return;
   const s=findStage(taskId,stageId);if(!s||s.completed)return;
   s.completed=true;s.oos=true;s.waiting=false;
-  const xp=Math.round(config.xpPerStage*config.oosMultiplier);grantXp(xp);
+  const xp=Math.round(config.xpPerStage*config.oosMultiplier);grantXp(xp,'oos',stageId,'Out of session: '+s.title);
   if(t.stages.length&&t.stages.every(x=>x.completed)){t.completed=true;t.oos=true;}
   checkObjComplete();saveState();renderAll();flushNotices();
   toast('+'+xp+' XP · out of session (50%)');
@@ -1033,7 +1298,7 @@ function completeTaskOOS(taskId){
   if(t.stages.length)t.stages.forEach(s=>{if(!s.completed){s.completed=true;s.oos=true;s.waiting=false;units++;}});
   else units=1;
   t.completed=true;t.oos=true;t.waiting=false;
-  const xp=Math.round(units*config.xpPerStage*config.oosMultiplier);grantXp(xp);
+  const xp=Math.round(units*config.xpPerStage*config.oosMultiplier);grantXp(xp,'oos',taskId,'Out of session: '+t.title);
   checkObjComplete();saveState();renderAll();flushNotices();
   toast('+'+xp+' XP · out of session (50%)');
 }
@@ -1280,7 +1545,7 @@ function endSession(auto){
     mysteryMult:mysteryMult.toFixed(2),
     weekend,xpEarned:xp});
   state.sessions.push(s);
-  grantXp(xp);
+  grantXp(xp,'session',s.sessionId,s.windowMinutes+' minute session · '+completed+' stage'+(completed===1?'':'s'));
   markCompletion();checkObjComplete();updateRestTokens();
   saveState();showResults(attainment,penalty,bonus,timeBonus,weekend,xp);flushNotices();
 }
@@ -1360,12 +1625,20 @@ function renderStageReport(){document.getElementById('stageReport').innerHTML=st
 /* ================= RENDER ================= */
 function renderAll(){
   renderDashObjectives();renderRockPanel();renderObjSelect();renderTaskLists();
-  renderStagePool();renderObjectives();renderWaiting();renderCompleted();renderAllTasks();updateHeader();updateWaitBadge();
+  renderStagePool();renderObjectives();renderWaiting();renderCompleted();renderAllTasks();
+  renderRewardTarget();updateHeader();updateWaitBadge();updateRewardBadge();
+  checkRewardIntro();tickRnR();
 }
 function updateHeader(){
   document.getElementById('dailyXpDisplay').textContent=state.dailyXp;
+  document.getElementById('availXpDisplay').textContent=state.spendableXp.toLocaleString();
   document.getElementById('levelDisplay').textContent=state.level;
   document.getElementById('totalXpDisplay').textContent=state.cumulativeXp.toLocaleString();
+}
+function updateRewardBadge(){
+  const n=state.rewardInventory.filter(i=>i.status==='available').length;
+  const b=document.getElementById('rewardBadge');
+  b.style.display=n?'inline-block':'none';b.textContent=n;
 }
 function updateWaitBadge(){
   const n=waitingItems().length;const b=document.getElementById('waitBadge');
@@ -1392,13 +1665,13 @@ function renderRockPanel(){
   const c=document.getElementById('rockPanel');
   const rocks=todaysRocks();const open=rockGateOpen();
   let h='<div class="rock-panel"><div class="rock-head"><span>★ Today\'s Big Rocks</span><span>'+rocks.length+'/'+config.rockCap+'</span></div>';
-  if(!rocks.length)h+='<div style="font-size:12px;color:var(--ash)">'+(open?'Star up to '+config.rockCap+' tasks before 09:30.':'No rocks set. The gate has closed.')+'</div>';
+  if(!rocks.length)h+='<div style="font-size:12px;color:var(--ash)">'+(open?'Star up to '+config.rockCap+' tasks before 12:00.':'No rocks set. The gate has closed.')+'</div>';
   else{
     h+='<div class="rock-list">';
     rocks.forEach(t=>{h+='<div class="rock-item'+(t.completed?' done':'')+(t.waiting?' waiting':'')+'"><span>★</span><span>'+esc(t.title)+'</span></div>';});
     h+='</div>';
   }
-  h+='<div class="gate-note'+(open?'':' locked')+'">'+(open?'Gate open until 09:30. Star and unstar freely until then.':'Gate closed. Locked until 20:00 settlement.')+'</div></div>';
+  h+='<div class="gate-note'+(open?'':' locked')+'">'+(open?'Gate open until 12:00. Star and unstar freely until then.':'Gate closed. Locked until 20:00 settlement.')+'</div></div>';
   c.innerHTML=h;
 }
 /* objective select on dashboard */
@@ -1698,6 +1971,7 @@ function renderProfile(){
       e.innerHTML+=note;
     }
   });
+  renderSpoils();
   // Lockout banner if active
   if(inLockoutPeriod()){
     const d=daysBetween(localDateStr(new Date(state.firstUseDate)),localDateStr());
@@ -1707,6 +1981,766 @@ function renderProfile(){
   }
 }
 
+/* ============================================================
+   ===================  THE REWARD ENGINE  ====================
+   ============================================================ */
+
+/* --- period helpers (local time, not UTC) --- */
+function isSameDay(a,b){return localDateStr(new Date(a))===localDateStr(new Date(b));}
+function weekKey(d){
+  d=new Date(d); const day=(d.getDay()+6)%7; // Monday = 0
+  const mon=new Date(d.getFullYear(),d.getMonth(),d.getDate()-day);
+  return localDateStr(mon);
+}
+function isSameWeek(a,b){return weekKey(a)===weekKey(b);}
+function isSameMonth(a,b){a=new Date(a);b=new Date(b);return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth();}
+function nextMonday(){const d=new Date();const add=(8-d.getDay())%7||7;d.setDate(d.getDate()+add);return d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'short'});}
+function nextMonthStart(){const d=new Date();const n=new Date(d.getFullYear(),d.getMonth()+1,1);return n.toLocaleDateString([],{day:'numeric',month:'long'});}
+
+/* --- catalogue --- */
+function getReward(id){return state.rewardCatalogue.find(r=>r.id===id)||null;}
+function getInvItem(id){return state.rewardInventory.find(i=>i.id===id)||null;}
+
+function seedRewardCatalogue(){
+  if(state.catalogueSeededV1)return;
+  const now=new Date().toISOString();
+  const mk=o=>Object.assign({
+    id:uid('reward'),description:'',category:'custom',costXp:1000,active:true,
+    rewardType:'custom',durationMinutes:null,cashValueAud:null,
+    cooldownHours:0,dailyLimit:null,weeklyLimit:null,monthlyLimit:null,
+    inventoryCap:5,requiresRedemptionNote:false,
+    createdAt:now,updatedAt:now,isDefault:true
+  },o);
+  /* PRICING NOTE — read this before you change a number.
+     These are priced against a real earn rate of roughly 8,000–11,000 XP/week
+     (2 sessions a workday, ~3 stages each, rocks mostly landing).
+     The spec's original prices (600/1000/2500/4500) were ~2.5x too cheap against that:
+     they made every reward affordable ten times over, so the DAILY CAP became the only
+     real governor and the wallet accumulated a surplus it could never spend.
+     A reward you can trivially afford is not a reward, it is a wage.
+     Price should bite first; the cap is the backstop, not the brake.
+     Recalibrate from real data in Manage once you have 30 days of sessions. */
+  state.rewardCatalogue=[
+    mk({name:'45 Minutes of R&R',description:'A short protected block. A game, an episode, a chapter — taken without guilt.',
+        category:'time',rewardType:'duration',costXp:1500,durationMinutes:45,dailyLimit:2,inventoryCap:4}),
+    mk({name:'90 Minutes of R&R',description:'A long protected block for deliberate leisure. Uninterrupted, earned, and yours.',
+        category:'time',rewardType:'duration',costXp:2500,durationMinutes:90,dailyLimit:2,inventoryCap:4}),
+    mk({name:'$10 Spending Allowance',description:'Permission to spend up to $10 of your own money without deliberation.',
+        category:'allowance',rewardType:'cash_allowance',costXp:1500,cashValueAud:10,inventoryCap:6}),
+    mk({name:'$25 Spending Allowance',description:'Permission to spend up to $25 of your own money without deliberation.',
+        category:'allowance',rewardType:'cash_allowance',costXp:3500,cashValueAud:25,inventoryCap:6}),
+    mk({name:'$50 Spending Allowance',description:'Permission to spend up to $50 of your own money without deliberation.',
+        category:'allowance',rewardType:'cash_allowance',costXp:6500,cashValueAud:50,inventoryCap:4}),
+    mk({name:'Lunch Out',description:'A meal away from the desk. Bought with work already banked.',
+        category:'meal',rewardType:'meal',costXp:3500,weeklyLimit:2,inventoryCap:2}),
+    mk({name:'Dinner or Meal Out',description:'The larger celebration. Rare by design — one a week, no more.',
+        category:'meal',rewardType:'meal',costXp:7000,weeklyLimit:1,inventoryCap:1})
+  ];
+  state.catalogueSeededV1=true;
+}
+
+/* --- calibration: are the prices honest against the real earn rate? --- */
+function earnRate(){
+  const cutoff=Date.now()-30*86400000;
+  const earns=state.xpTransactions.filter(t=>t.type==='earn'&&new Date(t.createdAt).getTime()>=cutoff);
+  if(!earns.length)return null;
+  const total=earns.reduce((s,t)=>s+t.amountXp,0);
+  const oldest=new Date(earns[earns.length-1].createdAt).getTime();
+  const days=Math.max(1,(Date.now()-oldest)/86400000);
+  return{perWeek:Math.round(total/days*7),days:Math.round(days),total};
+}
+
+/* --- limit counting --- */
+function purchasesOf(rewardId,period){
+  const now=new Date();
+  return state.rewardInventory.filter(i=>{
+    if(i.rewardId!==rewardId)return false;
+    if(i.status==='refunded')return false;
+    if(period==='day')return isSameDay(i.purchasedAt,now);
+    if(period==='week')return isSameWeek(i.purchasedAt,now);
+    if(period==='month')return isSameMonth(i.purchasedAt,now);
+    return true;
+  }).length;
+}
+function heldCount(rewardId){
+  return state.rewardInventory.filter(i=>i.rewardId===rewardId&&
+    (i.status==='available'||i.status==='active'||i.status==='partially_redeemed')).length;
+}
+function monthlyAllowanceUsed(){
+  const now=new Date();
+  return state.rewardInventory
+    .filter(i=>i.rewardType==='cash_allowance'&&i.status!=='refunded'&&isSameMonth(i.purchasedAt,now))
+    .reduce((s,i)=>s+(i.originalCashValueAud||0),0);
+}
+function lastPurchaseOf(rewardId){
+  const items=state.rewardInventory.filter(i=>i.rewardId===rewardId);
+  if(!items.length)return null;
+  return items.reduce((a,b)=>new Date(a.purchasedAt)>new Date(b.purchasedAt)?a:b).purchasedAt;
+}
+
+/* --- validation --- */
+function validateRewardPurchase(reward){
+  if(!reward)return{valid:false,message:'Reward not found.'};
+  if(!reward.active)return{valid:false,message:'This reward is archived.'};
+  if(inLockoutPeriod())return{valid:false,message:'Training Week — the wallet is frozen until XP resumes.'};
+  if(state.spendableXp<reward.costXp)
+    return{valid:false,message:'Need '+(reward.costXp-state.spendableXp).toLocaleString()+' more XP.'};
+  if(reward.inventoryCap&&heldCount(reward.id)>=reward.inventoryCap)
+    return{valid:false,message:'Inventory full. Redeem or return one first.'};
+  if(reward.dailyLimit&&purchasesOf(reward.id,'day')>=reward.dailyLimit)
+    return{valid:false,message:'Daily limit reached. Available again tomorrow.'};
+  if(reward.weeklyLimit&&purchasesOf(reward.id,'week')>=reward.weeklyLimit)
+    return{valid:false,message:'Weekly limit reached. Available again '+nextMonday()+'.'};
+  if(reward.monthlyLimit&&purchasesOf(reward.id,'month')>=reward.monthlyLimit)
+    return{valid:false,message:'Monthly limit reached. Available again '+nextMonthStart()+'.'};
+  if(reward.rewardType==='cash_allowance'){
+    const cap=state.rewardSettings.monthlyAllowanceCapAud||0;
+    if(cap>0&&monthlyAllowanceUsed()+(reward.cashValueAud||0)>cap)
+      return{valid:false,message:'Monthly allowance cap reached ($'+monthlyAllowanceUsed()+' of $'+cap+'). Resets '+nextMonthStart()+'.'};
+  }
+  const last=lastPurchaseOf(reward.id);
+  if(reward.cooldownHours&&last){
+    const hrs=(Date.now()-new Date(last).getTime())/3600000;
+    if(hrs<reward.cooldownHours)
+      return{valid:false,message:'Cooling down. Available in '+Math.ceil(reward.cooldownHours-hrs)+'h.'};
+  }
+  /* Soft anti-compulsion guard, checked LAST so that a real limit always
+     reports its real reason rather than being masked by "sit with it". */
+  if(last&&config.purchaseCooldownMinutes>0&&(Date.now()-new Date(last).getTime())<config.purchaseCooldownMinutes*60000){
+    const mins=Math.ceil(config.purchaseCooldownMinutes-(Date.now()-new Date(last).getTime())/60000);
+    return{valid:false,message:'Just bought this. Sit with it for '+mins+' more minute'+(mins===1?'':'s')+'.'};
+  }
+  return{valid:true};
+}
+
+/* --- purchase (atomic) --- */
+function createInventoryItem(r){
+  return{
+    id:uid('inv'),rewardId:r.id,
+    name:r.name,description:r.description,rewardType:r.rewardType,category:r.category,
+    costXp:r.costXp,durationMinutes:r.durationMinutes||null,
+    originalCashValueAud:r.cashValueAud||null,
+    remainingCashValueAud:r.cashValueAud||null,
+    requiresRedemptionNote:!!r.requiresRedemptionNote,
+    status:'available',
+    purchasedAt:new Date().toISOString(),
+    startedAt:null,redeemedAt:null,expiresAt:null,
+    redemptionNote:null,actualSpendAud:null
+  };
+}
+/* Preflight: before spending or redeeming, reconcile with remote if we can.
+   A device that has been offline may hold a stale, inflated wallet. Last-write-wins
+   would otherwise let it spend XP that another device already spent.
+   If offline, we proceed on local state — that is the app's existing contract. */
+async function walletPreflight(){
+  if(!syncReady||state.timerRunning)return true;
+  try{
+    const r=await pullRemote();
+    if(r&&(r.updatedAt||0)>(state.updatedAt||0)){
+      applyPersistent(r);
+      seedRewardCatalogue();migrateXpWallet();
+      saveLocal();renderAll();
+      return 'refreshed';
+    }
+  }catch(e){/* offline — carry on with local state */}
+  return true;
+}
+
+async function purchaseReward(rewardId){
+  const r=getReward(rewardId);
+  if(!r)return;
+  const pre=await walletPreflight();
+  if(pre==='refreshed'){
+    const recheck=validateRewardPurchase(r);
+    if(!recheck.valid){
+      toast('Balance changed on another device. '+recheck.message);
+      renderRewards();return;
+    }
+  }
+  const v=validateRewardPurchase(r);
+  if(!v.valid){toast(v.message);return;}
+  const item=createInventoryItem(r);
+  const res=postWalletTransaction({
+    type:'purchase',amountXp:-r.costXp,lifetimeXpChange:0,
+    sourceType:'reward',sourceId:r.id,rewardId:r.id,inventoryItemId:item.id,
+    description:r.name
+  });
+  if(!res.success){toast(res.message);return;} // nothing mutated
+  state.rewardInventory.push(item);            // only after the debit clears
+  if(state.pinnedRewardId===r.id)state.pinnedRewardId=null;
+  saveState();renderAll();renderRewards();
+  toast('−'+r.costXp.toLocaleString()+' XP · '+r.name+' is yours');
+}
+
+/* --- refunds --- */
+function refundInventoryItem(itemId){
+  const item=getInvItem(itemId);
+  if(!item||item.status!=='available'){toast('Only unused rewards can be returned.');return;}
+  const rate=state.rewardSettings.rewardRefundRate||0.80;
+  const refund=Math.floor(item.costXp*rate);
+  const friction=item.costXp-refund;
+  askConfirm('Return Reward',
+    item.name+'\n\nOriginal cost: '+item.costXp.toLocaleString()+' XP\nRefund: '+refund.toLocaleString()+' XP\nCommitment cost: '+friction.toLocaleString()+' XP\n\nThe shortfall is deliberate. The Store is not a holding account — buying something should mean something.',
+    ()=>{
+      item.status='refunded';item.refundedAt=new Date().toISOString();
+      postWalletTransaction({type:'refund',amountXp:refund,lifetimeXpChange:0,
+        sourceType:'reward',sourceId:item.rewardId,rewardId:item.rewardId,inventoryItemId:item.id,
+        description:'Returned: '+item.name});
+      saveState();renderAll();renderRewards();
+      toast('+'+refund.toLocaleString()+' XP returned');
+    });
+}
+
+/* --- redemption records --- */
+function logRedemption(item,{amountAud=null,durationMinutes=null,note=null,merchant=null}){
+  state.rewardRedemptions.unshift({
+    id:uid('redemption'),inventoryItemId:item.id,rewardId:item.rewardId,
+    rewardName:item.name,rewardType:item.rewardType,
+    amountAud,durationMinutes,note:note||null,merchant:merchant||null,
+    redeemedAt:new Date().toISOString()
+  });
+}
+
+/* --- R&R: start, tick, expire --- */
+function activeRnR(){return state.rewardInventory.find(i=>i.rewardType==='duration'&&i.status==='active')||null;}
+function startRnR(itemId){
+  const item=getInvItem(itemId);
+  if(!item||item.status!=='available')return;
+  if(activeRnR()){toast('An R&R block is already running.');return;}
+  askConfirm('Begin R&R',
+    item.name+'\n\nThe clock starts now and does not stop. It cannot be paused, banked, or returned once it begins.\n\nPut the work down. That is the whole point.',
+    ()=>{
+      item.status='active';
+      item.startedAt=new Date().toISOString();
+      item.expiresAt=new Date(Date.now()+item.durationMinutes*60000).toISOString();
+      saveState();renderAll();renderRewards();
+      toast('R&R running · '+item.durationMinutes+' minutes');
+    });
+}
+function expireRnR(){
+  const now=Date.now();let changed=false;
+  state.rewardInventory.forEach(i=>{
+    if(i.rewardType==='duration'&&i.status==='active'&&i.expiresAt&&new Date(i.expiresAt).getTime()<=now){
+      i.status='redeemed';i.redeemedAt=i.expiresAt;
+      logRedemption(i,{durationMinutes:i.durationMinutes});
+      changed=true;
+      notices.push({title:'R&R Complete',body:i.name+' has run its course. Back to the anvil.'});
+    }
+  });
+  return changed;
+}
+let rnrTicker=null;
+function tickRnR(){
+  const item=activeRnR();
+  const dashBox=document.getElementById('dashRnR');
+  const hdr=document.getElementById('rnrHeaderBadge');
+  if(!item){
+    if(dashBox)dashBox.style.display='none';
+    if(hdr)hdr.style.display='none';
+    return;
+  }
+  const ms=new Date(item.expiresAt).getTime()-Date.now();
+  if(ms<=0){
+    if(expireRnR()){saveState();renderAll();renderRewards();flushNotices();}
+    return;
+  }
+  const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000);
+  const clock=(h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const ends=new Date(item.expiresAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  if(dashBox){
+    dashBox.style.display='block';
+    dashBox.innerHTML='<div class="rnr-label">R&amp;R Active</div><div class="rnr-clock">'+clock+'</div><div class="rnr-sub">'+esc(item.name)+' · ends '+ends+'</div>';
+  }
+  if(hdr){hdr.style.display='flex';hdr.querySelector('.stat-value').textContent=clock;}
+  const inv=document.getElementById('rnrInvClock');
+  if(inv)inv.textContent=clock;
+}
+
+/* --- allowance / meal / consumable redemption --- */
+let redeemTarget=null;
+function openRedeem(itemId){
+  const item=getInvItem(itemId);if(!item)return;
+  redeemTarget=itemId;
+  const t=document.getElementById('redeemTitle'),
+        sub=document.getElementById('redeemSub'),
+        body=document.getElementById('redeemBody');
+  if(item.rewardType==='cash_allowance'){
+    t.textContent='Record Spending';
+    sub.textContent=item.name+' · $'+item.remainingCashValueAud.toFixed(2)+' remaining. The Forge holds no money — this is a record of permission used.';
+    body.innerHTML='<label>Amount spent (AUD)</label><input type="number" id="redeemAmount" step="0.01" min="0.01" max="'+item.remainingCashValueAud+'" placeholder="0.00" style="margin-bottom:12px">'
+      +'<label>On what (optional)</label><input type="text" id="redeemNote" placeholder="e.g. a book" style="margin-bottom:4px">';
+  }else if(item.rewardType==='meal'){
+    t.textContent='Redeem '+item.name;
+    sub.textContent='Where did you take it? A meal you cannot name later was not really a reward.';
+    body.innerHTML='<label>Venue</label><input type="text" id="redeemMerchant" placeholder="e.g. Malay Chinese Takeaway" style="margin-bottom:12px">'
+      +'<label>Note (optional)</label><input type="text" id="redeemNote" placeholder="e.g. lunch after the client call" style="margin-bottom:4px">';
+  }else{
+    t.textContent='Mark as Used';
+    sub.textContent=item.name+' will be marked redeemed. This cannot be undone.';
+    body.innerHTML='<label>Note (optional)</label><input type="text" id="redeemNote" placeholder="Anything worth remembering" style="margin-bottom:4px">';
+  }
+  openModal('redeemModal');
+}
+async function confirmRedeem(){
+  const targetId=redeemTarget;
+  const pre=await walletPreflight();
+  if(pre==='refreshed'){
+    const fresh=getInvItem(targetId);
+    if(!fresh||fresh.status==='redeemed'||fresh.status==='refunded'){
+      toast('Already redeemed on another device.');
+      closeModal('redeemModal');redeemTarget=null;renderRewards();return;
+    }
+  }
+  const item=getInvItem(targetId);if(!item){closeModal('redeemModal');return;}
+  if(item.status==='redeemed'||item.status==='refunded'){
+    toast('Already redeemed.');closeModal('redeemModal');redeemTarget=null;renderRewards();return;
+  }
+  const noteEl=document.getElementById('redeemNote');
+  const note=noteEl?noteEl.value.trim():'';
+  if(item.rewardType==='cash_allowance'){
+    const amt=parseFloat(document.getElementById('redeemAmount').value);
+    if(!(amt>0)){toast('Enter an amount.');return;}
+    if(amt>item.remainingCashValueAud+0.001){toast('That exceeds the remaining $'+item.remainingCashValueAud.toFixed(2)+'.');return;}
+    item.remainingCashValueAud=Math.round((item.remainingCashValueAud-amt)*100)/100;
+    item.actualSpendAud=Math.round(((item.actualSpendAud||0)+amt)*100)/100;
+    logRedemption(item,{amountAud:amt,note});
+    if(item.remainingCashValueAud<=0.001){
+      item.remainingCashValueAud=0;item.status='redeemed';item.redeemedAt=new Date().toISOString();
+      toast('$'+amt.toFixed(2)+' recorded · allowance fully used');
+    }else{
+      item.status='partially_redeemed';
+      toast('$'+amt.toFixed(2)+' recorded · $'+item.remainingCashValueAud.toFixed(2)+' left');
+    }
+  }else if(item.rewardType==='meal'){
+    const venue=document.getElementById('redeemMerchant').value.trim();
+    if(!venue){toast('Name the venue.');return;}
+    item.status='redeemed';item.redeemedAt=new Date().toISOString();
+    item.redemptionNote=note||null;
+    logRedemption(item,{merchant:venue,note});
+    toast(item.name+' redeemed · '+venue);
+  }else{
+    item.status='redeemed';item.redeemedAt=new Date().toISOString();
+    item.redemptionNote=note||null;
+    logRedemption(item,{note});
+    toast(item.name+' marked used');
+  }
+  closeModal('redeemModal');redeemTarget=null;
+  saveState();renderAll();renderRewards();
+}
+
+/* --- stats --- */
+function rewardStats(){
+  const txn=state.xpTransactions;
+  const spent=Math.abs(txn.filter(t=>t.type==='purchase').reduce((s,t)=>s+t.amountXp,0));
+  const earned=txn.filter(t=>t.type==='earn').reduce((s,t)=>s+t.amountXp,0);
+  const purchased=state.rewardInventory.filter(i=>i.status!=='refunded').length;
+  const redeemed=state.rewardInventory.filter(i=>i.status==='redeemed').length;
+  const rnrMins=state.rewardInventory
+    .filter(i=>i.rewardType==='duration'&&(i.status==='redeemed'))
+    .reduce((s,i)=>s+(i.durationMinutes||0),0);
+  const allowanceAuth=state.rewardInventory
+    .filter(i=>i.rewardType==='cash_allowance'&&i.status!=='refunded')
+    .reduce((s,i)=>s+(i.originalCashValueAud||0),0);
+  const allowanceSpent=state.rewardRedemptions
+    .filter(r=>r.rewardType==='cash_allowance')
+    .reduce((s,r)=>s+(r.amountAud||0),0);
+  const mealsRedeemed=state.rewardRedemptions.filter(r=>r.rewardType==='meal').length;
+  const unredeemed=state.rewardInventory.filter(i=>i.status==='available').length;
+  const authorisedOpen=state.rewardInventory
+    .filter(i=>i.rewardType==='cash_allowance'&&(i.status==='available'||i.status==='partially_redeemed'))
+    .reduce((s,i)=>s+(i.remainingCashValueAud||0),0);
+  return{spent,earned,purchased,redeemed,rnrMins,allowanceAuth,allowanceSpent,mealsRedeemed,unredeemed,authorisedOpen};
+}
+function fmtMins(m){
+  if(!m)return '0h';
+  const h=Math.floor(m/60),r=m%60;
+  return (h?h+'h':'')+(r?(h?' ':'')+r+'m':'')||'0h';
+}
+
+/* ============================================================
+   ==================  REWARD RENDERING  ======================
+   ============================================================ */
+let rewardTab='store', txnFilter='all', txnShown=config.txnPageSize;
+
+function renderRewards(){
+  renderWalletSummary();
+  if(rewardTab==='store')renderStore();
+  else if(rewardTab==='inventory')renderInventory();
+  else if(rewardTab==='transactions')renderTransactions();
+  else if(rewardTab==='manage')renderManage();
+}
+function switchRewardTab(t){
+  rewardTab=t;
+  document.querySelectorAll('.rtab').forEach(b=>b.classList.toggle('active',b.dataset.rtab===t));
+  ['rewardStore','rewardInventory','rewardTransactions','rewardManagement'].forEach(id=>{
+    document.getElementById(id).style.display='none';
+  });
+  const map={store:'rewardStore',inventory:'rewardInventory',transactions:'rewardTransactions',manage:'rewardManagement'};
+  document.getElementById(map[t]).style.display='block';
+  renderRewards();
+}
+function renderWalletSummary(){
+  const st=rewardStats();
+  document.getElementById('walletSummary').innerHTML=
+    '<div class="wallet-stat"><div class="wallet-value">'+state.spendableXp.toLocaleString()+'</div><div class="wallet-label">Available XP</div></div>'
+   +'<div class="wallet-stat"><div class="wallet-value muted">'+state.cumulativeXp.toLocaleString()+'</div><div class="wallet-label">Lifetime XP</div></div>'
+   +'<div class="wallet-stat"><div class="wallet-value muted">'+st.unredeemed+'</div><div class="wallet-label">Unredeemed</div></div>'
+   +'<div class="wallet-stat"><div class="wallet-value muted">$'+st.authorisedOpen.toFixed(2).replace(/\.00$/,'')+'</div><div class="wallet-label">Authorised Spend</div></div>';
+}
+
+/* --- STORE --- */
+function renderStore(){
+  const el=document.getElementById('rewardStore');
+  const active=state.rewardCatalogue.filter(r=>r.active);
+  if(!active.length){el.innerHTML='<div class="empty-state">No rewards in the catalogue. Add one in Manage.</div>';return;}
+  const cap=state.rewardSettings.monthlyAllowanceCapAud||0;
+  const used=monthlyAllowanceUsed();
+  let h='';
+  if(cap>0){
+    const pct=Math.min(100,used/cap*100);
+    h+='<div class="allowance-cap"><div class="allowance-cap-head"><span>Monthly allowance capacity</span><span>$'+used+' of $'+cap+'</span></div>'
+      +'<div class="xp-bar slim"><div class="xp-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="allowance-cap-note">Resets '+nextMonthStart()+'. The Forge holds no money — an allowance is permission, not payment.</div></div>';
+  }
+  h+='<div class="store-grid">';
+  active.forEach(r=>{
+    const afford=state.spendableXp>=r.costXp;
+    const v=validateRewardPurchase(r);
+    const held=heldCount(r.id);
+    const pct=Math.min(100,state.spendableXp/r.costXp*100);
+    const gap=Math.max(0,r.costXp-state.spendableXp);
+    const pinned=state.pinnedRewardId===r.id;
+    let limits=[];
+    if(r.dailyLimit)limits.push(purchasesOf(r.id,'day')+'/'+r.dailyLimit+' today');
+    if(r.weeklyLimit)limits.push(purchasesOf(r.id,'week')+'/'+r.weeklyLimit+' this week');
+    if(r.monthlyLimit)limits.push(purchasesOf(r.id,'month')+'/'+r.monthlyLimit+' this month');
+    if(r.inventoryCap)limits.push(held+'/'+r.inventoryCap+' held');
+    h+='<div class="reward-card'+(afford?' afford':'')+(pinned?' pinned':'')+'">'
+      +'<button class="pin-btn'+(pinned?' on':'')+'" data-pin="'+r.id+'" title="Set as target">'+(pinned?'★':'☆')+'</button>'
+      +'<div class="reward-name">'+esc(r.name)+'</div>'
+      +'<div class="reward-desc">'+esc(r.description)+'</div>'
+      +'<div class="reward-meta">'
+        +'<span class="pill">'+r.rewardType.replace('_',' ')+'</span>'
+        +(r.durationMinutes?'<span class="pill">'+r.durationMinutes+' min</span>':'')
+        +(r.cashValueAud?'<span class="pill">$'+r.cashValueAud+'</span>':'')
+      +'</div>'
+      +'<div class="reward-cost"><span>Cost</span><b>'+r.costXp.toLocaleString()+' XP</b></div>';
+    if(afford){
+      h+='<div class="reward-after"><span>Balance after</span><b>'+(state.spendableXp-r.costXp).toLocaleString()+' XP</b></div>';
+    }else{
+      h+='<div class="xp-bar slim"><div class="xp-fill" style="width:'+pct+'%"></div></div>'
+        +'<div class="reward-gap">'+gap.toLocaleString()+' XP remaining</div>';
+    }
+    if(limits.length)h+='<div class="reward-limits">'+limits.join(' · ')+'</div>';
+    if(v.valid){
+      h+='<button class="buy" data-buy="'+r.id+'">Purchase</button>';
+    }else{
+      h+='<button class="buy locked" disabled>'+(afford?esc(v.message):'Locked')+'</button>';
+    }
+    h+='</div>';
+  });
+  h+='</div>';
+  el.innerHTML=h;
+  el.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',()=>confirmPurchase(b.dataset.buy)));
+  el.querySelectorAll('[data-pin]').forEach(b=>b.addEventListener('click',()=>{
+    state.pinnedRewardId=state.pinnedRewardId===b.dataset.pin?null:b.dataset.pin;
+    saveState();renderStore();renderRewardTarget();
+  }));
+}
+function confirmPurchase(rewardId){
+  const r=getReward(rewardId);if(!r)return;
+  const v=validateRewardPurchase(r);
+  if(!v.valid){toast(v.message);return;}
+  let body='Cost: '+r.costXp.toLocaleString()+' XP\nCurrent balance: '+state.spendableXp.toLocaleString()+' XP\nBalance after: '+(state.spendableXp-r.costXp).toLocaleString()+' XP\n\n';
+  if(r.rewardType==='cash_allowance')body+='This authorises up to $'+r.cashValueAud+' of discretionary spending from your own funds. The Forge does not process or hold money.';
+  else if(r.rewardType==='duration')body+='This creates one '+r.durationMinutes+'-minute token in your Inventory. It does not start the clock — you do that when you are ready.';
+  else body+='This creates one '+r.name+' token in your Inventory.';
+  body+='\n\nLifetime XP is untouched. Your level does not move.';
+  askConfirm('Purchase '+r.name,body,()=>purchaseReward(rewardId));
+}
+
+/* --- INVENTORY --- */
+function renderInventory(){
+  const el=document.getElementById('rewardInventory');
+  const live=state.rewardInventory.filter(i=>i.status==='available'||i.status==='active'||i.status==='partially_redeemed');
+  const past=state.rewardInventory.filter(i=>i.status==='redeemed'||i.status==='refunded').slice().reverse();
+  let h='';
+  if(!live.length){
+    h+='<div class="empty-state">Nothing held. Earn it, then buy it.</div>';
+  }else{
+    h+='<div class="inv-grid">';
+    live.forEach(i=>{
+      const age=Math.max(0,daysBetween(localDateStr(new Date(i.purchasedAt)),localDateStr()));
+      const stale=i.status==='available'&&age>=config.allowanceNudgeDays;
+      h+='<div class="inv-card'+(i.status==='active'?' running':'')+(stale?' stale':'')+'">'
+        +'<div class="inv-name">'+esc(i.name)+'</div>';
+      if(i.status==='active'){
+        h+='<div class="inv-running"><span class="rnr-dot"></span><span id="rnrInvClock">--:--</span> remaining</div>';
+      }else if(i.rewardType==='cash_allowance'){
+        h+='<div class="inv-line">Remaining <b>$'+i.remainingCashValueAud.toFixed(2)+'</b> of $'+i.originalCashValueAud.toFixed(2)+'</div>';
+      }else if(i.rewardType==='duration'){
+        h+='<div class="inv-line">'+i.durationMinutes+' minutes, unspent</div>';
+      }
+      h+='<div class="inv-meta">Bought '+prettyDate(localDateStr(new Date(i.purchasedAt)))+' for '+i.costXp.toLocaleString()+' XP</div>';
+      if(stale)h+='<div class="inv-nudge">Held '+age+' days. An unspent reward is just deferred XP.</div>';
+      h+='<div class="inv-actions">';
+      if(i.status==='available'&&i.rewardType==='duration')h+='<button data-start="'+i.id+'">Start R&amp;R</button>';
+      else if(i.rewardType==='cash_allowance')h+='<button data-redeem="'+i.id+'">Record Spending</button>';
+      else if(i.status==='available'&&i.rewardType==='meal')h+='<button data-redeem="'+i.id+'">Redeem</button>';
+      else if(i.status==='available')h+='<button data-redeem="'+i.id+'">Mark Used</button>';
+      if(i.status==='available')h+='<button class="ghost" data-refund="'+i.id+'">Return</button>';
+      h+='</div></div>';
+    });
+    h+='</div>';
+  }
+  if(past.length){
+    h+='<div class="subhead" style="margin-top:22px">Spent &amp; Returned <span>'+past.length+'</span></div><div class="inv-past">';
+    past.slice(0,40).forEach(i=>{
+      const when=i.redeemedAt||i.refundedAt||i.purchasedAt;
+      const tag=i.status==='refunded'?'<span class="pill wait">returned</span>':'<span class="pill">redeemed</span>';
+      let detail='';
+      const rec=state.rewardRedemptions.find(r=>r.inventoryItemId===i.id);
+      if(rec&&rec.merchant)detail=' · '+esc(rec.merchant);
+      else if(i.rewardType==='cash_allowance'&&i.actualSpendAud)detail=' · $'+i.actualSpendAud.toFixed(2)+' spent';
+      else if(i.rewardType==='duration')detail=' · '+i.durationMinutes+' min';
+      h+='<div class="past-row"><span class="txt">'+esc(i.name)+'<span class="past-meta">'+prettyDate(localDateStr(new Date(when)))+detail+'</span></span>'+tag+'</div>';
+    });
+    h+='</div>';
+  }
+  el.innerHTML=h;
+  el.querySelectorAll('[data-start]').forEach(b=>b.addEventListener('click',()=>startRnR(b.dataset.start)));
+  el.querySelectorAll('[data-redeem]').forEach(b=>b.addEventListener('click',()=>openRedeem(b.dataset.redeem)));
+  el.querySelectorAll('[data-refund]').forEach(b=>b.addEventListener('click',()=>refundInventoryItem(b.dataset.refund)));
+  tickRnR();
+}
+
+/* --- TRANSACTIONS --- */
+const TXN_GROUPS={
+  all:()=>true,
+  earned:t=>t.type==='earn',
+  stakes:t=>t.type==='stake_hold'||t.type==='stake_return'||t.type==='stake_loss',
+  purchases:t=>t.type==='purchase'||t.type==='refund',
+  penalties:t=>t.type==='penalty',
+  adjustments:t=>t.type==='manual_credit'||t.type==='manual_debit'||t.type==='correction'||t.type==='migration'
+};
+function renderTransactions(){
+  const el=document.getElementById('rewardTransactions');
+  const all=state.xpTransactions.filter(TXN_GROUPS[txnFilter]||TXN_GROUPS.all);
+  let h='<div class="txn-filters">';
+  ['all','earned','purchases','penalties','stakes','adjustments'].forEach(f=>{
+    h+='<button class="txn-f'+(txnFilter===f?' active':'')+'" data-f="'+f+'">'+f.charAt(0).toUpperCase()+f.slice(1)+'</button>';
+  });
+  h+='</div>';
+  if(!all.length){
+    h+='<div class="empty-state">No transactions yet.</div>';
+    el.innerHTML=h;bindTxnFilters(el);return;
+  }
+  const page=all.slice(0,txnShown);
+  let lastDay=null;
+  page.forEach(t=>{
+    const d=localDateStr(new Date(t.createdAt));
+    if(d!==lastDay){
+      lastDay=d;
+      h+='<div class="txn-day">'+new Date(d+'T12:00:00').toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'}).toUpperCase()+'</div>';
+    }
+    const pos=t.amountXp>0, zero=t.amountXp===0;
+    const sign=pos?'+':'';
+    h+='<div class="txn-row"><div class="txn-amt '+(zero?'zero':(pos?'pos':'neg'))+'">'+sign+t.amountXp.toLocaleString()+' XP</div>'
+      +'<div class="txn-body"><div class="txn-desc">'+esc(t.description||t.type)+'</div>'
+      +'<div class="txn-bal">Balance: '+t.balanceAfter.toLocaleString()+' XP'
+      +(t.lifetimeXpChange?' · Lifetime '+(t.lifetimeXpChange>0?'+':'')+t.lifetimeXpChange.toLocaleString():'')
+      +'</div></div><span class="pill">'+t.type.replace('_',' ')+'</span></div>';
+  });
+  if(all.length>txnShown)h+='<button class="ghost" id="txnMore" style="margin-top:12px;width:100%">Show more ('+(all.length-txnShown)+' older)</button>';
+  el.innerHTML=h;
+  bindTxnFilters(el);
+  const more=document.getElementById('txnMore');
+  if(more)more.addEventListener('click',()=>{txnShown+=config.txnPageSize;renderTransactions();});
+}
+function bindTxnFilters(el){
+  el.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{
+    txnFilter=b.dataset.f;txnShown=config.txnPageSize;renderTransactions();
+  }));
+}
+
+/* --- MANAGE --- */
+let editingRewardId=null;
+function renderManage(){
+  const el=document.getElementById('rewardManagement');
+  const s=state.rewardSettings;
+  let h='<div class="section-note">Prices, limits and caps are yours to set. If a reward is too cheap it stops meaning anything — and if it is too dear you will never buy it, which is the same failure wearing a different coat.</div>';
+
+  /* calibration panel — the honest mirror */
+  const er=earnRate();
+  h+='<div class="calib">';
+  if(!er||er.days<7){
+    h+='<div class="calib-head">Calibration</div><div class="calib-note">Not enough history yet. After a week of sessions this will show your real earn rate and tell you whether these prices are lying to you.</div>';
+  }else{
+    const wk=er.perWeek;
+    h+='<div class="calib-head">Calibration · last '+er.days+' days</div>';
+    h+='<div class="calib-rate">'+wk.toLocaleString()+' XP <span>per week, actual</span></div>';
+    h+='<div class="calib-rows">';
+    state.rewardCatalogue.filter(r=>r.active).forEach(r=>{
+      const n=wk/r.costXp;
+      const cap=r.weeklyLimit||(r.dailyLimit?r.dailyLimit*7:null);
+      let verdict,cls;
+      if(cap&&n>cap*1.5){verdict='too cheap — the cap is doing all the work';cls='bad';}
+      else if(n>=5){verdict='too cheap — you can buy it '+n.toFixed(0)+'× over';cls='bad';}
+      else if(n<0.35){verdict='too dear — you will never reach it';cls='bad';}
+      else{verdict='honest';cls='good';}
+      h+='<div class="calib-row"><span class="cr-name">'+esc(r.name)+'</span>'
+        +'<span class="cr-n">'+n.toFixed(1)+'/wk</span>'
+        +'<span class="cr-v '+cls+'">'+verdict+'</span></div>';
+    });
+    h+='</div><div class="calib-note">A reward should sit near one purchase a week at your rate. Much above that and the price stops governing anything.</div>';
+  }
+  h+='</div>';
+
+  h+='<div class="manage-settings">'
+    +'<div class="form-group"><label>Monthly allowance cap (AUD)</label><input type="number" id="setAllowCap" min="0" step="5" value="'+(s.monthlyAllowanceCapAud||0)+'"></div>'
+    +'<div class="form-group"><label>Refund rate (0.5 – 1.0)</label><input type="number" id="setRefundRate" min="0.5" max="1" step="0.05" value="'+(s.rewardRefundRate||0.8)+'"></div>'
+    +'<div class="form-group"><label>XP per dollar (guide)</label><input type="number" id="setXpPerDollar" min="1" step="10" value="'+(s.xpPerDollar||150)+'"></div>'
+    +'</div><button id="saveSettingsBtn" class="ghost" style="margin-bottom:20px">Save Settings</button>';
+
+  h+='<div class="subhead">Catalogue <span>'+state.rewardCatalogue.length+'</span></div><div class="manage-list">';
+  state.rewardCatalogue.forEach(r=>{
+    h+='<div class="manage-row'+(r.active?'':' archived')+'">'
+      +'<div class="manage-info"><div class="manage-name">'+esc(r.name)+(r.active?'':' <span class="pill wait">archived</span>')+'</div>'
+      +'<div class="manage-meta">'+r.costXp.toLocaleString()+' XP · '+r.rewardType.replace('_',' ')
+      +(r.durationMinutes?' · '+r.durationMinutes+'min':'')+(r.cashValueAud?' · $'+r.cashValueAud:'')+'</div></div>'
+      +'<div class="manage-actions"><button class="ghost" data-edit="'+r.id+'">Edit</button>'
+      +'<button class="ghost" data-arch="'+r.id+'">'+(r.active?'Archive':'Restore')+'</button></div></div>';
+  });
+  h+='</div><button id="newRewardBtn" style="margin-top:14px">+ New Reward</button>';
+  el.innerHTML=h;
+  document.getElementById('saveSettingsBtn').addEventListener('click',()=>{
+    s.monthlyAllowanceCapAud=Math.max(0,parseFloat(document.getElementById('setAllowCap').value)||0);
+    s.rewardRefundRate=Math.min(1,Math.max(0.5,parseFloat(document.getElementById('setRefundRate').value)||0.8));
+    s.xpPerDollar=Math.max(1,parseInt(document.getElementById('setXpPerDollar').value)||150);
+    saveState();renderRewards();toast('Settings saved');
+  });
+  document.getElementById('newRewardBtn').addEventListener('click',()=>openRewardEditor(null));
+  el.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>openRewardEditor(b.dataset.edit)));
+  el.querySelectorAll('[data-arch]').forEach(b=>b.addEventListener('click',()=>{
+    const r=getReward(b.dataset.arch);if(!r)return;
+    r.active=!r.active;r.updatedAt=new Date().toISOString();
+    saveState();renderRewards();toast(r.active?'Restored':'Archived');
+  }));
+}
+function openRewardEditor(id){
+  editingRewardId=id;
+  const r=id?getReward(id):null;
+  document.getElementById('rewardEditorTitle').textContent=r?'Edit Reward':'New Reward';
+  const g=(k,d)=>r&&r[k]!=null?r[k]:d;
+  document.getElementById('reName').value=g('name','');
+  document.getElementById('reDesc').value=g('description','');
+  document.getElementById('reType').value=g('rewardType','custom');
+  document.getElementById('reCost').value=g('costXp',1000);
+  document.getElementById('reDuration').value=g('durationMinutes','');
+  document.getElementById('reCash').value=g('cashValueAud','');
+  document.getElementById('reDaily').value=g('dailyLimit','');
+  document.getElementById('reWeekly').value=g('weeklyLimit','');
+  document.getElementById('reMonthly').value=g('monthlyLimit','');
+  document.getElementById('reCap').value=g('inventoryCap',5);
+  document.getElementById('reActive').checked=r?!!r.active:true;
+  syncRewardEditorFields();
+  openModal('rewardEditorModal');
+}
+function syncRewardEditorFields(){
+  const t=document.getElementById('reType').value;
+  document.getElementById('reDurationWrap').style.display=t==='duration'?'block':'none';
+  document.getElementById('reCashWrap').style.display=t==='cash_allowance'?'block':'none';
+}
+function saveRewardEditor(){
+  const name=document.getElementById('reName').value.trim();
+  const type=document.getElementById('reType').value;
+  const cost=parseInt(document.getElementById('reCost').value);
+  const dur=parseInt(document.getElementById('reDuration').value)||null;
+  const cash=parseFloat(document.getElementById('reCash').value)||null;
+  const cap=parseInt(document.getElementById('reCap').value)||1;
+  if(!name){toast('Name it.');return;}
+  if(!(cost>0)){toast('XP cost must be above zero.');return;}
+  if(type==='duration'&&!(dur>0)){toast('Duration rewards need minutes.');return;}
+  if(type==='cash_allowance'&&!(cash>0)){toast('Allowance rewards need a dollar value.');return;}
+  const num=id=>{const v=parseInt(document.getElementById(id).value);return v>0?v:null;};
+  const now=new Date().toISOString();
+  const patch={
+    name,description:document.getElementById('reDesc').value.trim(),
+    rewardType:type,category:type==='duration'?'time':type==='cash_allowance'?'allowance':type,
+    costXp:cost,durationMinutes:type==='duration'?dur:null,cashValueAud:type==='cash_allowance'?cash:null,
+    dailyLimit:num('reDaily'),weeklyLimit:num('reWeekly'),monthlyLimit:num('reMonthly'),
+    inventoryCap:Math.max(1,cap),active:document.getElementById('reActive').checked,updatedAt:now
+  };
+  if(editingRewardId){
+    Object.assign(getReward(editingRewardId),patch);
+    toast('Reward updated');
+  }else{
+    state.rewardCatalogue.push(Object.assign({id:uid('reward'),cooldownHours:0,requiresRedemptionNote:false,createdAt:now,isDefault:false},patch));
+    toast('Reward created');
+  }
+  closeModal('rewardEditorModal');editingRewardId=null;
+  saveState();renderRewards();
+}
+
+/* --- DASHBOARD REWARD TARGET --- */
+function renderRewardTarget(){
+  const box=document.getElementById('dashRewardTarget');
+  if(!box)return;
+  let r=state.pinnedRewardId?getReward(state.pinnedRewardId):null;
+  if(r&&!r.active)r=null;
+  if(!r){
+    /* no pin: nudge toward the cheapest thing they can nearly afford */
+    const cands=state.rewardCatalogue.filter(x=>x.active).sort((a,b)=>a.costXp-b.costXp);
+    const next=cands.find(x=>state.spendableXp<x.costXp)||cands[cands.length-1];
+    if(!next||!state.spendableXp){box.style.display='none';return;}
+    box.style.display='block';
+    const afford=state.spendableXp>=next.costXp;
+    box.innerHTML='<div class="subhead">Reward Target</div>'
+      +'<div class="rt-none">'+state.spendableXp.toLocaleString()+' XP available.'
+      +(afford?' You can buy something.':' Next up: '+esc(next.name)+' at '+next.costXp.toLocaleString()+' XP.')
+      +'</div><button class="ghost" id="rtGo">Open Rewards →</button>';
+    document.getElementById('rtGo').addEventListener('click',()=>showView('rewardsView'));
+    return;
+  }
+  const afford=state.spendableXp>=r.costXp;
+  const pct=Math.min(100,state.spendableXp/r.costXp*100);
+  const gap=Math.max(0,r.costXp-state.spendableXp);
+  box.style.display='block';
+  box.innerHTML='<div class="subhead">'+(afford?'Reward Ready':'Reward Target')+'</div>'
+    +'<div class="rt-name">'+esc(r.name)+'</div>'
+    +(afford
+      ? '<div class="rt-ready">Earned. '+r.costXp.toLocaleString()+' XP, and you have '+state.spendableXp.toLocaleString()+'.</div><button id="rtBuy">Purchase</button>'
+      : '<div class="rt-nums">'+state.spendableXp.toLocaleString()+' / '+r.costXp.toLocaleString()+' XP</div>'
+        +'<div class="xp-bar slim"><div class="xp-fill" style="width:'+pct+'%"></div></div>'
+        +'<div class="rt-gap">'+gap.toLocaleString()+' XP remaining</div><button class="ghost" id="rtGo">View Reward →</button>');
+  const buy=document.getElementById('rtBuy');
+  if(buy)buy.addEventListener('click',()=>confirmPurchase(r.id));
+  const go=document.getElementById('rtGo');
+  if(go)go.addEventListener('click',()=>{showView('rewardsView');switchRewardTab('store');});
+}
+
+/* --- first-reward discovery nudge --- */
+function checkRewardIntro(){
+  if(state.rewardIntroSeen)return;
+  const cheapest=state.rewardCatalogue.filter(r=>r.active).reduce((a,b)=>!a||b.costXp<a.costXp?b:a,null);
+  if(!cheapest||state.spendableXp<cheapest.costXp)return;
+  state.rewardIntroSeen=true;saveState();
+  notices.push({title:'The Store Is Open',
+    body:'You have '+state.spendableXp.toLocaleString()+' Available XP — enough for '+cheapest.name+'.\n\nLifetime XP is your record and never falls. Available XP is the part you are allowed to spend. Earning without ever spending is just hoarding, and hoarding is not discipline.'});
+}
+
+function renderSpoils(){
+  const g=document.getElementById('spoilsGrid');if(!g)return;
+  const st=rewardStats();
+  const cell=(v,l)=>'<div class="profile-stat"><div class="profile-stat-value">'+v+'</div><div class="profile-stat-label">'+l+'</div></div>';
+  g.innerHTML=cell(state.spendableXp.toLocaleString(),'Available XP')
+    +cell(st.spent.toLocaleString(),'XP Spent')
+    +cell(fmtMins(st.rnrMins),'R&amp;R Taken')
+    +cell('$'+st.allowanceSpent.toFixed(2).replace(/\.00$/,''),'Allowance Used')
+    +cell(st.mealsRedeemed,'Meals Redeemed')
+    +cell(st.redeemed+'/'+st.purchased,'Redeemed');
+}
+
 /* ================= UI PLUMBING ================= */
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -1714,7 +2748,8 @@ function showView(id){
   document.querySelectorAll('#nav button[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
   if(id==='ledgerView')switchLtab('history');
   if(id==='profileView')renderProfile();
-  if(id==='dashView'){renderDashObjectives();renderRockPanel();}
+  if(id==='rewardsView')renderRewards();
+  if(id==='dashView'){renderDashObjectives();renderRockPanel();renderRewardTarget();tickRnR();}
 }
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -1776,8 +2811,16 @@ document.querySelectorAll('.ctab').forEach(b=>b.addEventListener('click',()=>{
   document.getElementById('cobjs').style.display=b.dataset.ctab==='cobjs'?'block':'none';
 }));
 
+document.querySelectorAll('.rtab').forEach(b=>b.addEventListener('click',()=>switchRewardTab(b.dataset.rtab)));
+document.getElementById('redeemCancel').addEventListener('click',()=>{closeModal('redeemModal');redeemTarget=null;});
+document.getElementById('redeemConfirm').addEventListener('click',confirmRedeem);
+document.getElementById('reCancel').addEventListener('click',()=>{closeModal('rewardEditorModal');editingRewardId=null;});
+document.getElementById('reSave').addEventListener('click',saveRewardEditor);
+document.getElementById('reType').addEventListener('change',syncRewardEditorFields);
+
 /* ================= INIT ================= */
 loadState();renderAll();bootSync();
+rnrTicker=setInterval(tickRnR,1000);
 </script>
 </body>
 </html>
