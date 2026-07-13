@@ -354,6 +354,17 @@ button.danger:hover{background:#8f382e}
 .all-task-row{grid-template-columns:26px 2fr 1fr 1fr auto}
 .all-task-row.picked{border-color:var(--brass);background:rgba(182,138,90,.08)}
 .at-pick{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hist-tools{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.hist-tools button{padding:6px 13px;font-size:11px;white-space:nowrap}
+.session-row.purge-picked{border-color:var(--oxide);background:rgba(201,106,95,.09)}
+.session-row.corrupt{opacity:.55}
+.sr-tick{position:absolute;left:10px;top:18px;cursor:pointer;z-index:2}
+.session-row{position:relative}
+#historyBody .session-row .sr-main{transition:padding-left .12s}
+.hist-purge #historyBody .session-row .sr-main{padding-left:32px}
+.hist-day-head .hd-all{padding:3px 9px;font-size:9px;margin-left:8px}
+.at-selbar .danger{background:transparent;border:1px solid var(--oxide);color:var(--oxide);width:auto}
+.at-selbar .danger:hover{background:var(--oxide);color:var(--obsidian)}
 .at-caret{color:var(--camel);font-size:10px;margin-right:6px;display:inline-block;width:9px}
 .all-task-row .ts-title{cursor:pointer}
 .all-task-row.open{border-color:var(--line-warm)}
@@ -754,9 +765,15 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
       <h2>Completed</h2>
       <div class="tabs">
         <button class="ctab active" data-ctab="ctasks">Tasks</button>
+        <button class="ctab" data-ctab="cstages">Stages</button>
         <button class="ctab" data-ctab="cobjs">Objectives</button>
       </div>
       <div id="ctasks"><div id="completedTaskList"></div></div>
+      <div id="cstages" style="display:none">
+        <div class="section-note">Every stage you have closed, newest first. The task it belonged to sits underneath it — a stage with no parent is just a chore you happened to do.</div>
+        <input type="search" id="cstageSearch" placeholder="Search completed stages…" autocomplete="off" style="margin-bottom:12px">
+        <div id="completedStageList"></div>
+      </div>
       <div id="cobjs" style="display:none"><div id="completedObjList"></div></div>
     </div>
   </div>
@@ -771,7 +788,14 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
         <button class="ltab" data-ltab="day">Day Dive</button>
         <button class="ltab" data-ltab="rocks">Rocks</button>
       </div>
-      <div id="lhistory" class="ltab-content"><div id="historyBody"></div></div>
+      <div id="lhistory" class="ltab-content">
+        <div class="hist-tools">
+          <span class="section-note" style="flex:1;margin:0">Deleting a session reverses the XP it paid. Declaring a session never happened cannot leave its XP behind.</span>
+          <button id="purgeBtn" class="ghost">Select…</button>
+        </div>
+        <div id="purgeBar" class="at-selbar" style="display:none"></div>
+        <div id="historyBody"></div>
+      </div>
       <div id="lweek" class="ltab-content" style="display:none">
         <div class="section-note">Each column is a day. Segments are sessions, height by window length.</div>
         <div id="weekChart" class="chart-wrap"></div>
@@ -937,6 +961,17 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
   <div class="modal-sub" id="dueDateTaskName"></div>
   <input type="date" id="dueDateInput" style="margin-bottom:14px">
   <div class="modal-actions"><button id="dueDateCancel" class="ghost">Cancel</button><button id="dueDateConfirm">Save</button></div>
+</div></div>
+
+<div id="bulkDueModal" class="modal-overlay"><div class="modal">
+  <div class="modal-title">Set Due Date</div>
+  <div class="modal-sub" id="bulkDueSub"></div>
+  <input type="date" id="bulkDueInput" style="margin-bottom:14px">
+  <div class="modal-actions">
+    <button id="bulkDueCancel" class="ghost">Cancel</button>
+    <button id="bulkDueClear" class="ghost">Clear Date</button>
+    <button id="bulkDueConfirm">Set Date</button>
+  </div>
 </div></div>
 
 <div id="redeemModal" class="modal-overlay"><div class="modal">
@@ -1626,24 +1661,35 @@ function confirmDueDate(){
    The filter is a lens, not a delete key: it changes what you look at, never what
    exists. And the whole reason to search here is to ACT on what you find, so the
    selection survives filtering — narrow, tick, narrow again, tick again, then go. */
-let atFilter='live', atQuery='', atObj='', atSelected=new Set(), atOpen={};
+let atFilter='live', atQuery='', atObj='', atSelected=new Set(), atSelTasks=new Set(), atOpen={};
+/* TWO selection sets, deliberately.
+   atSelected  = stage ids -> what goes into a session.
+   atSelTasks  = task ids  -> what a bulk edit (due date) applies to.
+   They are not the same thing, and collapsing them would break the exact case you hit:
+   a task with NO stages has nothing to select at stage level, yet it is precisely the
+   task most likely to need a due date so it surfaces on the Dashboard. */
 /* Selection is held at STAGE level, not task level. A task tick is just a shortcut for
    "every live stage under this task" — which is why it can sit in a third state, partial.
    Holding it at task level would have made "add these two stages but not that one"
    impossible to express, and that is precisely the thing you asked for. */
 function atTaskSel(t){
   const live=atLiveStages(t);
-  if(!live.length)return 'none';
+  if(!live.length)return atSelTasks.has(t.id)?'all':'none';  // stageless: task-level only
   const n=live.filter(s=>atSelected.has(s.id)).length;
-  if(n===0)return 'none';
+  if(n===0)return atSelTasks.has(t.id)?'all':'none';
   return n===live.length?'all':'partial';
 }
 function atToggleTask(t){
   const live=atLiveStages(t);
-  if(!live.length){toast('No live stages — break it down first.');return;}
-  if(atTaskSel(t)==='all')live.forEach(s=>atSelected.delete(s.id));
-  else live.forEach(s=>atSelected.add(s.id));
+  if(atSelTasks.has(t.id)){
+    atSelTasks.delete(t.id);
+    live.forEach(s=>atSelected.delete(s.id));
+  }else{
+    atSelTasks.add(t.id);
+    live.forEach(s=>atSelected.add(s.id));   // a stageless task selects fine; it just adds no stages
+  }
 }
+function atClearSel(){atSelected.clear();atSelTasks.clear();}
 const AT_FILTERS=[
   ['live','Live'],['today','Today'],['overdue','Overdue'],['upcoming','Upcoming'],
   ['nodate','No date'],['starred','Rocks'],['waiting','Blocked'],
@@ -1692,20 +1738,48 @@ function sendSelectionToSession(){
   state.selectedStages=stages;
   stages.forEach(s=>{builderOpen[s.taskId]=true;});
   renderBuilderStages();renderSelectedStages();updateStartBtn();
-  atSelected.clear();
+  atClearSel();
   toast(stages.length+' stage'+(stages.length===1?'':'s')+' from '+taskCount+' task'+(taskCount===1?'':'s')+' · choose a window');
 }
 function renderAtSelBar(){
   const bar=document.getElementById('atSelBar');if(!bar)return;
   const stages=atSelectedStages();
-  if(!stages.length){bar.style.display='none';return;}
-  const taskCount=new Set(stages.map(s=>s.taskId)).size;
+  const nTasks=atSelTasks.size;
+  if(!stages.length&&!nTasks){bar.style.display='none';return;}
   bar.style.display='flex';
-  bar.innerHTML='<span class="at-selcount">'+stages.length+' stage'+(stages.length===1?'':'s')+' · '+taskCount+' task'+(taskCount===1?'':'s')+'</span>'
-    +'<div class="at-selbtns"><button class="ghost" id="atClearSel">Clear</button>'
-    +'<button id="atToSession">Plan a Session →</button></div>';
-  document.getElementById('atClearSel').addEventListener('click',()=>{atSelected.clear();renderAllTasks();});
-  document.getElementById('atToSession').addEventListener('click',sendSelectionToSession);
+  let label=[];
+  if(nTasks)label.push(nTasks+' task'+(nTasks===1?'':'s'));
+  if(stages.length)label.push(stages.length+' stage'+(stages.length===1?'':'s'));
+  bar.innerHTML='<span class="at-selcount">'+label.join(' · ')+'</span>'
+    +'<div class="at-selbtns"><button class="ghost" id="atClearSelBtn">Clear</button>'
+    +'<button class="ghost" id="atBulkDue"'+(nTasks?'':' disabled')+'>Set Due Date</button>'
+    +'<button id="atToSession"'+(stages.length?'':' disabled')+'>Plan a Session →</button></div>';
+  document.getElementById('atClearSelBtn').addEventListener('click',()=>{atClearSel();renderAllTasks();});
+  if(nTasks)document.getElementById('atBulkDue').addEventListener('click',openBulkDue);
+  if(stages.length)document.getElementById('atToSession').addEventListener('click',sendSelectionToSession);
+}
+
+/* ---- bulk due date ---- */
+function openBulkDue(){
+  if(!atSelTasks.size){toast('Select some tasks first.');return;}
+  const n=atSelTasks.size;
+  document.getElementById('bulkDueSub').textContent=
+    n+' task'+(n===1?'':'s')+' selected. Setting a date to today puts them on the Dashboard; clearing it leaves them there permanently, with no deadline.';
+  document.getElementById('bulkDueInput').value=localDateStr();
+  openModal('bulkDueModal');
+}
+function applyBulkDue(clear){
+  const d=clear?null:(document.getElementById('bulkDueInput').value||null);
+  if(!clear&&!d){toast('Pick a date.');return;}
+  let n=0;
+  atSelTasks.forEach(id=>{
+    const t=state.tasks.find(x=>x.id===id);
+    if(t){t.dueDate=d;n++;}
+  });
+  closeModal('bulkDueModal');
+  atClearSel();
+  saveState();renderAll();
+  toast(n+' task'+(n===1?'':'s')+(d?' due '+fmtDue(d):' cleared of a due date'));
 }
 
 function renderAllTasks(){
@@ -1826,6 +1900,7 @@ function renderAllTasks(){
     row.querySelector('.ed').addEventListener('click',()=>showBreakdown(t.id));
     row.querySelector('.dl').addEventListener('click',()=>{
       atLiveStages(t).forEach(x=>atSelected.delete(x.id));
+      atSelTasks.delete(t.id);
       deleteTask(t.id);renderAllTasks();
     });
     list.appendChild(row);
@@ -2793,6 +2868,7 @@ function renderCompleted(){
     acc.querySelector('.accordion-head').addEventListener('click',()=>acc.classList.toggle('open'));
     tl.appendChild(acc);
   });
+  renderCompletedStages();
   const ol=document.getElementById('completedObjList');const dobj=state.objectives.filter(o=>o.status==='complete'||o.status==='abandoned');ol.innerHTML='';
   if(!dobj.length)ol.innerHTML='<div class="empty-state">No objectives closed yet</div>';
   dobj.forEach(o=>{
@@ -2803,6 +2879,69 @@ function renderCompleted(){
     ol.appendChild(el);
   });
 }
+let cstageQuery='';
+/* Completed stages, flattened out of the task tree. A stage on its own is meaningless —
+   "Dedupe" tells you nothing — so every row carries its task and objective underneath it. */
+function completedStages(){
+  const out=[];
+  state.tasks.forEach(t=>{
+    const o=objOf(t);
+    t.stages.forEach(s=>{
+      if(!s.completed)return;
+      out.push({stage:s,task:t,obj:o});
+    });
+  });
+  /* We have no per-stage completion timestamp, so the session record is the only honest
+     clock we have. Fall back to the task's creation order rather than inventing a date. */
+  const when={};
+  state.sessions.forEach(sess=>{
+    sess.stagesPlanned.concat(sess.extraStages||[]).forEach(x=>{
+      if(x.completed&&sess.endedAt)when[x.id]=sess.endedAt;
+    });
+  });
+  out.forEach(r=>{r.at=when[r.stage.id]||null;});
+  out.sort((a,b)=>{
+    if(a.at&&b.at)return b.at.localeCompare(a.at);
+    if(a.at)return -1;
+    if(b.at)return 1;
+    return (b.task.createdAt||'').localeCompare(a.task.createdAt||'');
+  });
+  return out;
+}
+function renderCompletedStages(){
+  const el=document.getElementById('completedStageList');if(!el)return;
+  const q=cstageQuery.trim().toLowerCase();
+  let rows=completedStages();
+  if(q)rows=rows.filter(r=>r.stage.title.toLowerCase().includes(q)||r.task.title.toLowerCase().includes(q));
+  if(!rows.length){
+    el.innerHTML='<div class="empty-state">'+(q?'Nothing matches "'+esc(cstageQuery)+'".':'No stages closed yet.')+'</div>';
+    return;
+  }
+  const hl=txt=>{
+    if(!q)return esc(txt);
+    const i=txt.toLowerCase().indexOf(q);
+    if(i<0)return esc(txt);
+    return esc(txt.slice(0,i))+'<mark>'+esc(txt.slice(i,i+q.length))+'</mark>'+esc(txt.slice(i+q.length));
+  };
+  let h='<div class="cs-count">'+rows.length+' stage'+(rows.length===1?'':'s')+' closed</div>';
+  let lastDay=null;
+  rows.forEach(r=>{
+    const day=r.at?localDateStr(new Date(r.at)):null;
+    if(day!==lastDay){
+      lastDay=day;
+      h+='<div class="txn-day">'+(day?prettyDate(day).toUpperCase():'DATE UNKNOWN')+'</div>';
+    }
+    h+='<div class="cs-row"><span class="chk">✓</span><div class="cs-body">'
+      +'<div class="cs-title">'+hl(r.stage.title)+'</div>'
+      +'<div class="cs-sub">'+(r.obj?esc(r.obj.title)+' <span>›</span> ':'')+hl(r.task.title)
+      +(r.task.completed?'':' <span class="pill">task still open</span>')+'</div>'
+      +'</div>'
+      +(r.at?'<span class="cs-when">'+new Date(r.at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</span>':'')
+      +'</div>';
+  });
+  el.innerHTML=h;
+}
+
 /* ================= LEDGER ================= */
 const openSess=new Set();let diveDate=null;
 function sessionClass(s){ if(s.attainmentPercent>=90)return (s.auto&&(s.timeBonusPercent||0)===0)?'easy':'good'; return 'bad'; }
@@ -2819,7 +2958,11 @@ function sessionRowHtml(s){
   if(s.timeBonusPercent>0)m+=' · time +'+s.timeBonusPercent+'%';
   if(flags.length)m+=' · '+flags.join(' · ');
   const open=openSess.has(s.sessionId);
-  return '<div class="session-row" data-sid="'+s.sessionId+'"><div class="sr-main"><span class="sdot '+cls+'"></span>'
+  const sel=purgeSel.has(s.sessionId);
+  if(s.corrupt)flags.push('corrupt');
+  return '<div class="session-row'+(sel?' purge-picked':'')+(s.corrupt?' corrupt':'')+'" data-sid="'+s.sessionId+'">'
+    +(purgeMode?'<span class="sr-tick bt-tick'+(sel?' on':'')+'"></span>':'')
+    +'<div class="sr-main"><span class="sdot '+cls+'"></span>'
     +'<div class="sr-info"><div class="sr-title">'+s.windowMinutes+'m · '+s.completed+'/'+(s.denom||s.stagesPlanned.length)+' stages</div>'
     +'<div class="sr-meta">'+m+'</div></div><div class="sr-xp">+'+s.xpEarned+'</div></div>'
     +(open?'<div class="sr-detail">'+stageReportHtml(s)+'</div>':'')+'</div>';
@@ -2827,9 +2970,79 @@ function sessionRowHtml(s){
 function bindRows(scope,rerender){
   document.querySelectorAll(scope+' .sr-main').forEach(el=>el.addEventListener('click',()=>{
     const id=el.parentElement.dataset.sid;
-    if(openSess.has(id))openSess.delete(id);else openSess.add(id);
-    rerender();
+    if(purgeMode){ purgeSel.has(id)?purgeSel.delete(id):purgeSel.add(id); }
+    else { openSess.has(id)?openSess.delete(id):openSess.add(id); }
+    rerender();renderPurgeBar();
   }));
+  document.querySelectorAll(scope+' .sr-tick').forEach(el=>el.addEventListener('click',e=>{
+    e.stopPropagation();
+    const id=el.parentElement.dataset.sid;
+    purgeSel.has(id)?purgeSel.delete(id):purgeSel.add(id);
+    rerender();renderPurgeBar();
+  }));
+}
+
+/* ---- Ledger purge ----
+   Deleting a session also REVERSES the XP it paid. That is the whole point: a session
+   you are declaring never happened cannot keep having paid you. Leaving the XP behind
+   would create exactly the kind of unreceipted balance the Audit tab exists to catch.
+   The reversal is posted as a visible transaction, not a silent subtraction. */
+let purgeMode=false, purgeSel=new Set();
+
+function togglePurge(){
+  purgeMode=!purgeMode;
+  purgeSel.clear();
+  document.getElementById('purgeBtn').textContent=purgeMode?'Done':'Select…';
+  document.getElementById('lhistory').classList.toggle('hist-purge',purgeMode);
+  renderHistory();renderPurgeBar();
+}
+function purgeSelectAllDay(day){
+  const ss=sessionsByDate()[day]||[];
+  const allIn=ss.every(s=>purgeSel.has(s.sessionId));
+  ss.forEach(s=>allIn?purgeSel.delete(s.sessionId):purgeSel.add(s.sessionId));
+  renderHistory();renderPurgeBar();
+}
+function renderPurgeBar(){
+  const bar=document.getElementById('purgeBar');if(!bar)return;
+  if(!purgeMode||!purgeSel.size){bar.style.display='none';return;}
+  const picked=state.sessions.filter(s=>purgeSel.has(s.sessionId));
+  const xp=picked.reduce((a,s)=>a+(s.xpEarned||0),0);
+  bar.style.display='flex';
+  bar.innerHTML='<span class="at-selcount">'+picked.length+' session'+(picked.length===1?'':'s')+' · '
+    +(xp>=0?'+':'')+xp.toLocaleString()+' XP to be reversed</span>'
+    +'<div class="at-selbtns"><button class="ghost" id="purgeClear">Clear</button>'
+    +'<button class="danger" id="purgeGo">Delete</button></div>';
+  document.getElementById('purgeClear').addEventListener('click',()=>{purgeSel.clear();renderHistory();renderPurgeBar();});
+  document.getElementById('purgeGo').addEventListener('click',purgeSessions);
+}
+function purgeSessions(){
+  const picked=state.sessions.filter(s=>purgeSel.has(s.sessionId));
+  if(!picked.length)return;
+  const xp=picked.reduce((a,s)=>a+(s.xpEarned||0),0);
+  askConfirm('Delete Sessions',
+    picked.length+' session'+(picked.length===1?'':'s')+' will be removed from the Ledger.\n\n'
+    +'They paid '+(xp>=0?'+':'')+xp.toLocaleString()+' XP between them, and that XP will be REVERSED.\n\n'
+    +'A session you are declaring never happened cannot keep having paid you. The reversal is posted to the Ledger as a correction, so the books still balance.\n\n'
+    +'Lifetime XP: '+state.cumulativeXp.toLocaleString()+' -> '+Math.max(0,state.cumulativeXp-xp).toLocaleString()+'\n\n'
+    +'This cannot be undone.',
+    ()=>{
+      const ids=new Set(picked.map(s=>s.sessionId));
+      state.sessions=state.sessions.filter(s=>!ids.has(s.sessionId));
+      if(xp>0){
+        const lifeBefore=state.cumulativeXp;
+        state.cumulativeXp=Math.max(0,state.cumulativeXp-xp);
+        state.dailyXp=Math.max(0,state.dailyXp-picked.filter(s=>localDateStr(new Date(s.startedAt))===localDateStr()).reduce((a,s)=>a+(s.xpEarned||0),0));
+        postWalletTransaction({type:'correction',amountXp:-Math.min(state.spendableXp,xp),
+          lifetimeXpChange:state.cumulativeXp-lifeBefore,sourceType:'system',
+          description:'Deleted '+picked.length+' session'+(picked.length===1?'':'s')+' from the Ledger',
+          allowNegative:true});
+        updateLevelFromXp();
+      }
+      purgeSel.clear();purgeMode=false;
+      const b=document.getElementById('purgeBtn');if(b)b.textContent='Select…';
+      saveState();flushSync();renderAll();renderHistory();renderPurgeBar();
+      toast(picked.length+' session'+(picked.length===1?'':'s')+' deleted · '+xp.toLocaleString()+' XP reversed');
+    });
 }
 function renderHistory(){
   const c=document.getElementById('historyBody');
@@ -2838,10 +3051,16 @@ function renderHistory(){
   Object.keys(map).sort((a,b)=>b.localeCompare(a)).forEach(d=>{
     const ss=map[d].slice().sort((a,b)=>new Date(b.startedAt)-new Date(a.startedAt));
     const tot=ss.reduce((a,s)=>a+s.windowMinutes,0), clean=ss.filter(s=>s.attainmentPercent>=90).length;
-    h+='<div class="hist-day"><div class="hist-day-head">'+prettyDate(d)+'<span>'+tot+'m focused · '+clean+'/'+ss.length+' clean</span></div>';
+    h+='<div class="hist-day"><div class="hist-day-head">'+prettyDate(d)
+      +(purgeMode?'<button class="ghost hd-all" data-day="'+d+'">All</button>':'')
+      +'<span>'+tot+'m focused · '+clean+'/'+ss.length+' clean</span></div>';
     ss.forEach(s=>h+=sessionRowHtml(s));h+='</div>';
   });
   c.innerHTML=h;bindRows('#historyBody',renderHistory);
+  document.querySelectorAll('#historyBody .hd-all').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();purgeSelectAllDay(b.dataset.day);
+  }));
+  renderPurgeBar();
 }
 function last7(){const out=[],t=new Date(localDateStr()+'T12:00:00');for(let i=6;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);out.push(localDateStr(d));}return out;}
 function renderWeek(){
@@ -4277,6 +4496,10 @@ document.getElementById('addTasksBtn').addEventListener('click',()=>{
 });
 document.getElementById('taskDueInput').valueAsDate=new Date();
 document.getElementById('allTasksSort').addEventListener('change',renderAllTasks);
+document.getElementById('purgeBtn').addEventListener('click',togglePurge);
+document.getElementById('bulkDueCancel').addEventListener('click',()=>closeModal('bulkDueModal'));
+document.getElementById('bulkDueConfirm').addEventListener('click',()=>applyBulkDue(false));
+document.getElementById('bulkDueClear').addEventListener('click',()=>applyBulkDue(true));
 document.getElementById('atObjFilter').addEventListener('change',e=>{atObj=e.target.value;renderAllTasks();});
 let atSearchT;
 document.getElementById('taskSearch').addEventListener('input',e=>{
@@ -4320,9 +4543,14 @@ document.getElementById('divePrev').addEventListener('click',()=>{const d=new Da
 document.getElementById('diveNext').addEventListener('click',()=>{const d=new Date((diveDate||localDateStr())+'T12:00:00');d.setDate(d.getDate()+1);renderDive(localDateStr(d));});
 document.querySelectorAll('.ctab').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('active'));b.classList.add('active');
-  document.getElementById('ctasks').style.display=b.dataset.ctab==='ctasks'?'block':'none';
-  document.getElementById('cobjs').style.display=b.dataset.ctab==='cobjs'?'block':'none';
+  /* cstages was built but never shown here — clicking Stages hid both panels and
+     displayed nothing. Every panel now toggles off the same key. */
+  ['ctasks','cstages','cobjs'].forEach(id=>{
+    document.getElementById(id).style.display=(b.dataset.ctab===id)?'block':'none';
+  });
+  if(b.dataset.ctab==='cstages')renderCompletedStages();
 }));
+document.getElementById('cstageSearch').addEventListener('input',e=>{cstageQuery=e.target.value;renderCompletedStages();});
 
 document.querySelectorAll('.rtab').forEach(b=>b.addEventListener('click',()=>switchRewardTab(b.dataset.rtab)));
 document.getElementById('redeemCancel').addEventListener('click',()=>{closeModal('redeemModal');redeemTarget=null;});
