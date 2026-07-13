@@ -310,6 +310,66 @@ button.danger:hover{background:#8f382e}
 .txn-desc{font-size:13px;color:var(--bone)}
 .txn-bal{font-size:11px;color:var(--brass);margin-top:2px}
 
+#sessionBar{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:linear-gradient(90deg,rgba(182,138,90,.16),rgba(182,138,90,.04));
+  border:1px solid var(--brass);border-radius:9px;padding:12px 16px;margin-bottom:16px}
+#sessionBar.ending{border-color:var(--oxide);background:linear-gradient(90deg,rgba(201,106,95,.18),rgba(201,106,95,.04))}
+.sb-left{display:flex;align-items:center;gap:12px}
+.sb-dot{width:9px;height:9px;border-radius:50%;background:var(--brass);animation:pulse 1.4s infinite;flex:0 0 auto}
+#sessionBar.ending .sb-dot{background:var(--oxide)}
+.sb-clock{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--bone);line-height:1.1;font-variant-numeric:tabular-nums}
+.sb-meta{font-size:11px;color:var(--ash);margin-top:1px}
+#sbReturn{white-space:nowrap;font-size:11px;padding:9px 14px}
+@media(max-width:600px){.sb-clock{font-size:20px}#sbReturn{padding:8px 10px;font-size:10px}}
+.due-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;letter-spacing:.5px;vertical-align:middle;font-weight:600}
+.due-badge.today{background:rgba(95,174,122,.18);color:var(--forest)}
+.due-badge.overdue{background:rgba(201,106,95,.2);color:var(--oxide)}
+.due-badge.upcoming{background:rgba(138,133,128,.14);color:var(--ash)}
+.due-badge.inherited{opacity:.55;font-weight:400;font-style:italic}
+.item.overdue-row{border-color:var(--oxide);background:rgba(201,106,95,.06)}
+.stage-dates{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sd{font-size:11px;color:var(--ash);background:var(--espresso);padding:3px 8px;border-radius:4px}
+.obj-due-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px;background:var(--espresso);border:1px solid var(--line);border-radius:7px;margin-bottom:14px}
+.obj-due-row label{margin:0;white-space:nowrap}
+.obj-due-row input{width:auto}
+.obj-due-row button{padding:6px 12px;font-size:10px}
+.obj-due-note{font-size:11px;color:var(--ash);flex:1;min-width:160px}
+.conflict-box{background:rgba(201,106,95,.1);border:1px solid var(--oxide);border-radius:7px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--bone);line-height:1.7}
+.conflict-box b{color:var(--oxide);display:block;margin-bottom:4px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.stage-input-row .st-due{flex:0 0 140px}
+.bt-group{border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--obsidian);overflow:hidden}
+.bt-group.has-picked{border-color:var(--line-warm)}
+.bt-group.overdue{border-color:var(--oxide)}
+.bt-head{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;transition:background .12s}
+.bt-head:hover{background:rgba(182,138,90,.05)}
+.bt-caret{color:var(--camel);font-size:11px;width:11px;flex-shrink:0}
+.bt-info{flex:1;min-width:0}
+.bt-title{font-size:14px;color:var(--bone);font-weight:500}
+.bt-meta{font-size:11px;color:var(--ash);margin-top:2px}
+.bt-count{font-size:10px;color:var(--brass);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;font-weight:600}
+.bt-all{padding:5px 11px;font-size:10px;flex-shrink:0}
+.bt-body{border-top:1px solid var(--line);padding:6px}
+.bt-stage{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;cursor:pointer;transition:background .12s}
+.bt-stage:hover{background:rgba(182,138,90,.06)}
+.bt-stage.selected{background:rgba(182,138,90,.11)}
+.bt-tick{width:15px;height:15px;border:1px solid var(--line-warm);border-radius:4px;flex-shrink:0;position:relative}
+.bt-tick.on{background:var(--brass);border-color:var(--brass)}
+.bt-tick.on:after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--obsidian);font-size:10px;font-weight:700}
+.bt-stage-title{flex:1;font-size:13px;color:var(--bone)}
+.bt-stage.selected .bt-stage-title{color:var(--sand)}
+.ghost-banner{background:rgba(201,106,95,.1);border:1px solid var(--oxide);border-radius:8px;padding:14px 16px;margin-bottom:16px;text-align:left}
+.ghost-banner b{display:block;color:var(--oxide);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.ghost-banner div{font-size:12px;color:var(--bone);line-height:1.6;margin-bottom:12px}
+.ghost-banner button{background:transparent;border:1px solid var(--oxide);color:var(--oxide);font-size:11px;padding:8px 16px}
+.ghost-banner button:hover{background:var(--oxide);color:var(--obsidian)}
+.level-curve{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.lc-head{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--camel);font-weight:600;margin-bottom:9px}
+.lc-table{width:100%;border-collapse:collapse;font-size:12px}
+.lc-table th{text-align:left;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ash);font-weight:600;padding:5px 8px 5px 0;border-bottom:1px solid var(--line)}
+.lc-table td{padding:6px 8px 6px 0;color:var(--bone);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.lc-table tr.lc-now td{color:var(--brass);font-weight:600}
+.lc-note{font-size:11px;color:var(--ash);margin-top:8px}
+.export-pre{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:14px;margin-top:10px;font-size:11px;line-height:1.6;color:var(--ash);white-space:pre-wrap;max-height:420px;overflow:auto;font-family:ui-monospace,monospace}
 .obj-add{background:var(--obsidian);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:4px}
 .obj-add textarea{min-height:80px}
 .obj-add-row{display:flex;gap:12px;align-items:flex-end}
@@ -406,6 +466,17 @@ button.danger:hover{background:#8f382e}
     </div>
   </header>
 
+  <div id="sessionBar" style="display:none">
+    <div class="sb-left">
+      <span class="sb-dot"></span>
+      <div>
+        <div class="sb-clock">00:00</div>
+        <div class="sb-meta"></div>
+      </div>
+    </div>
+    <button id="sbReturn">Return to Session →</button>
+  </div>
+
   <div class="nav" id="nav">
     <button data-view="dashView" class="active">Dashboard</button>
     <button data-view="allTasksView">All Tasks</button>
@@ -416,6 +487,7 @@ button.danger:hover{background:#8f382e}
     <button data-view="ledgerView">Ledger</button>
     <button data-view="completedView">Completed</button>
     <button data-view="profileView">Character</button>
+    <button data-view="exportView">Export</button>
     <button id="syncNowBtn">Sync</button>
   </div>
   <!-- ALL TASKS -->
@@ -486,8 +558,9 @@ button.danger:hover{background:#8f382e}
       <div class="section-note">Active is capped at <b id="objCapLabel">3</b>. Everything else waits in the Backlog — capture freely, commit narrowly.</div>
       <div class="form-group">
         <label>New Objective</label>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="objTitleInput" placeholder="A multi-day undertaking…">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input type="text" id="objTitleInput" placeholder="A multi-day undertaking…" style="flex:1;min-width:180px">
+          <input type="date" id="objDueNew" title="Objective due date (optional)" style="width:auto">
           <button id="addObjBtn">Add</button>
         </div>
       </div>
@@ -516,6 +589,7 @@ button.danger:hover{background:#8f382e}
       <div id="taskBreakdownInfo"></div>
       <div style="background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:16px">
         <label>Stages — the unit of execution</label>
+        <div class="section-note" id="breakdownDueNote" style="margin:6px 0 10px"></div>
         <div id="stageInputs" style="margin-top:10px"></div>
         <button id="addStageRowBtn" class="ghost">+ Add Stage</button>
       </div>
@@ -587,6 +661,7 @@ button.danger:hover{background:#8f382e}
       <h2>Locked Session</h2>
       <div class="timer-value" id="timerDisplay">25:00</div>
       <div class="timer-sub">no pause · no stop</div>
+      <div id="ghostBanner" style="display:none"></div>
       <div id="deficitBanner"></div>
       <div class="timer-stages" id="timerStagesList"></div>
       <button id="addStageInSessionBtn" class="ghost" style="margin-top:14px">+ Add Stage</button>
@@ -673,6 +748,24 @@ button.danger:hover{background:#8f382e}
     </div>
   </div>
 
+  <!-- EXPORT -->
+  <div id="exportView" class="view">
+    <div class="card">
+      <h2>Export</h2>
+      <div class="section-note">A full, readable dump of everything the Forge knows. Hand it to an analyst — human or otherwise — and ask what it says about you. The numbers do not flatter and they do not lie.</div>
+      <div id="exportPreviewStats" class="wallet-summary"></div>
+      <div class="button-group" style="margin-top:6px">
+        <button id="exportMdBtn">Download Report (.md)</button>
+        <button id="exportJsonBtn" class="ghost">Download Raw (.json)</button>
+        <button id="exportCopyBtn" class="ghost">Copy Report to Clipboard</button>
+      </div>
+      <div class="section-note" style="margin-top:16px">The report is written for analysis: it carries the schedule, the session history with every multiplier that fired, the rock record, the wallet ledger and the reward economy. The raw JSON is the complete state, for a full restore or a deeper dig.</div>
+      <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--camel);font-size:12px">Preview report</summary>
+        <pre id="exportPreview" class="export-pre"></pre>
+      </details>
+    </div>
+  </div>
+
   <!-- REWARDS -->
   <div id="rewardsView" class="view">
     <div class="card">
@@ -705,10 +798,11 @@ button.danger:hover{background:#8f382e}
         <div class="profile-stat"><div class="profile-stat-value" id="profileObjDone">0</div><div class="profile-stat-label">Objectives</div></div>
       </div>
       <div class="card">
-        <h2>Ascent to Next Level</h2>
-        <div style="font-size:12px;color:var(--ash);margin-bottom:8px"><span id="xpToNextLevel">0</span> / 1000 XP</div>
+        <h2>Ascent to Level <span id="xpNextLevelNum">2</span></h2>
+        <div style="font-size:12px;color:var(--ash);margin-bottom:8px"><span id="xpToNextLevel">0</span> / <span id="xpLevelSpan">500</span> XP into this level · <b style="color:var(--brass)"><span id="xpRemaining">0</span> XP to go</b></div>
         <div class="xp-bar"><div class="xp-fill" id="xpProgress" style="width:0%"><span id="xpPercent">0%</span></div></div>
-        <div class="section-note" style="margin:12px 0 0">Rocks can be set any time and settle at 20:00. Out-of-session work pays 50%. Miss a workday and total XP decays 20%. Weekends pay +10%.</div>
+        <div class="section-note" style="margin:12px 0 0">Each level costs more than the last. Rocks settle at 20:00. Out-of-session work pays 50%. Miss a workday and total XP decays 20%. Weekends pay +10%.</div>
+        <div id="levelCurve" class="level-curve"></div>
       </div>
       <div class="card">
         <h2>Spoils of the Forge</h2>
@@ -810,7 +904,7 @@ const state={
   currentDate:null,lastProcessedDate:null,updatedAt:0,
   firstUseDate:null,dayOpenXp:0,dayFloor:0,
   restTokensEarned:0,restTokensSpent:0,consecutiveCleanDays:0,
-  mysteryBonusAvailable:null,mysteryAwardedToday:false,
+  mysteryAwardedToday:false,
   /* --- wallet & rewards --- */
   spendableXp:0,
   rewardCatalogue:[],rewardInventory:[],xpTransactions:[],rewardRedemptions:[],
@@ -835,9 +929,16 @@ const config={
   objActiveCap:3, objBonusPerStage:75, objAbandonPenalty:200,
   stalledDays:7, stalledDecayEnabled:false,
   waitCapPerSession:1, waitLockLastFraction:0.25, waitStaleDays:5,
-  txnPageSize:60, purchaseCooldownMinutes:30, allowanceNudgeDays:7
+  txnPageSize:60, purchaseCooldownMinutes:30, allowanceNudgeDays:7,
+  /* LEVEL CURVE — quadratic. Total XP to REACH level L = levelBase x (L-1)^levelExp.
+     Linear levelling (1000 XP flat) meant a real earn rate of ~10k XP/week produced
+     roughly ten levels a week and several hundred a year, which makes the number
+     meaningless. A quadratic curve keeps the early levels quick — the first is half a
+     session — and makes the late ones genuinely expensive. XP earning is UNCHANGED;
+     only the price of a level moves. */
+  levelBase:500, levelExp:2
 };
-const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen'];
+const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession'];
 
 /* ================= LOCKOUT & MYSTERY ================= */
 function inLockoutPeriod(){
@@ -867,7 +968,7 @@ function tasksOf(o){return state.tasks.filter(t=>t.objectiveId===o.id);}
 function liveStages(){
   const out=[];
   state.tasks.forEach(t=>{ if(t.completed||t.waiting)return;
-    t.stages.forEach(s=>{ if(!s.completed&&!s.waiting) out.push({...s,taskId:t.id,taskTitle:t.title,objectiveId:t.objectiveId}); });
+    t.stages.forEach(s=>{ if(!s.completed&&!s.waiting) out.push({...s,taskId:t.id,taskTitle:t.title,objectiveId:t.objectiveId,effDue:effStageDue(s,t),ownDue:s.dueDate||null}); });
   });
   return out;
 }
@@ -876,9 +977,35 @@ function rockGateOpen(){return nowHours()<config.rockGateHour;} // 24 = always o
 function todaysRocks(){const d=localDateStr();return state.tasks.filter(t=>t.starred&&t.starredDate===d&&!t.rockSettled);}
 
 /* ================= STORAGE ================= */
+/* Device identity lives OUTSIDE the synced state on purpose. If it were in PERSIST
+   it would sync across devices and every device would think it was the same device,
+   which defeats the whole point of detecting a foreign session. */
+function getDeviceId(){
+  let d=localStorage.getItem('forgeDeviceId');
+  if(!d){d='dev_'+Math.random().toString(36).slice(2,10);localStorage.setItem('forgeDeviceId',d);}
+  return d;
+}
 function saveLocal(){localStorage.setItem('forgeState',JSON.stringify(state));}
 function saveState(){state.updatedAt=Date.now();saveLocal();if(syncReady)scheduleSync();}
-function updateLevelFromXp(){state.level=Math.floor(Math.max(0,state.cumulativeXp)/1000)+1;}
+/* Total Lifetime XP required to REACH a given level. Level 1 costs nothing. */
+function xpForLevel(L){
+  if(L<=1)return 0;
+  return Math.round(config.levelBase*Math.pow(L-1,config.levelExp));
+}
+/* Inverse: the level a given Lifetime XP total buys. */
+function levelForXp(xp){
+  if(xp<=0)return 1;
+  return Math.floor(Math.pow(xp/config.levelBase,1/config.levelExp))+1;
+}
+function levelProgress(){
+  const xp=Math.max(0,state.cumulativeXp);
+  const L=levelForXp(xp);
+  const cur=xpForLevel(L), next=xpForLevel(L+1);
+  const span=Math.max(1,next-cur);
+  const into=Math.max(0,xp-cur);
+  return{level:L,cur,next,span,into,remaining:Math.max(0,next-xp),pct:Math.min(100,into/span*100)};
+}
+function updateLevelFromXp(){state.level=levelForXp(Math.max(0,state.cumulativeXp));}
 
 /* ================= THE WALLET =================
    Lifetime XP (cumulativeXp)  → permanent. Level, State, proof. Purchases NEVER touch it.
@@ -959,7 +1086,7 @@ function loadState(){
   const today=localDateStr();
   if(state.currentDate!==today){
     state.dailyXp=0;state.currentDate=today;
-    state.dayFirstSessionRun=false;state.mysteryAwardedToday=false;
+    state.dayFirstSessionRun=false;state.mysteryAwardedToday=false; // new day, both bonuses re-arm
     state.dayOpenXp=state.cumulativeXp;state.dayFloor=Math.max(0,Math.floor(state.cumulativeXp*0.20));
   }
   seedRewardCatalogue();
@@ -982,12 +1109,18 @@ async function pushRemote(){const r=await fetch(SYNC.base+'/'+SYNC.binId,{method
 function scheduleSync(){clearTimeout(pushTimer);setSyncStatus('pending');pushTimer=setTimeout(()=>{pushRemote().then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline'));},2500);}
 async function bootSync(){
   setSyncStatus('syncing');
+  const hadLive=!!(state.currentSession&&!state.currentSession.endedAt);
   try{
     const r=await pullRemote();
     if(r&&(r.updatedAt||0)>(state.updatedAt||0))applyPersistent(r);
     runDailyEngines();saveLocal();await pushRemote();
     syncReady=true;setSyncStatus('synced');
   }catch(e){ runDailyEngines();saveLocal();syncReady=true;setSyncStatus('offline'); }
+  /* A remote pull can land, replace, or remove a session that was mid-flight here.
+     Reconcile the clock against whatever state we actually ended up with. */
+  const live=!!(state.currentSession&&!state.currentSession.endedAt);
+  if(live&&!state.timerRunning)resumeSession();
+  else if(!live&&hadLive)stopSessionClock();
   renderAll();flushNotices();
 }
 async function manualSync(){
@@ -1107,9 +1240,9 @@ function objStalled(o){
   return daysBetween(localDateStr(new Date(objLastMovement(o))),localDateStr())>=config.stalledDays;
 }
 function activeObjs(){return state.objectives.filter(o=>o.status==='active');}
-function addObjective(title){
+function addObjective(title,dueDate){
   if(!title.trim())return;
-  const o={id:uid('obj'),title:title.trim(),status:'backlog',createdAt:new Date().toISOString()};
+  const o={id:uid('obj'),title:title.trim(),status:'backlog',dueDate:dueDate||null,createdAt:new Date().toISOString()};
   state.objectives.push(o);
   saveState();renderAll();
   showObjDetail(o.id); // land inside it — capture the tasks while they are still in your head
@@ -1239,6 +1372,56 @@ function toggleStar(id){
 }
 function tomorrowStr(){const d=new Date();d.setDate(d.getDate()+1);return localDateStr(d);}
 
+/* ---- due-date helpers: objective → task → stage ----
+   Each level may set its own date. A child with no date INHERITS its parent's.
+   A child with a date LATER than its parent is a schedule contradiction, and
+   the app says so rather than quietly ignoring it. */
+function dueStatus(d){
+  if(!d)return 'none';
+  const t=localDateStr();
+  if(d<t)return 'overdue';
+  if(d===t)return 'today';
+  return 'upcoming';
+}
+function fmtDue(d){
+  if(!d)return '—';
+  const t=localDateStr();
+  if(d===t)return 'today';
+  if(d===tomorrowStr())return 'tomorrow';
+  return new Date(d+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'});
+}
+function effTaskDue(t){
+  if(t.dueDate)return t.dueDate;
+  const o=objOf(t);
+  return o&&o.dueDate?o.dueDate:null;
+}
+function effStageDue(stage,task){
+  if(stage.dueDate)return stage.dueDate;
+  return effTaskDue(task);
+}
+function dueBadge(d,inherited){
+  const st=dueStatus(d);
+  if(st==='none')return '';
+  return '<span class="due-badge '+st+(inherited?' inherited':'')+'">'+fmtDue(d)+'</span>';
+}
+/* a stage due after its task, or a task due after its objective, is a contradiction */
+function scheduleConflicts(){
+  const out=[];
+  state.tasks.forEach(t=>{
+    if(t.completed)return;
+    const o=objOf(t);
+    if(t.dueDate&&o&&o.dueDate&&t.dueDate>o.dueDate)
+      out.push({kind:'task',id:t.id,msg:esc(t.title)+' is due after its objective ('+fmtDue(t.dueDate)+' vs '+fmtDue(o.dueDate)+')'});
+    const td=effTaskDue(t);
+    t.stages.forEach(st=>{
+      if(st.completed)return;
+      if(st.dueDate&&td&&st.dueDate>td)
+        out.push({kind:'stage',id:st.id,msg:esc(st.title)+' is due after its task ('+fmtDue(st.dueDate)+' vs '+fmtDue(td)+')'});
+    });
+  });
+  return out;
+}
+
 /* --- waiting --- */
 let waitTarget=null;
 function openWaitModal(kind,taskId,stageId,inSession){
@@ -1329,19 +1512,30 @@ function showBreakdown(taskId){
 }
 function renderBreakdownForm(){
   const c=document.getElementById('stageInputs');c.innerHTML='';
+  const t=state.currentTask;
+  const inheritedDue=t?effTaskDue(t):null;
   state.breakdownStages.forEach((st,i)=>{
     const row=document.createElement('div');row.className='stage-input-row';
-    row.innerHTML='<span class="seq">'+(i+1)+'</span><input type="text" placeholder="Stage title">'+(state.breakdownStages.length>1?'<button class="rm ghost">✕</button>':'');
-    const inp=row.querySelector('input');inp.value=st.title||'';
+    row.innerHTML='<span class="seq">'+(i+1)+'</span>'
+      +'<input type="text" class="st-title" placeholder="Stage title">'
+      +'<input type="date" class="st-due" title="Stage due date">'
+      +(state.breakdownStages.length>1?'<button class="rm ghost">✕</button>':'');
+    const inp=row.querySelector('.st-title');inp.value=st.title||'';
     inp.addEventListener('input',e=>state.breakdownStages[i].title=e.target.value);
+    const due=row.querySelector('.st-due');due.value=st.dueDate||'';
+    due.addEventListener('change',e=>state.breakdownStages[i].dueDate=e.target.value||null);
     const rm=row.querySelector('.rm');if(rm)rm.addEventListener('click',()=>{state.breakdownStages.splice(i,1);renderBreakdownForm();});
     c.appendChild(row);
   });
+  const note=document.getElementById('breakdownDueNote');
+  if(note)note.innerHTML=inheritedDue
+    ? 'Leave a stage date blank and it inherits the task date, <b>'+fmtDue(inheritedDue)+'</b>.'
+    : 'This task has no due date, so blank stages carry no date either.';
 }
 function confirmBreakdown(){
   const stages=state.breakdownStages.filter(s=>s.title&&s.title.trim());
   if(!stages.length){toast('Add at least one stage');return;}
-  stages.forEach(s=>{if(!s.id)s.id=uid('stage');s.title=s.title.trim();if(s.completed===undefined)s.completed=false;if(s.waiting===undefined)s.waiting=false;});
+  stages.forEach(s=>{if(!s.id)s.id=uid('stage');s.title=s.title.trim();if(s.completed===undefined)s.completed=false;if(s.waiting===undefined)s.waiting=false;if(s.dueDate===undefined)s.dueDate=null;});
   state.currentTask.stages=stages;
   state.currentTask.completed=stages.every(s=>s.completed);
   checkObjComplete();saveState();renderAll();flushNotices();
@@ -1350,24 +1544,97 @@ function confirmBreakdown(){
 
 /* ================= SESSION BUILDER ================= */
 function showSessionBuilder(){
-  state.selectedStages=[];state.selectedWindow=null;
+  state.selectedStages=[];state.selectedWindow=null;builderOpen={};
   document.querySelectorAll('.window-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('selectedWindowLabel').textContent='No window chosen';
   renderBuilderStages();renderSelectedStages();updateStartBtn();showView('sessionBuilderView');
 }
+/* Builder list is grouped by TASK and collapsed by default. A flat wall of every live
+   stage is exactly the kind of undifferentiated list that makes choosing feel expensive,
+   and an expensive choice is one you postpone. You pick the task first, then the stages.
+   Tasks with something already selected stay open so you never lose your place. */
+let builderOpen={};
+function toggleBuilderTask(id){builderOpen[id]=!builderOpen[id];renderBuilderStages();}
 function renderBuilderStages(){
-  const list=document.getElementById('builderStageList');const stages=liveStages();list.innerHTML='';
+  const list=document.getElementById('builderStageList');
+  const stages=liveStages();
+  list.innerHTML='';
   if(!stages.length){list.innerHTML='<div class="empty-state">No live stages. Break down a task first.</div>';return;}
+
+  /* group live stages under their task, ordered by soonest due */
+  const groups={};
   stages.forEach(st=>{
-    const el=document.createElement('div');el.className='item'+(state.selectedStages.find(x=>x.id===st.id)?' selected':'');
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+stageBreadcrumb(st)+'</div></div>';
-    el.addEventListener('click',()=>{
+    if(!groups[st.taskId])groups[st.taskId]={taskId:st.taskId,title:st.taskTitle,objectiveId:st.objectiveId,stages:[]};
+    groups[st.taskId].stages.push(st);
+  });
+  const order=Object.values(groups).sort((a,b)=>{
+    const ad=a.stages.reduce((m,s)=>!m||(s.effDue&&s.effDue<m)?(s.effDue||m):m,null);
+    const bd=b.stages.reduce((m,s)=>!m||(s.effDue&&s.effDue<m)?(s.effDue||m):m,null);
+    if(ad&&bd&&ad!==bd)return ad.localeCompare(bd);
+    if(ad&&!bd)return -1;
+    if(bd&&!ad)return 1;
+    return a.title.localeCompare(b.title);
+  });
+
+  order.forEach(g=>{
+    const task=state.tasks.find(t=>t.id===g.taskId);
+    const picked=g.stages.filter(st=>state.selectedStages.find(x=>x.id===st.id)).length;
+    /* auto-open anything you have already picked from, and anything overdue */
+    const anyOverdue=g.stages.some(st=>dueStatus(st.effDue)==='overdue');
+    if(picked&&builderOpen[g.taskId]===undefined)builderOpen[g.taskId]=true;
+    const open=!!builderOpen[g.taskId];
+    const o=g.objectiveId?state.objectives.find(x=>x.id===g.objectiveId):null;
+    const due=task?effTaskDue(task):null;
+
+    const wrap=document.createElement('div');
+    wrap.className='bt-group'+(open?' open':'')+(picked?' has-picked':'')+(anyOverdue?' overdue':'');
+
+    const head=document.createElement('div');
+    head.className='bt-head';
+    head.innerHTML='<span class="bt-caret">'+(open?'▾':'▸')+'</span>'
+      +'<div class="bt-info"><div class="bt-title">'+esc(g.title)+' '+dueBadge(due,task&&!task.dueDate)+'</div>'
+      +'<div class="bt-meta">'+(o?esc(o.title)+' · ':'')+g.stages.length+' live stage'+(g.stages.length===1?'':'s')+'</div></div>'
+      +(picked?'<span class="bt-count">'+picked+' picked</span>':'')
+      +'<button class="bt-all ghost">'+(picked===g.stages.length?'None':'All')+'</button>';
+    head.addEventListener('click',e=>{
+      if(e.target.closest('.bt-all'))return;
+      toggleBuilderTask(g.taskId);
+    });
+    head.querySelector('.bt-all').addEventListener('click',e=>{
+      e.stopPropagation();
       if(!state.selectedWindow){toast('Choose a window first');return;}
-      if(state.selectedStages.find(x=>x.id===st.id))state.selectedStages=state.selectedStages.filter(x=>x.id!==st.id);
-      else state.selectedStages.push(st);
+      if(picked===g.stages.length){
+        const ids=new Set(g.stages.map(x=>x.id));
+        state.selectedStages=state.selectedStages.filter(x=>!ids.has(x.id));
+      }else{
+        g.stages.forEach(st=>{if(!state.selectedStages.find(x=>x.id===st.id))state.selectedStages.push(st);});
+        builderOpen[g.taskId]=true;
+      }
       renderBuilderStages();renderSelectedStages();updateStartBtn();
     });
-    list.appendChild(el);
+    wrap.appendChild(head);
+
+    if(open){
+      const body=document.createElement('div');
+      body.className='bt-body';
+      g.stages.forEach(st=>{
+        const sel=!!state.selectedStages.find(x=>x.id===st.id);
+        const row=document.createElement('div');
+        row.className='bt-stage'+(sel?' selected':'');
+        row.innerHTML='<span class="bt-tick'+(sel?' on':'')+'"></span>'
+          +'<span class="bt-stage-title">'+esc(st.title)+'</span>'
+          +dueBadge(st.effDue,!st.ownDue);
+        row.addEventListener('click',()=>{
+          if(!state.selectedWindow){toast('Choose a window first');return;}
+          if(state.selectedStages.find(x=>x.id===st.id))state.selectedStages=state.selectedStages.filter(x=>x.id!==st.id);
+          else state.selectedStages.push(st);
+          renderBuilderStages();renderSelectedStages();updateStartBtn();
+        });
+        body.appendChild(row);
+      });
+      wrap.appendChild(body);
+    }
+    list.appendChild(wrap);
   });
 }
 function renderSelectedStages(){
@@ -1384,18 +1651,35 @@ function updateStartBtn(){document.getElementById('startTimerBtn').disabled=!sta
 /* ================= TIMER ================= */
 function startSession(){
   if(!state.selectedWindow||!state.selectedStages.length)return;
+  if(state.currentSession&&!state.currentSession.endedAt){
+    toast('A session is already running.');showView('timerView');return;
+  }
+  /* Every bonus is bound to THIS session object and nothing else.
+     Day-state (dayFirstSessionRun / mysteryAwardedToday) is only burned when a session
+     actually SCORES, in endSession. Otherwise a voided or ghost-cleared session would
+     either steal First Blood from the next real one, or leave a mystery multiplier
+     lying on global state for an unqualified session to pick up.
+     A bonus that outlives its session is a bonus that was never earned. */
   const isFirstBlood=!state.dayFirstSessionRun;
-  state.dayFirstSessionRun=true;
-  // Pick mystery bonus if this is the first ≥25m session and we haven't awarded one today
-  if(!state.mysteryAwardedToday&&state.selectedWindow>=config.mysteryMinWindow&&!state.mysteryBonusAvailable){
-    state.mysteryBonusAvailable=pickMysteryBonus();
+  let mysteryBonus=null;
+  if(!state.mysteryAwardedToday&&state.selectedWindow>=config.mysteryMinWindow&&!inLockoutPeriod()){
+    mysteryBonus=pickMysteryBonus();
   }
   state.currentSession={
     sessionId:uid('sess'),windowMinutes:state.selectedWindow,startedAt:new Date().toISOString(),
     stagesPlanned:state.selectedStages.map(s=>({id:s.id,taskId:s.taskId,title:s.title,completed:false,waiting:false})),
-    extraStages:[],_remainingMs:state.selectedWindow*60000,
-    heat:0,lastStageTick:Date.now(),isFirstBlood
+    extraStages:[],
+    /* endsAt is an ABSOLUTE timestamp. The clock is the wall, not a closure —
+       so it survives navigation, refresh, and the app being closed entirely. */
+    endsAt:Date.now()+state.selectedWindow*60000,
+    _remainingMs:state.selectedWindow*60000,
+    deviceId:getDeviceId(),
+    /* fresh every time: heat starts cold, the stall clock starts now, and the
+       bonuses are this session's alone */
+    heat:0,lastStageTick:Date.now(),
+    isFirstBlood,mysteryBonus
   };
+  saveState();
   showView('timerView');renderTimerStages();runTimer();
 }
 function sessionDeficit(){
@@ -1409,16 +1693,118 @@ function renderDeficit(){
   b.innerHTML=d?('<div class="deficit-banner"><b>Deficit · '+d+'</b>You held a stage. Add '+d+' replacement'+(d>1?'s':'')+' or it counts as missed.</div>'):'';
 }
 function runTimer(){
+  clearInterval(state.timerInterval); // never let two clocks race
   state.timerRunning=true;
-  const start=Date.now(),total=state.currentSession.windowMinutes*60000;
-  state.timerInterval=setInterval(()=>{
-    const rem=Math.max(0,total-(Date.now()-start));
-    state.currentSession._remainingMs=rem;
-    if(rem===0){clearInterval(state.timerInterval);endSession(false);return;}
-    document.getElementById('timerDisplay').textContent=String(Math.floor(rem/60000)).padStart(2,'0')+':'+String(Math.floor((rem/1000)%60)).padStart(2,'0');
-  },100);
+  state.timerInterval=setInterval(tickSession,250);
+  tickSession();
+}
+function fmtClock(ms){
+  const m=Math.floor(ms/60000),sec=Math.floor((ms/1000)%60);
+  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function tickSession(){
+  const s=state.currentSession;
+  if(!s||s.endedAt){stopSessionClock();return;}
+  const rem=Math.max(0,s.endsAt-Date.now());
+  s._remainingMs=rem;
+  const clock=fmtClock(rem);
+  const disp=document.getElementById('timerDisplay');
+  if(disp)disp.textContent=clock;
+  /* the banner is what makes the session survivable — it follows you everywhere */
+  const bar=document.getElementById('sessionBar');
+  if(bar){
+    bar.style.display='flex';
+    const done=s.stagesPlanned.concat(s.extraStages).filter(x=>x.completed).length;
+    const tot=s.stagesPlanned.concat(s.extraStages).filter(x=>!x.waiting).length;
+    bar.querySelector('.sb-clock').textContent=clock;
+    bar.querySelector('.sb-meta').textContent=done+'/'+tot+' stages · '+s.windowMinutes+'m window';
+    bar.classList.toggle('ending',rem<60000);
+  }
+  if(rem===0){stopSessionClock();endSession(false);}
+}
+/* ---- Ghost sessions ----
+   A session you started HERE, today, is locked. No stop button. That is the mechanic
+   and it is not negotiable, because an escape hatch you can always reach is just a
+   pause button wearing a disguise.
+
+   But a session you CANNOT be executing is a different animal entirely:
+     - it was started on another device, or
+     - it was started on an earlier day and is still hanging around.
+   Those are ghosts. You are not abandoning work; you are clearing a stale record.
+   Only in those two cases does a Clear button exist at all. */
+function sessionIsForeign(){
+  const s=state.currentSession;
+  if(!s||s.endedAt)return false;
+  if(!s.deviceId)return false;              // pre-update session: origin unknown, not assumed foreign
+  return s.deviceId!==getDeviceId();
+}
+function sessionIsStale(){
+  const s=state.currentSession;
+  if(!s||s.endedAt)return false;
+  return localDateStr(new Date(s.startedAt))<localDateStr();  // started on a previous day
+}
+function sessionIsGhost(){return sessionIsForeign()||sessionIsStale();}
+
+function renderGhostBanner(){
+  const b=document.getElementById('ghostBanner');
+  if(!b)return;
+  const s=state.currentSession;
+  if(!s||s.endedAt||!sessionIsGhost()){b.style.display='none';b.innerHTML='';return;}
+  const foreign=sessionIsForeign(), stale=sessionIsStale();
+  let why;
+  if(foreign&&stale)why='This session was started on another device, on an earlier day.';
+  else if(foreign)why='This session was started on another device. You are not the one running it.';
+  else why='This session was started on an earlier day and never closed.';
+  b.style.display='block';
+  b.innerHTML='<div class="ghost-banner"><b>Ghost Session</b>'
+    +'<div>'+why+' You cannot execute it from here, so it is not work — it is a stale record.</div>'
+    +'<button id="clearGhostBtn">Clear Session</button></div>';
+  document.getElementById('clearGhostBtn').addEventListener('click',clearGhostSession);
+}
+
+function clearGhostSession(){
+  const s=state.currentSession;
+  if(!s||s.endedAt)return;
+  if(!sessionIsGhost()){toast('A live session on this device cannot be cleared.');return;}
+  askConfirm('Clear Ghost Session',
+    s.windowMinutes+'-minute session, opened '+new Date(s.startedAt).toLocaleString()+'.\n\n'
+    +'It will be voided: no XP earned, no penalty applied, and it will not appear in your history as a real session.\n\n'
+    +'This exists only for sessions you cannot execute. It is not a stop button — a session you started here today stays locked.',
+    ()=>{
+      stopSessionClock();
+      /* The session dies whole. Its heat, First Blood claim and mystery multiplier all
+         die with it — they lived on the session object, so there is nothing to unwind. */
+      state.currentSession=null;
+      saveState();renderAll();
+      showView('dashView');
+      toast('Ghost session cleared · no XP, no penalty, no carry-over');
+    });
+}
+
+function stopSessionClock(){
+  clearInterval(state.timerInterval);
+  state.timerInterval=null;state.timerRunning=false;
+  const bar=document.getElementById('sessionBar');
+  if(bar)bar.style.display='none';
+}
+/* Called on boot. A session may have been left running when the app was closed. */
+function resumeSession(){
+  const s=state.currentSession;
+  if(!s||s.endedAt)return;
+  if(!s.endsAt){ // legacy session with no absolute clock — cannot be trusted, discard
+    state.currentSession=null;saveLocal();return;
+  }
+  if(Date.now()>=s.endsAt){
+    /* The window closed while you were away. It still counts — that is the point of a
+       locked timer. You are scored on what was actually done inside the window. */
+    s._remainingMs=0;
+    endSession(false);
+    return;
+  }
+  runTimer();
 }
 function renderTimerStages(){
+  renderGhostBanner();
   const list=document.getElementById('timerStagesList');list.innerHTML='';
   const s=state.currentSession;
   // Calculate Heat based on completion count and stall
@@ -1453,9 +1839,9 @@ function renderTimerStages(){
     }
     el.innerHTML=h;
     const tick=el.querySelector('.tick');
-    if(!hasSubs&&!st.waiting)tick.addEventListener('click',()=>{st.completed=!st.completed;s.lastStageTick=Date.now();renderTimerStages();checkAutoEnd();});
+    if(!hasSubs&&!st.waiting)tick.addEventListener('click',()=>{st.completed=!st.completed;s.lastStageTick=Date.now();saveState();renderTimerStages();checkAutoEnd();});
     el.querySelectorAll('.substage-item').forEach(si=>si.addEventListener('click',()=>{
-      const i=+si.dataset.i;st.subs[i].done=!st.subs[i].done;st.completed=st.subs.every(x=>x.done);s.lastStageTick=Date.now();renderTimerStages();checkAutoEnd();
+      const i=+si.dataset.i;st.subs[i].done=!st.subs[i].done;st.completed=st.subs.every(x=>x.done);s.lastStageTick=Date.now();saveState();renderTimerStages();checkAutoEnd();
     }));
     const sp=el.querySelector('.split');if(sp)sp.addEventListener('click',()=>openSplit(st));
     const wt=el.querySelector('.wait');if(wt)wt.addEventListener('click',()=>openWaitModal('stage',st.taskId,st.id,true));
@@ -1520,7 +1906,8 @@ function checkAutoEnd(){
 
 /* ================= SCORING ================= */
 function endSession(auto){
-  clearInterval(state.timerInterval);state.timerRunning=false;
+  clearInterval(state.timerInterval);state.timerInterval=null;state.timerRunning=false;
+  const bar=document.getElementById('sessionBar');if(bar)bar.style.display='none';
   const s=state.currentSession;
   const planned=s.stagesPlanned, extras=s.extraStages;
   const waived=planned.filter(x=>x.waiting);
@@ -1546,12 +1933,13 @@ function endSession(auto){
   const heat=s.heat||0;
   const heatMult=config.heatLadder[heat]||1.0;
   const firstBloodMult=s.isFirstBlood&&!inLockoutPeriod()?config.firstBloodMult:1.0;
+  /* Bonuses come off the SESSION, never off global state. */
   let mysteryMult=1.0;
-  if(state.mysteryBonusAvailable&&!inLockoutPeriod()){
-    mysteryMult=state.mysteryBonusAvailable;
-    state.mysteryAwardedToday=true;
-    state.mysteryBonusAvailable=null;
+  if(s.mysteryBonus&&!inLockoutPeriod()){
+    mysteryMult=s.mysteryBonus;
+    state.mysteryAwardedToday=true;   // burned here, because here is where it paid out
   }
+  if(!inLockoutPeriod())state.dayFirstSessionRun=true; // likewise: consumed on scoring, not on starting
   const xp=Math.max(0,Math.round(base*heatMult*(1-penalty)*(1+bonus)*(1+timeBonus)*(weekend?1+config.weekendBonus:1)*firstBloodMult*mysteryMult));
   Object.assign(s,{endedAt:new Date().toISOString(),completed,denom,auto:!!auto,deficit,xpLocked:inLockoutPeriod(),
     waivedCount:waived.length,backfillCount:backfills.length,overflowCount:overflow.length,
@@ -1563,7 +1951,13 @@ function endSession(auto){
   state.sessions.push(s);
   grantXp(xp,'session',s.sessionId,s.windowMinutes+' minute session · '+completed+' stage'+(completed===1?'':'s'));
   markCompletion();checkObjComplete();updateRestTokens();
-  saveState();showResults(attainment,penalty,bonus,timeBonus,weekend,xp);flushNotices();
+  saveState();
+  showResults(attainment,penalty,bonus,timeBonus,weekend,xp);
+  flushNotices();
+  /* the result screens read state.currentSession, so it is released only now.
+     Clearing it is what makes the session non-resumable and the slot free again. */
+  state.currentSession=null;
+  saveState();
 }
 function updateRestTokens(){
   // After a session, check if it was clean (≥90% and not xpLocked)
@@ -1750,7 +2144,8 @@ function renderStagePool(){
   if(!stages.length){list.innerHTML='<div class="empty-state">No live stages</div>';return;}
   stages.forEach(st=>{
     const el=document.createElement('div');el.className='item';
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+'</div><div class="item-meta">'+stageBreadcrumb(st)+'</div></div>'
+    el.className='item'+(dueStatus(st.effDue)==='overdue'?' overdue-row':'');
+    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+' '+dueBadge(st.effDue,!st.ownDue)+'</div><div class="item-meta">'+stageBreadcrumb(st)+'</div></div>'
       +'<div class="item-actions"><button class="wt iconbtn" title="Waiting">⏸</button><button class="dn ghost">Done</button></div>';
     el.querySelector('.parent-link')?.addEventListener('click',()=>showTaskDetail(st.taskId,'stagePoolView'));
     el.querySelector('.wt').addEventListener('click',()=>openWaitModal('stage',st.taskId,st.id,false));
@@ -1773,9 +2168,9 @@ function objList(c,objs,isActive){
   objs.forEach(o=>{
     const st=objStats(o),stalled=objStalled(o);
     const el=document.createElement('div');el.className='obj-card'+(stalled?' stalled':'');
-    el.innerHTML='<div class="obj-head"><div class="obj-title">'+esc(o.title)+'</div>'+(stalled?'<span class="pill stale">stalled</span>':'')+'</div>'
+    el.innerHTML='<div class="obj-head"><div class="obj-title">'+esc(o.title)+'</div>'+dueBadge(o.dueDate)+(stalled?'<span class="pill stale">stalled</span>':'')+'</div>'
       +'<div class="obj-bar"><div class="obj-fill" style="width:'+st.pct+'%"></div></div>'
-      +'<div class="obj-meta"><span>'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span></div>'
+      +'<div class="obj-meta"><span>'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span><span>'+(o.dueDate?'due '+fmtDue(o.dueDate):'no date')+'</span></div>'
       +'<div class="button-group" style="margin-top:11px">'
       +(isActive?'<button class="dm ghost">→ Backlog</button>':'<button class="pm">Activate</button>')
       +'<button class="op ghost">Open</button><button class="ab ghost">Abandon</button></div>';
@@ -1791,7 +2186,19 @@ function showObjDetail(id){
   const st=objStats(o);
   document.getElementById('objDetailTitle').textContent=o.title;
   let h='<div class="obj-bar"><div class="obj-fill" style="width:'+st.pct+'%"></div></div>'
-    +'<div class="obj-meta" style="margin-bottom:16px"><span>'+st.tasksDone+'/'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span><span>'+o.status+'</span></div>';
+    +'<div class="obj-meta" style="margin-bottom:14px"><span>'+st.tasksDone+'/'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span><span>'+o.status+'</span></div>';
+  h+='<div class="obj-due-row"><label>Objective due</label><input type="date" id="objDueInput" value="'+(o.dueDate||'')+'">'
+    +'<button class="ghost" id="objDueClear">Clear</button>'
+    +'<span class="obj-due-note">Tasks inherit this unless given their own date.</span></div>';
+  const conf=scheduleConflicts().filter(c=>{
+    const t=state.tasks.find(x=>x.id===c.id)||state.tasks.find(x=>x.stages.some(s=>s.id===c.id));
+    return t&&t.objectiveId===o.id;
+  });
+  if(conf.length){
+    h+='<div class="conflict-box"><b>Schedule contradiction</b>';
+    conf.forEach(c=>h+='<div>'+c.msg+'</div>');
+    h+='</div>';
+  }
   /* add tasks straight onto the objective — capturing them anywhere else
      just means remembering to come back and attach them, which you won't */
   h+='<div class="obj-add">'
@@ -1806,12 +2213,23 @@ function showObjDetail(id){
   if(!ts.length)h+='<div class="empty-state">No tasks attached yet</div>';
   else{h+='<div class="item-list">';
     ts.forEach(t=>{const dn=t.stages.filter(s=>s.completed).length;
-      const due=t.dueDate?' · due '+new Date(t.dueDate+'T12:00:00').toLocaleDateString([],{month:'short',day:'numeric'}):'';
-      h+='<div class="item'+(t.completed?' completed':'')+(t.waiting?' waiting':'')+'"><div class="item-info"><div class="item-title">'+(t.completed?'✓ ':'')+esc(t.title)+'</div><div class="item-meta">'+(t.stages.length?dn+'/'+t.stages.length+' stages':'no stages')+due+(t.waiting?' · waiting: '+esc(t.waitingReason):'')+'</div></div>'
-        +'<div class="item-actions">'+(t.completed?'':'<button class="bd ghost" data-bd="'+t.id+'">'+(t.stages.length?'Edit':'Break Down')+'</button>')+'</div></div>';});
+      const ed=effTaskDue(t), inherited=!t.dueDate&&!!ed;
+      h+='<div class="item'+(t.completed?' completed':'')+(t.waiting?' waiting':'')+'"><div class="item-info">'
+        +'<div class="item-title">'+(t.completed?'✓ ':'')+esc(t.title)+' '+dueBadge(ed,inherited)+'</div>'
+        +'<div class="item-meta">'+(t.stages.length?dn+'/'+t.stages.length+' stages':'no stages')+(t.waiting?' · waiting: '+esc(t.waitingReason):'')+'</div>';
+      const dated=t.stages.filter(x=>x.dueDate&&!x.completed);
+      if(dated.length){
+        h+='<div class="stage-dates">';
+        dated.forEach(x=>{h+='<span class="sd">'+esc(x.title)+' '+dueBadge(x.dueDate)+'</span>';});
+        h+='</div>';
+      }
+      h+='</div><div class="item-actions">'
+        +(t.completed?'':'<button class="dd ghost" data-dd="'+t.id+'">Date</button><button class="bd ghost" data-bd="'+t.id+'">'+(t.stages.length?'Edit':'Break Down')+'</button>')
+        +'</div></div>';});
     h+='</div>';}
   document.getElementById('objDetailBody').innerHTML=h;
-  document.getElementById('objTaskDue').valueAsDate=new Date();
+  const otd=document.getElementById('objTaskDue');
+  if(o.dueDate)otd.value=o.dueDate; else otd.valueAsDate=new Date();
   document.getElementById('objAddTasksBtn').addEventListener('click',()=>{
     const v=document.getElementById('objTaskInput').value;
     if(!v.trim()){toast('Nothing to add.');return;}
@@ -1820,8 +2238,15 @@ function showObjDetail(id){
     showObjDetail(o.id);
     toast('Tasks attached to '+o.title);
   });
-  document.getElementById('objDetailBody').querySelectorAll('[data-bd]').forEach(b=>
-    b.addEventListener('click',()=>showBreakdown(b.dataset.bd)));
+  const body=document.getElementById('objDetailBody');
+  body.querySelectorAll('[data-bd]').forEach(b=>b.addEventListener('click',()=>showBreakdown(b.dataset.bd)));
+  body.querySelectorAll('[data-dd]').forEach(b=>b.addEventListener('click',()=>openDueDateEdit(b.dataset.dd)));
+  document.getElementById('objDueInput').addEventListener('change',e=>{
+    o.dueDate=e.target.value||null;saveState();renderAll();showObjDetail(o.id);
+  });
+  document.getElementById('objDueClear').addEventListener('click',()=>{
+    o.dueDate=null;saveState();renderAll();showObjDetail(o.id);
+  });
   showView('objDetailView');
 }
 /* objective picker */
@@ -2008,10 +2433,14 @@ function renderProfile(){
   let land=0,tot=0;Object.values(state.rockLog).forEach(r=>{land+=r.landed;tot+=r.landed+r.dropped;});
   document.getElementById('profileRockRate').textContent=tot?Math.round(land/tot*100)+'%':'—';
   document.getElementById('profileObjDone').textContent=state.objectives.filter(o=>o.status==='complete').length;
-  const inLvl=Math.max(0,state.cumulativeXp)%1000,pct=inLvl/10;
-  document.getElementById('xpToNextLevel').textContent=inLvl;
-  document.getElementById('xpProgress').style.width=pct+'%';
-  document.getElementById('xpPercent').textContent=Math.round(pct)+'%';
+  const lp=levelProgress();
+  document.getElementById('xpToNextLevel').textContent=lp.into.toLocaleString();
+  document.getElementById('xpLevelSpan').textContent=lp.span.toLocaleString();
+  document.getElementById('xpRemaining').textContent=lp.remaining.toLocaleString();
+  document.getElementById('xpNextLevelNum').textContent=lp.level+1;
+  document.getElementById('xpProgress').style.width=lp.pct+'%';
+  document.getElementById('xpPercent').textContent=Math.round(lp.pct)+'%';
+  renderLevelCurve();
   // Rest Tokens display
   const tokensAvail=state.restTokensEarned-state.restTokensSpent;
   document.querySelectorAll('#profileXp').forEach(e=>{
@@ -2778,6 +3207,34 @@ function checkRewardIntro(){
     body:'You have '+state.spendableXp.toLocaleString()+' Available XP — enough for '+cheapest.name+'.\n\nLifetime XP is your record and never falls. Available XP is the part you are allowed to spend. Earning without ever spending is just hoarding, and hoarding is not discipline.'});
 }
 
+function renderLevelCurve(){
+  const el=document.getElementById('levelCurve');if(!el)return;
+  const cur=state.level;
+  const er=earnRate();
+  const wk=er?er.perWeek:null;
+  /* show where you are, and what the next few actually cost */
+  const marks=[];
+  for(let L=Math.max(2,cur-1);L<=cur+4;L++)marks.push(L);
+  [cur+10,cur+25].forEach(L=>{if(!marks.includes(L))marks.push(L);});
+  let h='<div class="lc-head">What the next levels cost</div><table class="lc-table"><tr><th>Level</th><th>Lifetime XP</th><th>Step</th>'+(wk?'<th>At your rate</th>':'')+'</tr>';
+  marks.forEach(L=>{
+    const total=xpForLevel(L), step=total-xpForLevel(L-1);
+    const gap=Math.max(0,total-state.cumulativeXp);
+    const wks=wk?gap/wk:null;
+    let eta='—';
+    if(wks!=null){
+      if(gap===0)eta='reached';
+      else if(wks<1)eta=Math.ceil(wks*7)+'d';
+      else if(wks<8)eta=wks.toFixed(1)+'w';
+      else eta=(wks/4.33).toFixed(1)+'mo';
+    }
+    h+='<tr'+(L===cur?' class="lc-now"':'')+'><td>'+L+(L===cur?' ←':'')+'</td><td>'+total.toLocaleString()+'</td><td>+'+step.toLocaleString()+'</td>'+(wk?'<td>'+eta+'</td>':'')+'</tr>';
+  });
+  h+='</table>';
+  if(!wk)h+='<div class="lc-note">Run a week of sessions and this will project each level against your real earn rate.</div>';
+  el.innerHTML=h;
+}
+
 function renderSpoils(){
   const g=document.getElementById('spoilsGrid');if(!g)return;
   const st=rewardStats();
@@ -2790,6 +3247,315 @@ function renderSpoils(){
     +cell(st.redeemed+'/'+st.purchased,'Redeemed');
 }
 
+/* ============================================================
+   ========================  EXPORT  ==========================
+   Written to be READ, not just parsed. Every derived figure is
+   stated with the raw numbers behind it so nothing has to be trusted.
+   ============================================================ */
+function buildReport(){
+  const L=[];
+  const now=new Date();
+  const days=state.firstUseDate?Math.max(1,daysBetween(localDateStr(new Date(state.firstUseDate)),localDateStr())+1):1;
+  const S=state.sessions, T=state.tasks, O=state.objectives;
+  const done=S.filter(s=>!s.xpLocked);
+
+  L.push('# THE FORGE — DATA EXPORT');
+  L.push('');
+  L.push('Generated '+now.toLocaleString()+'  ');
+  L.push('Covering '+days+' days since first use ('+prettyDate(localDateStr(new Date(state.firstUseDate)))+')');
+  L.push('');
+  L.push('> This is a complete dump of one person\'s execution record: what they said they would do,');
+  L.push('> what they actually did, when they did it, and what they bought with it.');
+  L.push('> Figures are given with their raw inputs so every claim can be checked.');
+  L.push('');
+  L.push('---');
+  L.push('');
+
+  /* ---------- HEADLINE ---------- */
+  L.push('## 1. HEADLINE');
+  L.push('');
+  const activeDays=new Set(S.map(s=>localDateStr(new Date(s.startedAt)))).size;
+  const avgAtt=done.length?Math.round(done.reduce((a,s)=>a+s.attainmentPercent,0)/done.length):0;
+  const totalMin=S.reduce((a,s)=>a+s.windowMinutes,0);
+  let rockLand=0,rockTot=0;
+  Object.values(state.rockLog).forEach(r=>{rockLand+=r.landed;rockTot+=r.landed+r.dropped;});
+  L.push('| Metric | Value | Basis |');
+  L.push('|---|---|---|');
+  const lp=levelProgress();
+  L.push('| Level | '+state.level+' | quadratic curve: level N costs '+config.levelBase+'x(N-1)^2 total XP |');
+  L.push('| Progress in level | '+lp.into.toLocaleString()+'/'+lp.span.toLocaleString()+' ('+Math.round(lp.pct)+'%) | '+lp.remaining.toLocaleString()+' XP to level '+(state.level+1)+' |');
+  L.push('| Lifetime XP | '+state.cumulativeXp.toLocaleString()+' | permanent record, never spent |');
+  L.push('| Available XP | '+state.spendableXp.toLocaleString()+' | the wallet |');
+  L.push('| Sessions run | '+S.length+' | across '+activeDays+' distinct days of '+days+' |');
+  L.push('| Day coverage | '+Math.round(activeDays/days*100)+'% | '+activeDays+' active / '+days+' elapsed |');
+  L.push('| Focused time | '+fmtMins(totalMin)+' | sum of session windows |');
+  L.push('| Mean attainment | '+avgAtt+'% | stages completed ÷ committed, '+done.length+' scored sessions |');
+  L.push('| Rock rate | '+(rockTot?Math.round(rockLand/rockTot*100)+'%':'—')+' | '+rockLand+' landed / '+rockTot+' set |');
+  L.push('| Objectives complete | '+O.filter(o=>o.status==='complete').length+' of '+O.length+' | |');
+  L.push('| Rest tokens | '+(state.restTokensEarned-state.restTokensSpent)+' held | '+state.restTokensEarned+' earned, '+state.restTokensSpent+' spent |');
+  L.push('');
+
+  /* ---------- SCHEDULE ---------- */
+  L.push('## 2. THE SCHEDULE');
+  L.push('');
+  L.push('Dates cascade: an objective sets a date, tasks inherit it unless overridden, stages inherit the task.');
+  L.push('A date shown as `(inherited)` was never explicitly set at that level.');
+  L.push('');
+  const conflicts=scheduleConflicts();
+  if(conflicts.length){
+    L.push('**⚠ '+conflicts.length+' schedule contradiction'+(conflicts.length>1?'s':'')+' — a child is due after its parent:**');
+    L.push('');
+    conflicts.forEach(c=>L.push('- '+c.msg.replace(/<[^>]+>/g,'')));
+    L.push('');
+  }
+  const overdueT=T.filter(t=>!t.completed&&dueStatus(effTaskDue(t))==='overdue');
+  const overdueS=[];
+  T.forEach(t=>{if(t.completed)return;t.stages.forEach(st=>{if(!st.completed&&dueStatus(effStageDue(st,t))==='overdue')overdueS.push({t,st});});});
+  L.push('- Overdue tasks: **'+overdueT.length+'**');
+  L.push('- Overdue stages: **'+overdueS.length+'**');
+  L.push('');
+  if(overdueT.length){
+    L.push('Overdue tasks, oldest first:');
+    L.push('');
+    overdueT.sort((a,b)=>(effTaskDue(a)||'').localeCompare(effTaskDue(b)||'')).forEach(t=>{
+      const d=effTaskDue(t);
+      const age=daysBetween(d,localDateStr());
+      L.push('- **'+t.title+'** — due '+d+', **'+age+' day'+(age===1?'':'s')+' late** ('+(objOf(t)?objOf(t).title:'unassigned')+')');
+    });
+    L.push('');
+  }
+
+  /* ---------- OBJECTIVES ---------- */
+  L.push('## 3. OBJECTIVES');
+  L.push('');
+  if(!O.length)L.push('_None._');
+  ['active','backlog','complete','abandoned'].forEach(status=>{
+    const grp=O.filter(o=>o.status===status);
+    if(!grp.length)return;
+    L.push('### '+status.toUpperCase()+' ('+grp.length+')');
+    L.push('');
+    grp.forEach(o=>{
+      const st=objStats(o);
+      L.push('#### '+o.title);
+      L.push('');
+      L.push('- Due: '+(o.dueDate||'no date')+(o.dueDate?' ('+dueStatus(o.dueDate)+')':''));
+      L.push('- Progress: '+st.tasksDone+'/'+st.tasks+' tasks, '+st.done+'/'+st.total+' stages ('+st.pct+'%)');
+      L.push('- Created: '+localDateStr(new Date(o.createdAt)));
+      if(o.completedAt)L.push('- Completed: '+localDateStr(new Date(o.completedAt))+' (+'+(o.bonusAwarded||0)+' XP)');
+      if(objStalled(o))L.push('- **STALLED** — no stage completed in '+config.stalledDays+'+ days');
+      const ts=tasksOf(o);
+      if(ts.length){
+        L.push('');
+        L.push('| Task | Due | Stages | Status |');
+        L.push('|---|---|---|---|');
+        ts.forEach(t=>{
+          const ed=effTaskDue(t);
+          const dl=(ed||'—')+(!t.dueDate&&ed?' _(inherited)_':'');
+          const dn=t.stages.filter(x=>x.completed).length;
+          const stat=t.completed?'done':t.waiting?'WAITING: '+t.waitingReason:dueStatus(ed);
+          L.push('| '+t.title+' | '+dl+' | '+dn+'/'+t.stages.length+' | '+stat+' |');
+          t.stages.filter(x=>x.dueDate).forEach(x=>{
+            L.push('| ↳ _'+x.title+'_ | '+x.dueDate+' | '+(x.completed?'done':'open')+' | own date |');
+          });
+        });
+      }
+      L.push('');
+    });
+  });
+
+  /* ---------- UNASSIGNED ---------- */
+  const orphans=T.filter(t=>!t.objectiveId&&!t.completed);
+  L.push('## 4. UNASSIGNED TASKS ('+orphans.length+')');
+  L.push('');
+  if(!orphans.length)L.push('_None — everything is attached to an objective._');
+  else{
+    L.push('Tasks with no parent objective. A large number here means work is arriving faster than it is being organised.');
+    L.push('');
+    L.push('| Task | Due | Stages |');
+    L.push('|---|---|---|');
+    orphans.forEach(t=>L.push('| '+t.title+' | '+(t.dueDate||'—')+' | '+t.stages.filter(x=>x.completed).length+'/'+t.stages.length+' |'));
+  }
+  L.push('');
+
+  /* ---------- WAITING ---------- */
+  const waits=waitingItems();
+  L.push('## 5. BLOCKED ('+waits.length+')');
+  L.push('');
+  if(!waits.length)L.push('_Nothing blocked._');
+  else{
+    L.push('| Item | Blocker | Days held |');
+    L.push('|---|---|---|');
+    waits.forEach(w=>{
+      const age=w.waitingSince?daysBetween(localDateStr(new Date(w.waitingSince)),localDateStr()):0;
+      L.push('| '+w.title+' | '+(w.waitingReason||'—')+' | '+age+' |');
+    });
+    L.push('');
+    L.push('_A blocker held for many days is usually not a blocker. It is a decision not being made._');
+  }
+  L.push('');
+
+  /* ---------- SESSIONS ---------- */
+  L.push('## 6. SESSION HISTORY');
+  L.push('');
+  L.push('Every session, newest first. `Att%` is stages completed ÷ committed. Penalty is measured against a 90% clean line, not 100%.');
+  L.push('');
+  L.push('| Date | Time | Win | Done/Comm | Att% | Heat | FB | Myst | Pen | XP |');
+  L.push('|---|---|---|---|---|---|---|---|---|---|');
+  S.slice().reverse().slice(0,200).forEach(s=>{
+    const d=new Date(s.startedAt);
+    L.push('| '+localDateStr(d)+' | '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+      +' | '+s.windowMinutes+'m | '+s.completed+'/'+s.denom
+      +' | '+s.attainmentPercent+'% | '+(s.heatLevel?'x'+s.heatMult:'—')
+      +' | '+(s.firstBlood?'✓':'')+' | '+(parseFloat(s.mysteryMult)>1?'x'+s.mysteryMult:'')
+      +' | '+(s.penaltyPercent?'-'+s.penaltyPercent+'%':'')
+      +' | '+(s.xpLocked?'LOCKED':s.xpEarned)+' |');
+  });
+  if(S.length>200)L.push('');
+  if(S.length>200)L.push('_Showing most recent 200 of '+S.length+'._');
+  L.push('');
+
+  /* ---------- RHYTHM ---------- */
+  L.push('## 7. RHYTHM');
+  L.push('');
+  const byHour={},byDow={},byWin={};
+  const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  S.forEach(s=>{
+    const d=new Date(s.startedAt);
+    byHour[d.getHours()]=(byHour[d.getHours()]||0)+1;
+    byDow[d.getDay()]=(byDow[d.getDay()]||0)+1;
+    byWin[s.windowMinutes]=(byWin[s.windowMinutes]||0)+1;
+  });
+  L.push('**When sessions start (hour of day):**');
+  L.push('');
+  L.push('| Hour | Sessions |');
+  L.push('|---|---|');
+  Object.keys(byHour).map(Number).sort((a,b)=>a-b).forEach(h=>
+    L.push('| '+String(h).padStart(2,'0')+':00 | '+byHour[h]+' '+'█'.repeat(byHour[h])+' |'));
+  L.push('');
+  L.push('**By weekday:**');
+  L.push('');
+  L.push('| Day | Sessions |');
+  L.push('|---|---|');
+  [1,2,3,4,5,6,0].forEach(d=>L.push('| '+DOW[d]+' | '+(byDow[d]||0)+' '+'█'.repeat(byDow[d]||0)+' |'));
+  L.push('');
+  L.push('**Window sizes chosen:**');
+  L.push('');
+  L.push('| Window | Count | Mean attainment |');
+  L.push('|---|---|---|');
+  Object.keys(byWin).map(Number).sort((a,b)=>a-b).forEach(w=>{
+    const ss=done.filter(s=>s.windowMinutes===w);
+    const att=ss.length?Math.round(ss.reduce((a,s)=>a+s.attainmentPercent,0)/ss.length):0;
+    L.push('| '+w+'m | '+byWin[w]+' | '+att+'% |');
+  });
+  L.push('');
+  L.push('_Attainment falling as the window grows means stages are being over-committed, not that focus is failing._');
+  L.push('');
+
+  /* ---------- ROCKS ---------- */
+  L.push('## 8. BIG ROCKS');
+  L.push('');
+  const rl=Object.keys(state.rockLog).sort().reverse();
+  if(!rl.length)L.push('_No rocks settled yet._');
+  else{
+    L.push('| Date | Set | Landed | Dropped | Void | Net XP |');
+    L.push('|---|---|---|---|---|---|');
+    rl.slice(0,60).forEach(d=>{
+      const r=state.rockLog[d];
+      L.push('| '+d+' | '+r.total+' | '+r.landed+' | '+r.dropped+' | '+r.voided+' | '+(r.net>0?'+':'')+r.net+' |');
+    });
+    L.push('');
+    L.push('_The rock gate is open all day. A high rock rate is only meaningful if rocks are set in the morning, before the day shows its hand._');
+  }
+  L.push('');
+
+  /* ---------- WALLET ---------- */
+  L.push('## 9. WALLET & REWARDS');
+  L.push('');
+  const rs=rewardStats();
+  const er=earnRate();
+  L.push('| Metric | Value |');
+  L.push('|---|---|');
+  L.push('| Available XP | '+state.spendableXp.toLocaleString()+' |');
+  L.push('| Earn rate (30d) | '+(er?er.perWeek.toLocaleString()+' XP/week over '+er.days+' days':'insufficient history')+' |');
+  L.push('| XP spent on rewards | '+rs.spent.toLocaleString()+' |');
+  L.push('| Rewards purchased | '+rs.purchased+' |');
+  L.push('| Rewards redeemed | '+rs.redeemed+' |');
+  L.push('| Unredeemed (held) | '+rs.unredeemed+' |');
+  L.push('| R&R actually taken | '+fmtMins(rs.rnrMins)+' |');
+  L.push('| Allowance authorised | $'+rs.allowanceAuth.toFixed(2)+' |');
+  L.push('| Allowance actually spent | $'+rs.allowanceSpent.toFixed(2)+' |');
+  L.push('| Meals redeemed | '+rs.mealsRedeemed+' |');
+  L.push('');
+  const ratio=rs.spent+state.spendableXp;
+  if(ratio>0){
+    const burn=Math.round(rs.spent/ratio*100);
+    L.push('**Burn rate: '+burn+'%** of all earned XP has been spent on rewards.');
+    L.push('');
+    if(burn<10)L.push('> Below 10% is hoarding. XP earned and never spent is not discipline, it is a scoreboard being polished. The reward system only does its job if it is used.');
+    else if(burn>70)L.push('> Above 70% suggests the rewards are priced too cheaply, or are being bought compulsively. Check the calibration panel.');
+    else L.push('> A healthy burn rate. Earning and spending are roughly in balance.');
+    L.push('');
+  }
+  if(rs.unredeemed>0){
+    L.push('**'+rs.unredeemed+' reward(s) bought but never used.** Deferred XP is still unspent XP.');
+    L.push('');
+  }
+
+  /* ---------- LEDGER ---------- */
+  L.push('## 10. TRANSACTION LEDGER');
+  L.push('');
+  L.push('Most recent 100. Every wallet movement, with the balance it produced.');
+  L.push('');
+  L.push('| When | Type | XP | Balance | Lifetime | Description |');
+  L.push('|---|---|---|---|---|---|');
+  state.xpTransactions.slice(0,100).forEach(t=>{
+    const d=new Date(t.createdAt);
+    L.push('| '+localDateStr(d)+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+      +' | '+t.type+' | '+(t.amountXp>0?'+':'')+t.amountXp
+      +' | '+t.balanceAfter.toLocaleString()
+      +' | '+(t.lifetimeXpChange?(t.lifetimeXpChange>0?'+':'')+t.lifetimeXpChange:'—')
+      +' | '+(t.description||'')+' |');
+  });
+  L.push('');
+
+  /* ---------- QUESTIONS ---------- */
+  L.push('---');
+  L.push('');
+  L.push('## QUESTIONS WORTH ASKING OF THIS DATA');
+  L.push('');
+  L.push('1. **Is attainment falling as window size rises?** That is over-commitment, not lost focus. The fix is fewer stages per session, not more willpower.');
+  L.push('2. **What is the day coverage?** Sessions concentrated into a few heroic days, with gaps between, is a worse pattern than a lower daily volume held consistently.');
+  L.push('3. **Are the rocks being set in the morning or the evening?** Cross-check rock settle dates against session start times. A near-perfect rock rate with late-day starring means the number is decorative.');
+  L.push('4. **What is stalling?** Objectives with no stage completed in weeks are not objectives, they are wishes with a progress bar.');
+  L.push('5. **Are blockers real?** A "waiting" item held 10+ days is usually an unmade decision wearing a blocker\'s coat.');
+  L.push('6. **Is the XP being spent?** A large Available XP balance with a low burn rate means the reward loop is dead and the app has become a scoreboard.');
+  L.push('7. **Does the work in here match the actual year?** The most important question. If the objectives are not the real objectives, none of the rest of this matters.');
+  L.push('');
+  return L.join('\n');
+}
+
+function downloadBlob(content,filename,type){
+  const b=new Blob([content],{type});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u;a.download=filename;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(u),1000);
+}
+function stamp(){return localDateStr();}
+function renderExport(){
+  const rs=rewardStats();
+  const cell=(v,l)=>'<div class="wallet-stat"><div class="wallet-value muted">'+v+'</div><div class="wallet-label">'+l+'</div></div>';
+  document.getElementById('exportPreviewStats').innerHTML=
+    cell(state.sessions.length,'Sessions')
+   +cell(state.tasks.length,'Tasks')
+   +cell(state.objectives.length,'Objectives')
+   +cell(state.xpTransactions.length,'Transactions');
+  const r=buildReport();
+  document.getElementById('exportPreview').textContent=r.slice(0,4000)+(r.length>4000?'\n\n… ('+(r.length-4000).toLocaleString()+' more characters)':'');
+}
+
 /* ================= UI PLUMBING ================= */
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -2798,6 +3564,7 @@ function showView(id){
   if(id==='ledgerView')switchLtab('history');
   if(id==='profileView')renderProfile();
   if(id==='rewardsView')renderRewards();
+  if(id==='exportView')renderExport();
   if(id==='dashView'){renderDashObjectives();renderRockPanel();renderRewardTarget();tickRnR();}
 }
 function openModal(id){document.getElementById(id).classList.add('open');}
@@ -2811,7 +3578,24 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 
 /* ================= LISTENERS ================= */
 document.querySelectorAll('#nav button[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+document.getElementById('sbReturn').addEventListener('click',()=>{
+  if(state.currentSession&&!state.currentSession.endedAt){renderTimerStages();showView('timerView');}
+});
 document.getElementById('syncNowBtn').addEventListener('click',manualSync);
+document.getElementById('exportMdBtn').addEventListener('click',()=>{
+  downloadBlob(buildReport(),'forge-report-'+stamp()+'.md','text/markdown');
+  toast('Report downloaded');
+});
+document.getElementById('exportJsonBtn').addEventListener('click',()=>{
+  const out={};PERSIST.forEach(k=>out[k]=state[k]);
+  out._exportedAt=new Date().toISOString();out._schema='forge-v1';
+  downloadBlob(JSON.stringify(out,null,2),'forge-raw-'+stamp()+'.json','application/json');
+  toast('Raw state downloaded');
+});
+document.getElementById('exportCopyBtn').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(buildReport());toast('Report copied — paste it into a chat');}
+  catch(e){toast('Clipboard blocked. Use Download instead.');}
+});
 document.getElementById('addTasksBtn').addEventListener('click',()=>{
   const v=document.getElementById('taskPasteInput').value;
   const dueDate=document.getElementById('taskDueInput').value||null;
@@ -2821,7 +3605,7 @@ document.getElementById('taskDueInput').valueAsDate=new Date();
 document.getElementById('allTasksSort').addEventListener('change',renderAllTasks);
 document.getElementById('dueDateCancel').addEventListener('click',()=>closeModal('dueDateModal'));
 document.getElementById('dueDateConfirm').addEventListener('click',confirmDueDate);
-document.getElementById('addObjBtn').addEventListener('click',()=>{const i=document.getElementById('objTitleInput');addObjective(i.value);i.value='';});
+document.getElementById('addObjBtn').addEventListener('click',()=>{const i=document.getElementById('objTitleInput'),d=document.getElementById('objDueNew');addObjective(i.value,d.value||null);i.value='';d.value='';});
 document.getElementById('dashToObjBtn').addEventListener('click',()=>showView('objectivesView'));
 document.getElementById('toBuilderBtn').addEventListener('click',showSessionBuilder);
 document.getElementById('poolToBuilderBtn').addEventListener('click',showSessionBuilder);
@@ -2868,7 +3652,7 @@ document.getElementById('reSave').addEventListener('click',saveRewardEditor);
 document.getElementById('reType').addEventListener('change',syncRewardEditorFields);
 
 /* ================= INIT ================= */
-loadState();renderAll();bootSync();
+loadState();renderAll();resumeSession();bootSync();
 rnrTicker=setInterval(tickRnR,1000);
 </script>
 </body>
