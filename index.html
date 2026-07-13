@@ -310,6 +310,13 @@ button.danger:hover{background:#8f382e}
 .txn-desc{font-size:13px;color:var(--bone)}
 .txn-bal{font-size:11px;color:var(--brass);margin-top:2px}
 
+.obj-add{background:var(--obsidian);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:4px}
+.obj-add textarea{min-height:80px}
+.obj-add-row{display:flex;gap:12px;align-items:flex-end}
+.obj-add-row .form-group{flex:1;margin-bottom:0}
+.obj-add-row button{white-space:nowrap}
+@media(max-width:600px){.obj-add-row{flex-direction:column;align-items:stretch}.obj-add-row button{width:100%}}
+
 .calib{background:var(--obsidian);border:1px solid var(--line-warm);border-radius:8px;padding:16px;margin-bottom:18px}
 .calib-head{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--camel);font-weight:600;margin-bottom:8px}
 .calib-rate{font-family:var(--serif);font-size:26px;color:var(--brass);font-weight:600;margin-bottom:12px}
@@ -1102,8 +1109,11 @@ function objStalled(o){
 function activeObjs(){return state.objectives.filter(o=>o.status==='active');}
 function addObjective(title){
   if(!title.trim())return;
-  state.objectives.push({id:uid('obj'),title:title.trim(),status:'backlog',createdAt:new Date().toISOString()});
-  saveState();renderAll();toast('Objective captured to Backlog');
+  const o={id:uid('obj'),title:title.trim(),status:'backlog',createdAt:new Date().toISOString()};
+  state.objectives.push(o);
+  saveState();renderAll();
+  showObjDetail(o.id); // land inside it — capture the tasks while they are still in your head
+  toast('Captured to Backlog · add its tasks now');
 }
 function promoteObj(id){
   if(activeObjs().length>=config.objActiveCap){toast('Active is full ('+config.objActiveCap+'). Complete or abandon one first.');return;}
@@ -1678,7 +1688,17 @@ function renderRockPanel(){
 function renderObjSelect(){
   const s=document.getElementById('taskObjSelect');const cur=s.value;
   s.innerHTML='<option value="">— Unassigned —</option>';
-  activeObjs().forEach(o=>{const op=document.createElement('option');op.value=o.id;op.textContent=o.title;s.appendChild(op);});
+  /* Show Active AND Backlog. A new objective is created into the Backlog, so listing
+     only Active meant a freshly-captured objective was invisible here — which is
+     precisely the moment you want to hang tasks off it. */
+  const add=(label,list)=>{
+    if(!list.length)return;
+    const g=document.createElement('optgroup');g.label=label;
+    list.forEach(o=>{const op=document.createElement('option');op.value=o.id;op.textContent=o.title;g.appendChild(op);});
+    s.appendChild(g);
+  };
+  add('Active',state.objectives.filter(o=>o.status==='active'));
+  add('Backlog',state.objectives.filter(o=>o.status==='backlog'));
   if(cur)s.value=cur;
 }
 /* standing tasks */
@@ -1766,13 +1786,36 @@ function showObjDetail(id){
   document.getElementById('objDetailTitle').textContent=o.title;
   let h='<div class="obj-bar"><div class="obj-fill" style="width:'+st.pct+'%"></div></div>'
     +'<div class="obj-meta" style="margin-bottom:16px"><span>'+st.tasksDone+'/'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span><span>'+o.status+'</span></div>';
+  /* add tasks straight onto the objective — capturing them anywhere else
+     just means remembering to come back and attach them, which you won't */
+  h+='<div class="obj-add">'
+    +'<div class="form-group"><label>Add Tasks to this Objective</label>'
+    +'<textarea id="objTaskInput" placeholder="Paste or type tasks, one per line…"></textarea></div>'
+    +'<div class="obj-add-row">'
+    +'<div class="form-group"><label>Due Date</label><input type="date" id="objTaskDue"></div>'
+    +'<button id="objAddTasksBtn">Add Tasks</button>'
+    +'</div></div>';
   const ts=tasksOf(o);
+  h+='<div class="subhead" style="margin-top:18px">Tasks <span>'+ts.length+'</span></div>';
   if(!ts.length)h+='<div class="empty-state">No tasks attached yet</div>';
   else{h+='<div class="item-list">';
     ts.forEach(t=>{const dn=t.stages.filter(s=>s.completed).length;
-      h+='<div class="item'+(t.completed?' completed':'')+(t.waiting?' waiting':'')+'"><div class="item-info"><div class="item-title">'+(t.completed?'✓ ':'')+esc(t.title)+'</div><div class="item-meta">'+(t.stages.length?dn+'/'+t.stages.length+' stages':'no stages')+(t.waiting?' · waiting: '+esc(t.waitingReason):'')+'</div></div></div>';});
+      const due=t.dueDate?' · due '+new Date(t.dueDate+'T12:00:00').toLocaleDateString([],{month:'short',day:'numeric'}):'';
+      h+='<div class="item'+(t.completed?' completed':'')+(t.waiting?' waiting':'')+'"><div class="item-info"><div class="item-title">'+(t.completed?'✓ ':'')+esc(t.title)+'</div><div class="item-meta">'+(t.stages.length?dn+'/'+t.stages.length+' stages':'no stages')+due+(t.waiting?' · waiting: '+esc(t.waitingReason):'')+'</div></div>'
+        +'<div class="item-actions">'+(t.completed?'':'<button class="bd ghost" data-bd="'+t.id+'">'+(t.stages.length?'Edit':'Break Down')+'</button>')+'</div></div>';});
     h+='</div>';}
   document.getElementById('objDetailBody').innerHTML=h;
+  document.getElementById('objTaskDue').valueAsDate=new Date();
+  document.getElementById('objAddTasksBtn').addEventListener('click',()=>{
+    const v=document.getElementById('objTaskInput').value;
+    if(!v.trim()){toast('Nothing to add.');return;}
+    const due=document.getElementById('objTaskDue').value||null;
+    addTasks(v,o.id,due);
+    showObjDetail(o.id);
+    toast('Tasks attached to '+o.title);
+  });
+  document.getElementById('objDetailBody').querySelectorAll('[data-bd]').forEach(b=>
+    b.addEventListener('click',()=>showBreakdown(b.dataset.bd)));
   showView('objDetailView');
 }
 /* objective picker */
