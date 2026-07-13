@@ -708,7 +708,7 @@ button.danger:hover{background:#8f382e}
         <h2>Ascent to Next Level</h2>
         <div style="font-size:12px;color:var(--ash);margin-bottom:8px"><span id="xpToNextLevel">0</span> / 1000 XP</div>
         <div class="xp-bar"><div class="xp-fill" id="xpProgress" style="width:0%"><span id="xpPercent">0%</span></div></div>
-        <div class="section-note" style="margin:12px 0 0">Rocks are set before 12:00 and settle at 20:00. Out-of-session work pays 50%. Miss a workday and total XP decays 20%. Weekends pay +10%.</div>
+        <div class="section-note" style="margin:12px 0 0">Rocks can be set any time and settle at 20:00. Out-of-session work pays 50%. Miss a workday and total XP decays 20%. Weekends pay +10%.</div>
       </div>
       <div class="card">
         <h2>Spoils of the Forge</h2>
@@ -830,7 +830,7 @@ const config={
   mysteryOdds:{1.5:0.70, 2.0:0.25, 3.0:0.0333},
   mysteryMinWindow:25, restTokenCap:3, restTokenEarnDays:3,
   lockoutStartDay:21, lockoutDuration:7,
-  rockCap:10, rockGateHour:12, rockSettleHour:20,
+  rockCap:10, rockGateHour:24, rockSettleHour:20,
   rockBonusPerStage:50, rockPenaltyPerStage:50,
   objActiveCap:3, objBonusPerStage:75, objAbandonPenalty:200,
   stalledDays:7, stalledDecayEnabled:false,
@@ -872,7 +872,7 @@ function liveStages(){
   return out;
 }
 function findStage(taskId,stageId){const t=state.tasks.find(x=>x.id===taskId);if(!t)return null;return t.stages.find(s=>s.id===stageId)||null;}
-function rockGateOpen(){return nowHours()<config.rockGateHour;}
+function rockGateOpen(){return nowHours()<config.rockGateHour;} // 24 = always open
 function todaysRocks(){const d=localDateStr();return state.tasks.filter(t=>t.starred&&t.starredDate===d&&!t.rockSettled);}
 
 /* ================= STORAGE ================= */
@@ -1224,14 +1224,20 @@ function renderAllTasks(){
 /* --- rocks --- */
 function toggleStar(id){
   const t=state.tasks.find(x=>x.id===id);if(!t)return;
-  if(!rockGateOpen()){toast('Rock gate closed — 12:00 has passed');return;}
+  if(!rockGateOpen()){toast('Rock gate closed');return;}
   if(t.starred){t.starred=false;t.starredDate=null;t.rockSettled=false;}
   else{
     if(todaysRocks().length>=config.rockCap){toast('Rock cap reached ('+config.rockCap+')');return;}
-    t.starred=true;t.starredDate=localDateStr();t.rockSettled=false;
+    /* Rocks settle at 20:00. A rock set AFTER that would settle instantly on the next
+       open — free XP for work already finished. So a late rock is booked to tomorrow.
+       You can commit whenever you like; you still cannot commit to the past. */
+    const late=nowHours()>=config.rockSettleHour;
+    t.starred=true;t.starredDate=late?tomorrowStr():localDateStr();t.rockSettled=false;
+    if(late)toast('After 20:00 — set as a rock for tomorrow');
   }
   saveState();renderAll();
 }
+function tomorrowStr(){const d=new Date();d.setDate(d.getDate()+1);return localDateStr(d);}
 
 /* --- waiting --- */
 let waitTarget=null;
@@ -1675,13 +1681,13 @@ function renderRockPanel(){
   const c=document.getElementById('rockPanel');
   const rocks=todaysRocks();const open=rockGateOpen();
   let h='<div class="rock-panel"><div class="rock-head"><span>★ Today\'s Big Rocks</span><span>'+rocks.length+'/'+config.rockCap+'</span></div>';
-  if(!rocks.length)h+='<div style="font-size:12px;color:var(--ash)">'+(open?'Star up to '+config.rockCap+' tasks before 12:00.':'No rocks set. The gate has closed.')+'</div>';
+  if(!rocks.length)h+='<div style="font-size:12px;color:var(--ash)">'+(open?'Star up to '+config.rockCap+' tasks. Set them early — that is the whole point.':'No rocks set. The gate has closed.')+'</div>';
   else{
     h+='<div class="rock-list">';
     rocks.forEach(t=>{h+='<div class="rock-item'+(t.completed?' done':'')+(t.waiting?' waiting':'')+'"><span>★</span><span>'+esc(t.title)+'</span></div>';});
     h+='</div>';
   }
-  h+='<div class="gate-note'+(open?'':' locked')+'">'+(open?'Gate open until 12:00. Star and unstar freely until then.':'Gate closed. Locked until 20:00 settlement.')+'</div></div>';
+  h+='<div class="gate-note'+(open?'':' locked')+'">'+(open?'Star and unstar freely until 20:00 settlement.':'Gate closed. Locked until 20:00 settlement.')+'</div></div>';
   c.innerHTML=h;
 }
 /* objective select on dashboard */
