@@ -337,6 +337,16 @@ button.danger:hover{background:#8f382e}
 .conflict-box{background:rgba(201,106,95,.1);border:1px solid var(--oxide);border-radius:7px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--bone);line-height:1.7}
 .conflict-box b{color:var(--oxide);display:block;margin-bottom:4px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
 .stage-input-row .st-due{flex:0 0 140px}
+.audit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:700px){.audit-grid{grid-template-columns:1fr 1fr}}
+.audit-cell{background:var(--obsidian);border:1px solid var(--line);border-radius:7px;padding:13px;text-align:center}
+.audit-cell.bad{border-color:var(--oxide);background:rgba(201,106,95,.08)}
+.audit-cell.bad .ac-v{color:var(--oxide)}
+.ac-v{font-family:var(--serif);font-size:22px;color:var(--brass);font-weight:600;line-height:1}
+.ac-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ash);margin-top:5px}
+.danger-card{border-color:var(--oxide)}
+button.danger{background:transparent;border:1px solid var(--oxide);color:var(--oxide);width:100%}
+button.danger:hover{background:var(--oxide);color:var(--obsidian)}
 .bt-group{border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--obsidian);overflow:hidden}
 .bt-group.has-picked{border-color:var(--line-warm)}
 .bt-group.overdue{border-color:var(--oxide)}
@@ -488,6 +498,7 @@ button.danger:hover{background:#8f382e}
     <button data-view="completedView">Completed</button>
     <button data-view="profileView">Character</button>
     <button data-view="exportView">Export</button>
+    <button data-view="auditView">Audit</button>
     <button id="syncNowBtn">Sync</button>
   </div>
   <!-- ALL TASKS -->
@@ -748,6 +759,20 @@ button.danger:hover{background:#8f382e}
     </div>
   </div>
 
+  <!-- AUDIT & RESET -->
+  <div id="auditView" class="view">
+    <div class="card">
+      <h2>XP Audit</h2>
+      <div class="section-note">Every XP award writes a receipt. This checks the balance against the receipts. If they disagree, something wrote XP without logging it — and that is a bug, not a bonus.</div>
+      <div id="auditBody"></div>
+    </div>
+    <div class="card danger-card">
+      <h2>Reset Character</h2>
+      <div class="section-note">Wipes XP, level, wallet and ledger. <b>Keeps every objective, task and stage.</b> The work was real; only the number describing it was wrong. Levels were never the point — you can climb again in a fortnight.</div>
+      <button id="resetCharBtn" class="danger">Reset Character to Level 1</button>
+    </div>
+  </div>
+
   <!-- EXPORT -->
   <div id="exportView" class="view">
     <div class="card">
@@ -936,9 +961,10 @@ const config={
      meaningless. A quadratic curve keeps the early levels quick — the first is half a
      session — and makes the late ones genuinely expensive. XP earning is UNCHANGED;
      only the price of a level moves. */
-  levelBase:500, levelExp:2
+  levelBase:500, levelExp:2,
+  sessionXpCeilingMult:30  /* max legitimate multiplier product; see the circuit breaker in endSession */
 };
-const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession'];
+const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession','resetAt'];
 
 /* ================= LOCKOUT & MYSTERY ================= */
 function inLockoutPeriod(){
@@ -1136,7 +1162,29 @@ async function manualSync(){
 
 /* ================= DAILY ENGINES ================= */
 const notices=[];
-function runDailyEngines(){ seedRewardCatalogue(); migrateXpWallet(); settleRocks(); processDecay(); expireRnR(); updateLevelFromXp(); }
+/* Sessions scored before the penalty cap existed can carry penaltyPercent > 100 and a
+   NEGATIVE xpEarned. Both are impossible under the current rules. They are left in the
+   history because they happened, but they are flagged so they stop poisoning averages
+   and stop being read as if they were real scores. */
+function repairCorruptSessions(){
+  let n=0;
+  state.sessions.forEach(s=>{
+    if(s.corrupt)return;
+    const badPenalty=(s.penaltyPercent||0)>100;
+    const badXp=(s.xpEarned||0)<0;
+    if(badPenalty||badXp){
+      s.corrupt=true;
+      s.originalXpEarned=s.xpEarned;
+      s.originalPenaltyPercent=s.penaltyPercent;
+      s.xpEarned=0;
+      s.penaltyPercent=Math.min(75,s.penaltyPercent||0);
+      n++;
+    }
+  });
+  if(n)notices.push({title:'Corrupt Sessions Flagged',
+    body:n+' session'+(n===1?'':'s')+' were scored by the old, broken penalty formula — penalties above 100% and negative XP, both impossible.\n\nThey stay in your history because they happened, but they no longer count toward your averages.'});
+}
+function runDailyEngines(){ seedRewardCatalogue(); migrateXpWallet(); repairCorruptSessions(); settleRocks(); processDecay(); expireRnR(); updateLevelFromXp(); }
 
 /* --- rock settlement (lazy, on open) --- */
 function settleRocks(){
@@ -1940,7 +1988,23 @@ function endSession(auto){
     state.mysteryAwardedToday=true;   // burned here, because here is where it paid out
   }
   if(!inLockoutPeriod())state.dayFirstSessionRun=true; // likewise: consumed on scoring, not on starting
-  const xp=Math.max(0,Math.round(base*heatMult*(1-penalty)*(1+bonus)*(1+timeBonus)*(weekend?1+config.weekendBonus:1)*firstBloodMult*mysteryMult));
+  let xp=Math.max(0,Math.round(base*heatMult*(1-penalty)*(1+bonus)*(1+timeBonus)*(weekend?1+config.weekendBonus:1)*firstBloodMult*mysteryMult));
+  /* CIRCUIT BREAKER.
+     Every multiplier is individually bounded, so their product is bounded too:
+       heat 1.5 x overflow 2.0 x time 2.0 x weekend 1.1 x First Blood 1.5 x mystery 3.0 = 29.7
+     A session can therefore never legitimately pay more than ~30x its base. If it does,
+     something upstream is wrong and the honest response is to clamp it and say so loudly,
+     rather than quietly bank an impossible number. A scoreboard that can be corrupted
+     silently is worse than no scoreboard. */
+  const ceiling=Math.max(config.xpPerStage,Math.round(base*config.sessionXpCeilingMult));
+  if(xp>ceiling){
+    const impossible=xp;
+    xp=ceiling;
+    notices.push({title:'Impossible Score Clamped',
+      body:'This session calculated '+impossible.toLocaleString()+' XP from '+completed+' completed stage'+(completed===1?'':'s')+'.\n\nThe maximum any session can legitimately pay is '+config.sessionXpCeilingMult+'x its base, so it has been clamped to '+ceiling.toLocaleString()+' XP.\n\nThis is a bug, not a windfall. The Ledger records what happened.'});
+    postWalletTransaction({type:'correction',amountXp:0,lifetimeXpChange:0,sourceType:'session',sourceId:s.sessionId,
+      description:'Clamped impossible score: '+impossible.toLocaleString()+' -> '+ceiling.toLocaleString()+' XP'});
+  }
   Object.assign(s,{endedAt:new Date().toISOString(),completed,denom,auto:!!auto,deficit,xpLocked:inLockoutPeriod(),
     waivedCount:waived.length,backfillCount:backfills.length,overflowCount:overflow.length,
     attainmentPercent:Math.round(attainment),penaltyPercent:+(penalty*100).toFixed(1),
@@ -2428,7 +2492,8 @@ function renderProfile(){
   const xpDisplay=inLockoutPeriod()?'LOCKED':''+state.cumulativeXp.toLocaleString();
   document.getElementById('profileXp').textContent=xpDisplay;
   document.getElementById('profileSessions').textContent=state.sessions.length;
-  const avg=state.sessions.filter(s=>!s.xpLocked).length?Math.round(state.sessions.filter(s=>!s.xpLocked).reduce((a,s)=>a+s.attainmentPercent,0)/state.sessions.filter(s=>!s.xpLocked).length):0;
+  const clean=state.sessions.filter(s=>!s.xpLocked&&!s.corrupt);
+  const avg=clean.length?Math.round(clean.reduce((a,s)=>a+s.attainmentPercent,0)/clean.length):0;
   document.getElementById('profileAvgAttainment').textContent=avg+'%';
   let land=0,tot=0;Object.values(state.rockLog).forEach(r=>{land+=r.landed;tot+=r.landed+r.dropped;});
   document.getElementById('profileRockRate').textContent=tot?Math.round(land/tot*100)+'%':'—';
@@ -3257,7 +3322,7 @@ function buildReport(){
   const now=new Date();
   const days=state.firstUseDate?Math.max(1,daysBetween(localDateStr(new Date(state.firstUseDate)),localDateStr())+1):1;
   const S=state.sessions, T=state.tasks, O=state.objectives;
-  const done=S.filter(s=>!s.xpLocked);
+  const done=S.filter(s=>!s.xpLocked&&!s.corrupt);
 
   L.push('# THE FORGE — DATA EXPORT');
   L.push('');
@@ -3556,6 +3621,127 @@ function renderExport(){
   document.getElementById('exportPreview').textContent=r.slice(0,4000)+(r.length>4000?'\n\n… ('+(r.length-4000).toLocaleString()+' more characters)':'');
 }
 
+/* ============================================================
+   ==================  AUDIT & HARD RESET  ====================
+   ============================================================ */
+
+/* The ledger is the source of truth. If Lifetime XP disagrees with the sum of every
+   lifetimeXpChange ever recorded, then something wrote XP without a receipt — and THAT
+   is the bug, not the number on the screen. */
+function xpAudit(){
+  const txns=state.xpTransactions;
+  const ledgerLifetime=txns.reduce((a,t)=>a+(t.lifetimeXpChange||0),0);
+  const ledgerWallet=txns.reduce((a,t)=>a+(t.amountXp||0),0);
+  const biggest=txns.filter(t=>t.amountXp>0).slice().sort((a,b)=>b.amountXp-a.amountXp).slice(0,8);
+  const bySource={};
+  txns.forEach(t=>{
+    if(t.amountXp<=0)return;
+    const k=t.sourceType||t.type;
+    bySource[k]=(bySource[k]||0)+t.amountXp;
+  });
+  return{
+    ledgerLifetime,ledgerWallet,
+    actualLifetime:state.cumulativeXp,actualWallet:state.spendableXp,
+    lifetimeDrift:state.cumulativeXp-ledgerLifetime,
+    walletDrift:state.spendableXp-ledgerWallet,
+    biggest,bySource,count:txns.length
+  };
+}
+
+function renderAudit(){
+  const el=document.getElementById('auditBody');if(!el)return;
+  const a=xpAudit();
+  let h='';
+  h+='<div class="audit-grid">'
+    +'<div class="audit-cell"><div class="ac-v">'+a.actualLifetime.toLocaleString()+'</div><div class="ac-l">Lifetime XP now</div></div>'
+    +'<div class="audit-cell"><div class="ac-v">'+a.ledgerLifetime.toLocaleString()+'</div><div class="ac-l">Ledger says</div></div>'
+    +'<div class="audit-cell'+(Math.abs(a.lifetimeDrift)>1?' bad':'')+'"><div class="ac-v">'+(a.lifetimeDrift>0?'+':'')+a.lifetimeDrift.toLocaleString()+'</div><div class="ac-l">Unexplained</div></div>'
+    +'<div class="audit-cell"><div class="ac-v">'+a.count+'</div><div class="ac-l">Transactions</div></div>'
+    +'</div>';
+  if(Math.abs(a.lifetimeDrift)>1){
+    h+='<div class="conflict-box"><b>XP without a receipt</b><div>'+Math.abs(a.lifetimeDrift).toLocaleString()+' XP exists that no transaction accounts for. Something wrote to the balance without logging it. That is a bug, and a reset is the correct response.</div></div>';
+  }
+  if(a.biggest.length){
+    h+='<div class="subhead" style="margin-top:16px">Largest XP awards <span>top '+a.biggest.length+'</span></div>';
+    h+='<div class="section-note">If the glitch was a single event, it is almost certainly at the top of this list.</div>';
+    h+='<table class="lc-table" style="margin-top:8px"><tr><th>When</th><th>Source</th><th>XP</th><th>What</th></tr>';
+    a.biggest.forEach(t=>{
+      const d=new Date(t.createdAt);
+      const suspect=t.amountXp>5000;
+      h+='<tr'+(suspect?' class="lc-now"':'')+'><td>'+localDateStr(d)+'</td><td>'+(t.sourceType||t.type)+'</td>'
+        +'<td>'+(suspect?'⚠ ':'')+t.amountXp.toLocaleString()+'</td><td>'+esc(t.description||'')+'</td></tr>';
+    });
+    h+='</table>';
+  }
+  const keys=Object.keys(a.bySource);
+  if(keys.length){
+    h+='<div class="subhead" style="margin-top:18px">Where all XP came from</div>';
+    h+='<table class="lc-table" style="margin-top:8px"><tr><th>Source</th><th>Total XP</th><th>Share</th></tr>';
+    const grand=keys.reduce((x,k)=>x+a.bySource[k],0)||1;
+    keys.sort((x,y)=>a.bySource[y]-a.bySource[x]).forEach(k=>{
+      h+='<tr><td>'+k+'</td><td>'+a.bySource[k].toLocaleString()+'</td><td>'+Math.round(a.bySource[k]/grand*100)+'%</td></tr>';
+    });
+    h+='</table>';
+  }
+  if(!a.count)h='<div class="empty-state">No transactions recorded yet.</div>';
+  el.innerHTML=h;
+}
+
+/* ---- HARD RESET ----
+   Wipes PROGRESSION. Keeps WORK.
+   Your objectives, tasks and stages are real things you actually thought about; the XP
+   was just a number describing them, and the number is wrong. So the number goes and
+   the work stays. Starting again from zero is not a loss — the levels were never the point. */
+function characterReset(){
+  const a=xpAudit();
+  const held=state.rewardInventory.filter(i=>i.status==='available'||i.status==='active'||i.status==='partially_redeemed').length;
+  askConfirm('Reset Character',
+    'This sets Lifetime XP, Available XP and Level back to zero. You climb again from the bottom.\n\n'
+    +'WIPED\n'
+    +'  Lifetime XP ('+state.cumulativeXp.toLocaleString()+' -> 0)\n'
+    +'  Available XP ('+state.spendableXp.toLocaleString()+' -> 0)\n'
+    +'  Level ('+state.level+' -> 1)\n'
+    +'  The transaction ledger ('+a.count+' entries)\n'
+    +'  Rest tokens, and '+held+' unredeemed reward'+(held===1?'':'s')+' bought with the bad XP\n\n'
+    +'KEPT\n'
+    +'  Every objective, task and stage\n'
+    +'  Session history and the rock log, as a record of what you actually did\n'
+    +'  Your reward catalogue and its prices\n\n'
+    +'This cannot be undone.',
+    ()=>{
+      const before={xp:state.cumulativeXp,wallet:state.spendableXp,level:state.level};
+      state.cumulativeXp=0;
+      state.spendableXp=0;
+      state.dailyXp=0;
+      state.level=1;
+      state.dayOpenXp=0;
+      state.dayFloor=0;
+      state.xpTransactions=[];
+      state.restTokensEarned=0;
+      state.restTokensSpent=0;
+      state.consecutiveCleanDays=0;
+      state.mysteryAwardedToday=false;
+      state.dayFirstSessionRun=false;
+      state.rewardIntroSeen=false;
+      state.pinnedRewardId=null;
+      /* rewards bought with corrupted XP are void; redeemed ones already happened and stand */
+      state.rewardInventory=state.rewardInventory.filter(i=>i.status==='redeemed');
+      state.walletMigratedV1=true;   // do NOT let migration re-credit the old balance
+      state.resetAt=new Date().toISOString();
+      /* one honest opening entry, so the ledger reconciles from zero */
+      state.xpTransactions.unshift({
+        id:uid('txn'),type:'correction',amountXp:0,balanceBefore:0,balanceAfter:0,lifetimeXpChange:0,
+        sourceType:'system',sourceId:null,rewardId:null,inventoryItemId:null,
+        description:'Character reset. Cleared '+before.xp.toLocaleString()+' Lifetime XP, '+before.wallet.toLocaleString()+' Available XP, level '+before.level+'.',
+        createdAt:new Date().toISOString()
+      });
+      updateLevelFromXp();
+      saveState();renderAll();renderAudit();
+      showView('dashView');
+      toast('Character reset · level 1, zero XP, work intact');
+    });
+}
+
 /* ================= UI PLUMBING ================= */
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -3565,6 +3751,7 @@ function showView(id){
   if(id==='profileView')renderProfile();
   if(id==='rewardsView')renderRewards();
   if(id==='exportView')renderExport();
+  if(id==='auditView')renderAudit();
   if(id==='dashView'){renderDashObjectives();renderRockPanel();renderRewardTarget();tickRnR();}
 }
 function openModal(id){document.getElementById(id).classList.add('open');}
@@ -3582,6 +3769,7 @@ document.getElementById('sbReturn').addEventListener('click',()=>{
   if(state.currentSession&&!state.currentSession.endedAt){renderTimerStages();showView('timerView');}
 });
 document.getElementById('syncNowBtn').addEventListener('click',manualSync);
+document.getElementById('resetCharBtn').addEventListener('click',characterReset);
 document.getElementById('exportMdBtn').addEventListener('click',()=>{
   downloadBlob(buildReport(),'forge-report-'+stamp()+'.md','text/markdown');
   toast('Report downloaded');
