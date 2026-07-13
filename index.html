@@ -354,9 +354,26 @@ button.danger:hover{background:#8f382e}
 .all-task-row{grid-template-columns:26px 2fr 1fr 1fr auto}
 .all-task-row.picked{border-color:var(--brass);background:rgba(182,138,90,.08)}
 .at-pick{display:flex;align-items:center;justify-content:center;cursor:pointer}
-.at-stagehits{grid-column:1/-1;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
-.at-sh{font-size:12px;color:var(--ash);padding-left:4px}
-.at-sh.done{opacity:.5;text-decoration:line-through}
+.at-caret{color:var(--camel);font-size:10px;margin-right:6px;display:inline-block;width:9px}
+.all-task-row .ts-title{cursor:pointer}
+.all-task-row.open{border-color:var(--line-warm)}
+.at-stages{grid-column:1/-1;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.at-stage{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:6px;background:var(--espresso)}
+.at-stage:hover{background:rgba(182,138,90,.07)}
+.at-stage.picked{background:rgba(182,138,90,.13)}
+.at-stage.done{opacity:.45}
+.at-stage.done .at-stage-title{text-decoration:line-through}
+.at-stage.waiting{opacity:.7}
+.at-stage-title{flex:1;font-size:12px;color:var(--bone);min-width:0}
+.at-stage .bt-tick{cursor:pointer;flex-shrink:0}
+.at-stage .bt-tick.dead{opacity:.3;cursor:default;border-style:dashed}
+.at-stage-btns{display:flex;gap:5px;flex-shrink:0}
+.at-stage-btns button{padding:4px 9px;font-size:10px}
+.bt-tick.partial{background:transparent;border-color:var(--brass);position:relative}
+.bt-tick.partial:after{content:'';position:absolute;left:3px;right:3px;top:50%;height:2px;margin-top:-1px;background:var(--brass);border-radius:1px}
+.bt-tick.all{background:var(--brass);border-color:var(--brass)}
+.bt-tick.all:after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--obsidian);font-size:10px;font-weight:700}
+.at-pick .bt-tick{position:relative}
 #taskSearch{font-size:14px;padding:11px 13px}
 mark{background:rgba(182,138,90,.35);color:var(--sand);border-radius:2px;padding:0 2px}
 @media(max-width:700px){
@@ -518,7 +535,6 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
     <button data-view="dashView" class="active">Dashboard</button>
     <button data-view="allTasksView">All Tasks</button>
     <button data-view="objectivesView">Objectives</button>
-    <button data-view="stagePoolView">Stages</button>
     <button data-view="waitingView">Waiting<span class="badge amber" id="waitBadge" style="display:none">0</span></button>
     <button data-view="rewardsView">Rewards<span class="badge amber" id="rewardBadge" style="display:none">0</span></button>
     <button data-view="ledgerView">Ledger</button>
@@ -658,17 +674,6 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
   </div>
 
   <!-- STAGE POOL -->
-  <div id="stagePoolView" class="view">
-    <div class="card">
-      <h2>Stage Pool <span style="font-size:13px;color:var(--ash)">(<span id="stageCount">0</span>)</span></h2>
-      <div class="section-note">Every live stage. Waiting stages are held aside.</div>
-      <div class="item-list" id="stagePoolList"></div>
-      <div class="button-group" style="margin-top:16px">
-        <button id="poolToBuilderBtn">Build Session →</button>
-      </div>
-    </div>
-  </div>
-
   <!-- SESSION BUILDER -->
   <div id="sessionBuilderView" class="view">
     <div class="card">
@@ -1184,8 +1189,8 @@ function loadState(){
    ============================================================ */
 
 const SUPABASE = {
-  url:     'PASTE_YOUR_SUPABASE_PROJECT_URL',   // e.g. https://abcdefgh.supabase.co
-  anonKey: 'PASTE_YOUR_SUPABASE_ANON_KEY'       // public by design — safe to commit
+  url:     'https://nluiseugffspajlducfc.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdWlzZXVnZmZzcGFqbGR1Y2ZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MTgzMjgsImV4cCI6MjA5OTQ5NDMyOH0.dg9E4-ijw9nPGbPwjOP2g3uaebRkagsUde0mqC6NBuM'  // anon/public — safe to commit, RLS is the wall
 };
 const SB_CONFIGURED = !/^PASTE_/.test(SUPABASE.url) && !/^PASTE_/.test(SUPABASE.anonKey);
 
@@ -1621,7 +1626,24 @@ function confirmDueDate(){
    The filter is a lens, not a delete key: it changes what you look at, never what
    exists. And the whole reason to search here is to ACT on what you find, so the
    selection survives filtering — narrow, tick, narrow again, tick again, then go. */
-let atFilter='live', atQuery='', atObj='', atSelected=new Set();
+let atFilter='live', atQuery='', atObj='', atSelected=new Set(), atOpen={};
+/* Selection is held at STAGE level, not task level. A task tick is just a shortcut for
+   "every live stage under this task" — which is why it can sit in a third state, partial.
+   Holding it at task level would have made "add these two stages but not that one"
+   impossible to express, and that is precisely the thing you asked for. */
+function atTaskSel(t){
+  const live=atLiveStages(t);
+  if(!live.length)return 'none';
+  const n=live.filter(s=>atSelected.has(s.id)).length;
+  if(n===0)return 'none';
+  return n===live.length?'all':'partial';
+}
+function atToggleTask(t){
+  const live=atLiveStages(t);
+  if(!live.length){toast('No live stages — break it down first.');return;}
+  if(atTaskSel(t)==='all')live.forEach(s=>atSelected.delete(s.id));
+  else live.forEach(s=>atSelected.add(s.id));
+}
 const AT_FILTERS=[
   ['live','Live'],['today','Today'],['overdue','Overdue'],['upcoming','Upcoming'],
   ['nodate','No date'],['starred','Rocks'],['waiting','Blocked'],
@@ -1655,42 +1677,35 @@ function passesFilter(t,f){
 }
 function atLiveStages(t){return t.stages.filter(s=>!s.completed&&!s.waiting);}
 
-function sendSelectionToSession(){
-  const picked=[...atSelected].map(id=>state.tasks.find(t=>t.id===id)).filter(Boolean);
-  const stages=[];
-  const noBreakdown=[];
-  picked.forEach(t=>{
-    const live=atLiveStages(t);
-    if(!live.length){noBreakdown.push(t.title);return;}
-    live.forEach(s=>stages.push({id:s.id,taskId:t.id,title:s.title}));
+function atSelectedStages(){
+  const out=[];
+  state.tasks.forEach(t=>{
+    atLiveStages(t).forEach(s=>{ if(atSelected.has(s.id))out.push({id:s.id,taskId:t.id,title:s.title}); });
   });
-  if(!stages.length){
-    toast(noBreakdown.length?'Those tasks have no stages. Break one down first.':'Nothing live to add.');
-    return;
-  }
+  return out;
+}
+function sendSelectionToSession(){
+  const stages=atSelectedStages();
+  if(!stages.length){toast('Nothing selected.');return;}
+  const taskCount=new Set(stages.map(s=>s.taskId)).size;
   showSessionBuilder();
   state.selectedStages=stages;
   stages.forEach(s=>{builderOpen[s.taskId]=true;});
   renderBuilderStages();renderSelectedStages();updateStartBtn();
   atSelected.clear();
-  if(noBreakdown.length)
-    toast(stages.length+' stages loaded · '+noBreakdown.length+' task'+(noBreakdown.length>1?'s':'')+' skipped (no stages)');
-  else
-    toast(stages.length+' stage'+(stages.length===1?'':'s')+' loaded · choose a window');
+  toast(stages.length+' stage'+(stages.length===1?'':'s')+' from '+taskCount+' task'+(taskCount===1?'':'s')+' · choose a window');
 }
-
 function renderAtSelBar(){
   const bar=document.getElementById('atSelBar');if(!bar)return;
-  if(!atSelected.size){bar.style.display='none';return;}
-  const picked=[...atSelected].map(id=>state.tasks.find(t=>t.id===id)).filter(Boolean);
-  const stages=picked.reduce((n,t)=>n+atLiveStages(t).length,0);
+  const stages=atSelectedStages();
+  if(!stages.length){bar.style.display='none';return;}
+  const taskCount=new Set(stages.map(s=>s.taskId)).size;
   bar.style.display='flex';
-  bar.innerHTML='<span class="at-selcount">'+atSelected.size+' task'+(atSelected.size===1?'':'s')+' · '+stages+' live stage'+(stages===1?'':'s')+'</span>'
+  bar.innerHTML='<span class="at-selcount">'+stages.length+' stage'+(stages.length===1?'':'s')+' · '+taskCount+' task'+(taskCount===1?'':'s')+'</span>'
     +'<div class="at-selbtns"><button class="ghost" id="atClearSel">Clear</button>'
-    +'<button id="atToSession"'+(stages?'':' disabled')+'>Plan a Session →</button></div>';
+    +'<button id="atToSession">Plan a Session →</button></div>';
   document.getElementById('atClearSel').addEventListener('click',()=>{atSelected.clear();renderAllTasks();});
-  const go=document.getElementById('atToSession');
-  if(stages)go.addEventListener('click',sendSelectionToSession);
+  document.getElementById('atToSession').addEventListener('click',sendSelectionToSession);
 }
 
 function renderAllTasks(){
@@ -1751,33 +1766,68 @@ function renderAllTasks(){
     const st=taskStatus(t);
     const o=objOf(t);
     const ed=effTaskDue(t);
-    const live=atLiveStages(t).length;
-    const sel=atSelected.has(t.id);
+    const live=atLiveStages(t);
+    const tsel=atTaskSel(t);
+    /* a search that hits a stage opens the task, or the hit would be invisible */
+    const open=atOpen[t.id]||(q&&m.stages.length>0);
     const row=document.createElement('div');
-    row.className='all-task-row '+st+(t.completed?' done':'')+(sel?' picked':'');
-    row.innerHTML='<div class="at-pick"><span class="bt-tick'+(sel?' on':'')+'"></span></div>'
-      +'<div class="ts-title">'+(t.starred?'★ ':'')+hl(t.title)
+    row.className='all-task-row '+st+(t.completed?' done':'')+(tsel!=='none'?' picked':'')+(open?' open':'');
+    row.innerHTML='<div class="at-pick"><span class="bt-tick '+tsel+'"></span></div>'
+      +'<div class="ts-title"><span class="at-caret">'+(t.stages.length?(open?'▾':'▸'):'·')+'</span>'
+        +(t.starred?'★ ':'')+hl(t.title)
         +'<div class="ts-obj">'+(o?esc(o.title):'unassigned')+' · '+t.stages.length+' stage'+(t.stages.length===1?'':'s')
-        +(live?' · '+live+' live':'')+(t.waiting?' · blocked: '+esc(t.waitingReason||''):'')+'</div></div>'
+        +(live.length?' · '+live.length+' live':'')+(t.waiting?' · blocked: '+esc(t.waitingReason||''):'')+'</div></div>'
       +'<div class="ts-due" style="text-align:center">'+(ed?fmtDue(ed):'—')+'</div>'
       +'<div><span class="ts-status '+st+'">'+st.toUpperCase()+'</span></div>'
       +'<div class="all-task-actions"><button class="ed ghost">Edit</button><button class="dl ghost">Delete</button></div>';
 
-    if(m.stages.length){
+    if(open&&t.stages.length){
       const sub=document.createElement('div');
-      sub.className='at-stagehits';
-      sub.innerHTML=m.stages.map(s=>'<div class="at-sh'+(s.completed?' done':'')+'">'
-        +(s.completed?'✓ ':(s.waiting?'⏸ ':'· '))+hl(s.title)+'</div>').join('');
+      sub.className='at-stages';
+      t.stages.forEach(sg=>{
+        const ssel=atSelected.has(sg.id);
+        const sdue=effStageDue(sg,t);
+        const dead=sg.completed||sg.waiting;
+        const r=document.createElement('div');
+        r.className='at-stage'+(sg.completed?' done':'')+(sg.waiting?' waiting':'')+(ssel?' picked':'');
+        r.innerHTML='<span class="bt-tick'+(ssel?' on':'')+(dead?' dead':'')+'"></span>'
+          +'<span class="at-stage-title">'+hl(sg.title)+'</span>'
+          +(sg.waiting?'<span class="pill wait">blocked</span>':'')
+          +(sg.completed?'<span class="pill">done</span>':dueBadge(sdue,!sg.dueDate))
+          +'<span class="at-stage-btns">'
+            +(dead?(sg.waiting?'<button class="ub ghost">Unblock</button>':'')
+                  :'<button class="wt ghost">Waiting</button><button class="dn ghost">Done</button>')
+          +'</span>';
+        if(!dead){
+          r.querySelector('.bt-tick').addEventListener('click',()=>{
+            if(atSelected.has(sg.id))atSelected.delete(sg.id);else atSelected.add(sg.id);
+            renderAllTasks();
+          });
+          r.querySelector('.wt').addEventListener('click',()=>openWaitModal('stage',t.id,sg.id,false));
+          r.querySelector('.dn').addEventListener('click',()=>{
+            atSelected.delete(sg.id);
+            completeStageOOS(t.id,sg.id);
+          });
+        }
+        const ub=r.querySelector('.ub');
+        if(ub)ub.addEventListener('click',()=>{sg.waiting=false;sg.waitingReason=null;saveState();renderAll();});
+        sub.appendChild(r);
+      });
       row.appendChild(sub);
     }
 
-    row.querySelector('.at-pick').addEventListener('click',()=>{
-      if(atSelected.has(t.id))atSelected.delete(t.id);else atSelected.add(t.id);
-      renderAllTasks();
+    row.querySelector('.at-pick').addEventListener('click',()=>{atToggleTask(t);renderAllTasks();});
+    row.querySelector('.ts-title').addEventListener('click',e=>{
+      if(e.target.closest('.at-stages'))return;
+      if(!t.stages.length){showBreakdown(t.id);return;}
+      atOpen[t.id]=!open;renderAllTasks();
     });
     row.querySelector('.ts-due').addEventListener('click',()=>openDueDateEdit(t.id));
     row.querySelector('.ed').addEventListener('click',()=>showBreakdown(t.id));
-    row.querySelector('.dl').addEventListener('click',()=>{atSelected.delete(t.id);deleteTask(t.id);renderAllTasks();});
+    row.querySelector('.dl').addEventListener('click',()=>{
+      atLiveStages(t).forEach(x=>atSelected.delete(x.id));
+      deleteTask(t.id);renderAllTasks();
+    });
     list.appendChild(row);
   });
   renderAtSelBar();
@@ -2481,7 +2531,7 @@ function renderStageReport(){document.getElementById('stageReport').innerHTML=st
 /* ================= RENDER ================= */
 function renderAll(){
   renderDashObjectives();renderRockPanel();renderObjSelect();renderTaskLists();
-  renderStagePool();renderObjectives();renderWaiting();renderCompleted();renderAllTasks();
+  renderObjectives();renderWaiting();renderCompleted();renderAllTasks();
   renderRewardTarget();updateHeader();updateWaitBadge();updateRewardBadge();
   checkRewardIntro();tickRnR();
 }
@@ -2584,22 +2634,6 @@ function taskSection(list,tasks,isBroken){
   });
 }
 /* stage pool */
-function renderStagePool(){
-  const list=document.getElementById('stagePoolList');const stages=liveStages();
-  document.getElementById('stageCount').textContent=stages.length;list.innerHTML='';
-  if(!stages.length){list.innerHTML='<div class="empty-state">No live stages</div>';return;}
-  stages.forEach(st=>{
-    const el=document.createElement('div');el.className='item';
-    el.className='item'+(dueStatus(st.effDue)==='overdue'?' overdue-row':'');
-    el.innerHTML='<div class="item-info"><div class="item-title">'+esc(st.title)+' '+dueBadge(st.effDue,!st.ownDue)+'</div><div class="item-meta">'+stageBreadcrumb(st)+'</div></div>'
-      +'<div class="item-actions"><button class="wt iconbtn" title="Waiting">⏸</button><button class="dn ghost">Done</button></div>';
-    el.querySelector('.parent-link')?.addEventListener('click',()=>showTaskDetail(st.taskId,'stagePoolView'));
-    el.querySelector('.wt').addEventListener('click',()=>openWaitModal('stage',st.taskId,st.id,false));
-    el.querySelector('.dn').addEventListener('click',()=>completeStageOOS(st.taskId,st.id));
-    list.appendChild(el);
-  });
-}
-/* objectives view */
 function renderObjectives(){
   document.getElementById('objCapLabel').textContent=config.objActiveCap;
   const act=activeObjs(),back=state.objectives.filter(o=>o.status==='backlog');
@@ -4255,7 +4289,6 @@ document.getElementById('dueDateConfirm').addEventListener('click',confirmDueDat
 document.getElementById('addObjBtn').addEventListener('click',()=>{const i=document.getElementById('objTitleInput'),d=document.getElementById('objDueNew');addObjective(i.value,d.value||null);i.value='';d.value='';});
 document.getElementById('dashToObjBtn').addEventListener('click',()=>showView('objectivesView'));
 document.getElementById('toBuilderBtn').addEventListener('click',showSessionBuilder);
-document.getElementById('poolToBuilderBtn').addEventListener('click',showSessionBuilder);
 document.getElementById('objDetailBackBtn').addEventListener('click',()=>showView('objectivesView'));
 document.getElementById('confirmBreakdownBtn').addEventListener('click',confirmBreakdown);
 document.getElementById('cancelBreakdownBtn').addEventListener('click',()=>showView('dashView'));
