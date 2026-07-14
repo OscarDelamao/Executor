@@ -354,6 +354,18 @@ button.danger:hover{background:#8f382e}
 .all-task-row{grid-template-columns:26px 2fr 1fr 1fr auto}
 .all-task-row.picked{border-color:var(--brass);background:rgba(182,138,90,.08)}
 .at-pick{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.rec-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow:auto;margin-bottom:12px}
+.rec-row{display:flex;align-items:center;gap:11px;padding:11px 12px;background:var(--obsidian);border:1px solid var(--line);border-radius:7px;cursor:pointer}
+.rec-row:hover{border-color:var(--line-warm)}
+.rec-row.picked{border-color:var(--green);background:rgba(36,53,43,.25)}
+.rec-info{flex:1;min-width:0}
+.rec-title{font-size:13px;color:var(--bone)}
+.rec-meta{font-size:11px;color:var(--ash);margin-top:2px}
+.rec-cost{font-size:12px;color:var(--red);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rec-cost.good{color:var(--green)}
+.rec-tally{font-size:12px;color:var(--ash);padding:10px 12px;background:var(--espresso);border-radius:6px;margin-bottom:4px}
+.rec-tally b{color:var(--brass)}
+.sr-xp.neg{color:var(--red)}
 .tl{margin:10px 0 14px}
 .tl-track{position:relative;height:26px;background:var(--espresso);border:1px solid var(--line);border-radius:5px;overflow:hidden}
 .tl-busy{position:absolute;top:0;bottom:0;background:rgba(201,106,95,.55);border-left:1px solid var(--oxide)}
@@ -1049,6 +1061,14 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
   <div class="modal-actions"><button id="dueDateCancel" class="ghost">Cancel</button><button id="dueDateConfirm">Save</button></div>
 </div></div>
 
+<div id="recModal" class="modal-overlay"><div class="modal wide">
+  <div class="modal-title">Reconcile</div>
+  <div class="modal-sub" id="recSub"></div>
+  <div id="recList" class="rec-list"></div>
+  <div class="rec-tally" id="recTally"></div>
+  <div class="modal-actions"><button id="recConfirm">Score the Session</button></div>
+</div></div>
+
 <div id="tagModal" class="modal-overlay"><div class="modal">
   <div class="modal-title">Tags</div>
   <div class="modal-sub" id="tagSub"></div>
@@ -1136,6 +1156,12 @@ const state={
 };
 const config={
   xpPerStage:100, oosMultiplier:0.5,
+  /* A missed stage you COMMITTED to costs real XP — the same 50/stage a dropped Rock
+     costs, because it is the same broken promise. The old model applied a multiplicative
+     haircut that floored at zero, so a failed session was free: you could load twelve
+     stages "just in case" and lose nothing but the gain you were never going to get.
+     Waiting stages are exempt. That is what Waiting is FOR. */
+  missPenaltyPerStage:50,
   penaltyMin:2.5, penaltyMax:3.5, penaltyCap:0.75, bonusMin:8, bonusMax:10,
   workdayDecay:0.20, decayAbsoluteCap:800, weekendBonus:0.10,
   firstBloodMult:1.5, heatCap:1.5, heatLadder:[1.0,1.1,1.2,1.35,1.5],
@@ -2996,24 +3022,53 @@ function checkAutoEnd(){
 }
 
 /* ================= SCORING ================= */
+/* ============================================================
+   ==================  RECONCILIATION  ========================
+   Heat pays you for ticking stages AS you clear them. The miss debit fines you for
+   stages left unticked when the clock stops. Together they were a pincer: the app paid
+   you to interrupt your own concentration, and fined you when you refused.
+
+   That is backwards. Deep work is the thing this app exists to produce, and it was
+   scoring it as failure.
+
+   So the timer's job is to bound the TIME. Ticking's job is to record WHAT HAPPENED.
+   They were never required to be simultaneous. Now they are not.
+
+   Once, immediately, before any XP is banked: tick what you actually finished.
+   Not later. Not from the Ledger. Here, while you still remember — because a window
+   you can reopen a week later is not a reconciliation, it is a negotiation.
+   ============================================================ */
+let reconciling=false;
+
 function endSession(auto){
   clearInterval(state.timerInterval);state.timerInterval=null;state.timerRunning=false;
   const bar=document.getElementById('sessionBar');if(bar)bar.style.display='none';
   const s=state.currentSession;
+  if(!s||s.endedAt)return;
+  /* Anything committed, not waiting, not ticked → offer it once. */
+  const unlogged=s.stagesPlanned.concat(s.extraStages).filter(x=>!x.completed&&!x.waiting);
+  if(unlogged.length&&!s.reconciled&&!inLockoutPeriod()){
+    s._autoEnd=!!auto;
+    openReconcile(unlogged);
+    return;   // XP is NOT banked until this closes
+  }
+  scoreSession(auto);
+}
+
+function scoreSession(auto){
+  const s=state.currentSession;
+  if(!s||s.endedAt)return;
   const planned=s.stagesPlanned, extras=s.extraStages;
   const waived=planned.filter(x=>x.waiting);
   const backfills=extras.filter(x=>x.isBackfill);
   const overflow=extras.filter(x=>!x.isBackfill);
   const deficit=Math.max(0,waived.length-backfills.length);
-  /* denominator is invariant: planned + overflow. Waiting can only SUBSTITUTE, never shrink. */
   const denom=planned.length+overflow.length;
   const counted=planned.filter(x=>!x.waiting).concat(backfills,overflow);
   const completed=counted.filter(x=>x.completed).length;
+  const missed=Math.max(0,denom-completed-waived.length+backfills.length);
   const attainment=denom?(completed/denom)*100:0;
-  let penalty=0,bonus=0,timeBonus=0;
-  /* penalty is measured against the 90% clean line, and clamped.
-     Base is what you actually COMPLETED, so XP can never go negative. */
-  if(attainment<90)penalty=Math.min(config.penaltyCap,(90-attainment)*(config.penaltyMin+Math.random()*(config.penaltyMax-config.penaltyMin))/100);
+  let bonus=0,timeBonus=0;
   if(overflow.length)bonus=overflow.length*(config.bonusMin+Math.random()*(config.bonusMax-config.bonusMin))/100;
   if(auto){
     const rem=(s._remainingMs||0)/1000, win=s.windowMinutes*60;
@@ -3024,47 +3079,103 @@ function endSession(auto){
   const heat=s.heat||0;
   const heatMult=config.heatLadder[heat]||1.0;
   const firstBloodMult=s.isFirstBlood&&!inLockoutPeriod()?config.firstBloodMult:1.0;
-  /* Bonuses come off the SESSION, never off global state. */
   let mysteryMult=1.0;
   if(s.mysteryBonus&&!inLockoutPeriod()){
     mysteryMult=s.mysteryBonus;
-    state.mysteryAwardedToday=true;   // burned here, because here is where it paid out
+    state.mysteryAwardedToday=true;
   }
-  if(!inLockoutPeriod())state.dayFirstSessionRun=true; // likewise: consumed on scoring, not on starting
-  let xp=Math.max(0,Math.round(base*heatMult*(1-penalty)*(1+bonus)*(1+timeBonus)*(weekend?1+config.weekendBonus:1)*firstBloodMult*mysteryMult));
-  /* CIRCUIT BREAKER.
-     Every multiplier is individually bounded, so their product is bounded too:
-       heat 1.5 x overflow 2.0 x time 2.0 x weekend 1.1 x First Blood 1.5 x mystery 3.0 = 29.7
-     A session can therefore never legitimately pay more than ~30x its base. If it does,
-     something upstream is wrong and the honest response is to clamp it and say so loudly,
-     rather than quietly bank an impossible number. A scoreboard that can be corrupted
-     silently is worse than no scoreboard. */
+  if(!inLockoutPeriod())state.dayFirstSessionRun=true;
+
+  /* PAID for work done. FINED for promises broken. Two separate numbers, both legible.
+     The old multiplicative haircut floored at zero, so failure cost nothing. */
+  let earned=Math.round(base*heatMult*(1+bonus)*(1+timeBonus)*(weekend?1+config.weekendBonus:1)*firstBloodMult*mysteryMult);
   const ceiling=Math.max(config.xpPerStage,Math.round(base*config.sessionXpCeilingMult));
-  if(xp>ceiling){
-    const impossible=xp;
-    xp=ceiling;
+  if(earned>ceiling){
+    const impossible=earned;
+    earned=ceiling;
     notices.push({title:'Impossible Score Clamped',
-      body:'This session calculated '+impossible.toLocaleString()+' XP from '+completed+' completed stage'+(completed===1?'':'s')+'.\n\nThe maximum any session can legitimately pay is '+config.sessionXpCeilingMult+'x its base, so it has been clamped to '+ceiling.toLocaleString()+' XP.\n\nThis is a bug, not a windfall. The Ledger records what happened.'});
-    postWalletTransaction({type:'correction',amountXp:0,lifetimeXpChange:0,sourceType:'session',sourceId:s.sessionId,
-      description:'Clamped impossible score: '+impossible.toLocaleString()+' -> '+ceiling.toLocaleString()+' XP'});
+      body:'This session calculated '+impossible.toLocaleString()+' XP from '+completed+' stage'+(completed===1?'':'s')+'. The ceiling is '+config.sessionXpCeilingMult+'x base, so it has been clamped to '+ceiling.toLocaleString()+'. This is a bug, not a windfall.'});
   }
-  Object.assign(s,{endedAt:new Date().toISOString(),completed,denom,auto:!!auto,deficit,xpLocked:inLockoutPeriod(),
+  const debit=(missed+deficit)*config.missPenaltyPerStage;
+  const xp=earned-debit;
+
+  Object.assign(s,{endedAt:new Date().toISOString(),completed,denom,missed,auto:!!auto,deficit,
+    xpLocked:inLockoutPeriod(),
     waivedCount:waived.length,backfillCount:backfills.length,overflowCount:overflow.length,
-    attainmentPercent:Math.round(attainment),penaltyPercent:+(penalty*100).toFixed(1),
+    attainmentPercent:Math.round(attainment),
+    earnedXp:earned,debitXp:debit,penaltyPercent:0,
     bonusPercent:+(bonus*100).toFixed(1),timeBonusPercent:+(timeBonus*100).toFixed(1),
     heatLevel:heat,heatMult:heatMult.toFixed(2),firstBlood:s.isFirstBlood,firstBloodMult:firstBloodMult.toFixed(2),
     mysteryMult:mysteryMult.toFixed(2),
     weekend,xpEarned:xp});
   state.sessions.push(s);
-  grantXp(xp,'session',s.sessionId,s.windowMinutes+' minute session · '+completed+' stage'+(completed===1?'':'s'));
+
+  const label=s.windowMinutes+' minute session · '+completed+' stage'+(completed===1?'':'s')
+    +(s.amendedCount?' ('+s.amendedCount+' amended)':'');
+  if(earned>0)grantXp(earned,'session',s.sessionId,label);
+  if(debit>0)grantXp(-debit,'session',s.sessionId,(missed+deficit)+' committed stage'+((missed+deficit)===1?'':'s')+' missed');
+
   markCompletion();checkObjComplete();updateRestTokens();
-  saveState();flushSync();   // a scored session is never left to a 20s debounce
-  showResults(attainment,penalty,bonus,timeBonus,weekend,xp);
+  saveState();flushSync();
+  showResults(attainment,0,bonus,timeBonus,weekend,xp);
   flushNotices();
-  /* the result screens read state.currentSession, so it is released only now.
-     Clearing it is what makes the session non-resumable and the slot free again. */
   state.currentSession=null;
   saveState();
+}
+
+function openReconcile(unlogged){
+  reconciling=true;
+  const s=state.currentSession;
+  const missCost=unlogged.length*config.missPenaltyPerStage;
+  document.getElementById('recSub').innerHTML=
+    'The clock stopped. <b>'+unlogged.length+' committed stage'+(unlogged.length===1?' is':'s are')+' unticked</b>, '
+    +'which as it stands will cost you <b>'+missCost.toLocaleString()+' XP</b>.<br><br>'
+    +'If you finished any of them and simply did not stop to log it, tick them now. '
+    +'This is the only moment you can — and it is recorded on the session.';
+  const list=document.getElementById('recList');
+  list.innerHTML=unlogged.map(x=>{
+    const t=state.tasks.find(y=>y.id===x.taskId);
+    const o=t?objOf(t):null;
+    return '<div class="rec-row" data-sid="'+x.id+'"><span class="bt-tick"></span>'
+      +'<div class="rec-info"><div class="rec-title">'+esc(x.title)+'</div>'
+      +'<div class="rec-meta">'+(o?esc(o.title)+' › ':'')+(t?esc(t.title):'—')+'</div></div>'
+      +'<span class="rec-cost">−'+config.missPenaltyPerStage+'</span></div>';
+  }).join('');
+  const picked=new Set();
+  const refresh=()=>{
+    list.querySelectorAll('.rec-row').forEach(r=>{
+      const on=picked.has(r.dataset.sid);
+      r.classList.toggle('picked',on);
+      r.querySelector('.bt-tick').classList.toggle('on',on);
+      r.querySelector('.rec-cost').textContent=on?'+'+config.xpPerStage:'−'+config.missPenaltyPerStage;
+      r.querySelector('.rec-cost').classList.toggle('good',on);
+    });
+    const remaining=(unlogged.length-picked.size)*config.missPenaltyPerStage;
+    document.getElementById('recTally').innerHTML=picked.size
+      ? '<b>'+picked.size+'</b> recovered · <b>'+(unlogged.length-picked.size)+'</b> still missed · debit <b>−'+remaining.toLocaleString()+' XP</b>'
+      : 'Nothing ticked · debit <b>−'+(unlogged.length*config.missPenaltyPerStage).toLocaleString()+' XP</b>';
+  };
+  list.querySelectorAll('.rec-row').forEach(r=>r.addEventListener('click',()=>{
+    const id=r.dataset.sid;
+    picked.has(id)?picked.delete(id):picked.add(id);
+    refresh();
+  }));
+  refresh();
+  document.getElementById('recConfirm').onclick=()=>{
+    const all=s.stagesPlanned.concat(s.extraStages);
+    const amended=[];
+    picked.forEach(id=>{
+      const st=all.find(x=>x.id===id);
+      if(st){st.completed=true;st.amended=true;amended.push(st.title);}
+    });
+    s.reconciled=true;
+    s.amended=amended.length>0;
+    s.amendedCount=amended.length;
+    s.amendedTitles=amended;
+    closeModal('recModal');reconciling=false;
+    scoreSession(s._autoEnd);
+  };
+  openModal('recModal');
 }
 function updateRestTokens(){
   // After a session, check if it was clean (≥90% and not xpLocked)
@@ -3104,17 +3215,19 @@ function showResults(att,pen,bon,tb,wk,xp){
     show('resultPenalty','penaltyValue',pen);show('resultBonus','bonusValue',bon);show('resultTimeBonus','timeBonusValue',tb);
     document.getElementById('resultWeekend').style.display=wk?'block':'none';
     // Add multiplier breakdown
-    let breakdown='<div style="font-size:11px;color:var(--ash);margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><b style="color:var(--camel)">Multiplier Breakdown</b><br>';
+    let breakdown='<div style="font-size:11px;color:var(--ash);margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><b style="color:var(--camel)">Breakdown</b><br>';
     breakdown+='Base: '+s.completed+' completed × 100 = '+(s.completed*100)+'<br>';
     if(s.heatLevel>0)breakdown+='Heat '+(s.heatLevel)+': ×'+s.heatMult+'<br>';
     if(s.firstBlood)breakdown+='First Blood: ×'+s.firstBloodMult+'<br>';
     if(parseFloat(s.mysteryMult)>1)breakdown+='🎰 Mystery: ×'+s.mysteryMult+'<br>';
-    if(pen>0)breakdown+='Penalty: −'+(pen*100).toFixed(1)+'%<br>';
     if(bon>0)breakdown+='Overflow: +'+(bon*100).toFixed(1)+'%<br>';
     if(tb>0)breakdown+='Time: +'+(tb*100).toFixed(1)+'%<br>';
     if(wk)breakdown+='Weekend: +10%<br>';
+    breakdown+='<b style="color:var(--green)">Earned: +'+(s.earnedXp||0).toLocaleString()+'</b><br>';
+    if(s.debitXp>0)breakdown+='<b style="color:var(--red)">Missed '+(s.missed+s.deficit)+' committed stage'+((s.missed+s.deficit)===1?'':'s')+': −'+s.debitXp.toLocaleString()+'</b><br>';
+    if(s.amendedCount)breakdown+='<span style="color:var(--amber)">'+s.amendedCount+' stage'+(s.amendedCount===1?'':'s')+' reconciled after the clock stopped</span><br>';
     breakdown+='</div>';
-    document.getElementById('resultXp').innerHTML=xp+breakdown;
+    document.getElementById('resultXp').innerHTML=(xp<0?'':'')+xp.toLocaleString()+breakdown;
   }
   renderStageReport();showView('resultView');updateHeader();
 }
@@ -3508,11 +3621,12 @@ function sessionRowHtml(s){
   const open=openSess.has(s.sessionId);
   const sel=purgeSel.has(s.sessionId);
   if(s.corrupt)flags.push('corrupt');
+  if(s.amendedCount)flags.push('amended ×'+s.amendedCount);
   return '<div class="session-row'+(sel?' purge-picked':'')+(s.corrupt?' corrupt':'')+'" data-sid="'+s.sessionId+'">'
     +(purgeMode?'<span class="sr-tick bt-tick'+(sel?' on':'')+'"></span>':'')
     +'<div class="sr-main"><span class="sdot '+cls+'"></span>'
     +'<div class="sr-info"><div class="sr-title">'+s.windowMinutes+'m · '+s.completed+'/'+(s.denom||s.stagesPlanned.length)+' stages</div>'
-    +'<div class="sr-meta">'+m+'</div></div><div class="sr-xp">+'+s.xpEarned+'</div></div>'
+    +'<div class="sr-meta">'+m+'</div></div><div class="sr-xp'+(s.xpEarned<0?' neg':'')+'">'+(s.xpEarned>=0?'+':'')+s.xpEarned+'</div></div>'
     +(open?'<div class="sr-detail">'+stageReportHtml(s)+'</div>':'')+'</div>';
 }
 function bindRows(scope,rerender){
@@ -4693,15 +4807,25 @@ function buildReport(){
   L.push('');
   L.push('Every session, newest first. `Att%` is stages completed ÷ committed. Penalty is measured against a 90% clean line, not 100%.');
   L.push('');
-  L.push('| Date | Time | Win | Done/Comm | Att% | Heat | FB | Myst | Pen | XP |');
+  const amended=done.filter(s=>s.amendedCount>0);
+  if(done.length){
+    const rate=Math.round(amended.length/done.length*100);
+    L.push('**Amendment rate: '+rate+'%** — '+amended.length+' of '+done.length+' sessions had stages reconciled after the clock stopped.');
+    L.push('');
+    if(rate>60)L.push('> Above 60% means you are effectively not logging during sessions at all. That may be correct — deep work should not be interrupted — but it means Heat is dead weight and the in-session tick is theatre. Worth deciding on purpose rather than by drift.');
+    else if(rate>0)L.push('> Some amendment is healthy. It means the deep sessions are being scored honestly rather than punished for concentration.');
+    L.push('');
+  }
+  L.push('| Date | Time | Win | Done/Comm | Miss | Amd | Heat | Earned | Debit | XP |');
   L.push('|---|---|---|---|---|---|---|---|---|---|');
   S.slice().reverse().slice(0,200).forEach(s=>{
     const d=new Date(s.startedAt);
     L.push('| '+localDateStr(d)+' | '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
       +' | '+s.windowMinutes+'m | '+s.completed+'/'+s.denom
-      +' | '+s.attainmentPercent+'% | '+(s.heatLevel?'x'+s.heatMult:'—')
-      +' | '+(s.firstBlood?'✓':'')+' | '+(parseFloat(s.mysteryMult)>1?'x'+s.mysteryMult:'')
-      +' | '+(s.penaltyPercent?'-'+s.penaltyPercent+'%':'')
+      +' | '+(s.missed||0)+' | '+(s.amendedCount||'')
+      +' | '+(s.heatLevel?'x'+s.heatMult:'—')
+      +' | '+(s.earnedXp!=null?s.earnedXp:'—')
+      +' | '+(s.debitXp?'-'+s.debitXp:'')
       +' | '+(s.xpLocked?'LOCKED':s.xpEarned)+' |');
   });
   if(S.length>200)L.push('');
