@@ -354,6 +354,37 @@ button.danger:hover{background:#8f382e}
 .all-task-row{grid-template-columns:26px 2fr 1fr 1fr auto}
 .all-task-row.picked{border-color:var(--brass);background:rgba(182,138,90,.08)}
 .at-pick{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.tl{margin:10px 0 14px}
+.tl-track{position:relative;height:26px;background:var(--espresso);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.tl-busy{position:absolute;top:0;bottom:0;background:rgba(201,106,95,.55);border-left:1px solid var(--oxide)}
+.tl-prop{position:absolute;top:0;bottom:0;background:rgba(182,138,90,.75);border-radius:2px}
+.tl-prop.clash{background:repeating-linear-gradient(45deg,rgba(201,106,95,.9),rgba(201,106,95,.9) 5px,rgba(90,40,35,.9) 5px,rgba(90,40,35,.9) 10px)}
+.tl-now{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--bone);box-shadow:0 0 5px rgba(0,0,0,.6)}
+.tl-axis{position:relative;height:14px;margin-top:3px}
+.tl-axis span{position:absolute;transform:translateX(-50%);font-size:9px;color:var(--ash)}
+.day-free{font-size:12px;color:var(--ash);line-height:1.6}
+.day-free b{color:var(--brass)}
+.day-free.tight b{color:var(--amber)}
+.day-free.busy{color:var(--oxide)}
+.day-free.busy b{color:var(--oxide)}
+.day-fit{font-size:11px;color:var(--camel);margin-top:3px}
+.day-fit .no{color:var(--oxide)}
+.evt-add{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.evt-add input{width:auto;flex:1;min-width:96px;font-size:12px;padding:8px 9px}
+.evt-add #evtTitle{flex:2;min-width:140px}
+.evt-add button{white-space:nowrap}
+.evt-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;margin-bottom:5px;font-size:13px}
+.evt-row.past{opacity:.42}
+.evt-row.live{border-color:var(--oxide);background:rgba(201,106,95,.09)}
+.evt-time{font-size:11px;color:var(--camel);white-space:nowrap;font-variant-numeric:tabular-nums;min-width:104px}
+.evt-title{flex:1;color:var(--bone);min-width:0}
+.evt-len{font-size:11px;color:var(--ash)}
+.evt-del{padding:3px 8px;font-size:10px}
+.window-btn.nofit{opacity:.4;border-style:dashed;position:relative}
+.window-btn.nofit.active{opacity:1;background:var(--oxide);border-color:var(--oxide);color:var(--obsidian)}
+.bd-line{font-size:12px;color:var(--ash);line-height:1.6}
+.bd-line b{color:var(--brass)}
+.bd-warn{color:var(--oxide);font-weight:600}
 .rock-landed{font-size:11px;color:var(--forest);margin-bottom:9px;letter-spacing:.5px}
 .at-inbox{background:var(--obsidian);border:1px solid var(--line);border-radius:8px;padding:13px;margin-bottom:14px}
 .at-inbox textarea{min-height:62px;margin-bottom:9px}
@@ -430,6 +461,8 @@ button.danger{background:transparent;border:1px solid var(--oxide);color:var(--o
 button.danger:hover{background:var(--oxide);color:var(--obsidian)}
 .bt-group{border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--obsidian);overflow:hidden}
 .bt-group.has-picked{border-color:var(--line-warm)}
+.bt-group.atomic .bt-head{cursor:pointer}
+.bt-group.atomic .bt-tick{flex-shrink:0}
 .bt-group.overdue{border-color:var(--oxide)}
 .bt-head{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;transition:background .12s}
 .bt-head:hover{background:rgba(182,138,90,.05)}
@@ -656,6 +689,22 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
         <div class="item-list" id="brokenList"></div>
       </div>
     </div>
+
+    <!-- THE DAY -->
+    <div class="card" style="margin-top:18px">
+      <h2>The Day</h2>
+      <div class="section-note">What you are actually committed to. Sessions get chosen against this, not against wishful thinking.</div>
+      <div id="dayFreeLine"></div>
+      <div id="dayTimeline"></div>
+      <div class="evt-add">
+        <input type="text" id="evtTitle" placeholder="Meeting, call, gym…">
+        <input type="time" id="evtStart">
+        <input type="time" id="evtEnd">
+        <input type="date" id="evtDate">
+        <button id="evtAdd">Add</button>
+      </div>
+      <div id="dayEvents"></div>
+    </div>
   </div>
 
   <!-- OBJECTIVES -->
@@ -725,6 +774,7 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
   <div id="sessionBuilderView" class="view">
     <div class="card">
       <h2>Session Builder</h2>
+      <div id="builderDay"></div>
       <div class="form-group">
         <label>Focus Window</label>
         <div class="window-selector">
@@ -1074,6 +1124,7 @@ const state={
   mysteryAwardedToday:false,
   /* --- wallet & rewards --- */
   spendableXp:0,
+  events:[],
   rewardCatalogue:[],rewardInventory:[],xpTransactions:[],rewardRedemptions:[],
   rewardSettings:{xpPerDollar:150,monthlyAllowanceCapAud:150,rewardRefundRate:0.80,requireRedemptionNotes:false},
   walletMigratedV1:false,catalogueSeededV1:false,pinnedRewardId:null,
@@ -1106,7 +1157,7 @@ const config={
   levelBase:500, levelExp:2,
   sessionXpCeilingMult:30  /* max legitimate multiplier product; see the circuit breaker in endSession */
 };
-const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession','resetAt'];
+const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession','resetAt','events'];
 
 /* ================= LOCKOUT & MYSTERY ================= */
 function inLockoutPeriod(){
@@ -1133,6 +1184,151 @@ function prettyDate(ds){return new Date(ds+'T12:00:00').toLocaleDateString([],{w
 function taskUnits(t){return Math.max(1,t.stages.length);}
 function objOf(t){return t.objectiveId?state.objectives.find(o=>o.id===t.objectiveId):null;}
 function tasksOf(o){return state.tasks.filter(t=>t.objectiveId===o.id);}
+/* ============================================================
+   =====================  THE SCHEDULE  =======================
+   The app used to ask "how long do you want to focus?" as if the answer were purely a
+   matter of will. It is not. If you have thirty minutes before a call, a ninety-minute
+   window is not ambition — it is a session you are guaranteed to abandon, and the locked
+   timer will score you for the abandonment.
+
+   So the day gets a shape, and the window selector has to respect it.
+   ============================================================ */
+const DAY_START=6, DAY_END=22;   // the timeline's visible span, in hours
+
+function minsOf(hhmm){const [h,m]=hhmm.split(':').map(Number);return h*60+(m||0);}
+function hhmmOf(mins){
+  mins=Math.max(0,Math.round(mins));
+  return String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
+}
+/* NB: named fmtTime, not fmtClock — there is already a fmtClock(ms) for the R&R countdown,
+   and function hoisting means a duplicate silently overrides. That is a whole evening lost. */
+function fmtTime(mins){
+  const h=Math.floor(mins/60),m=mins%60;
+  const ap=h>=12?'pm':'am'; const h12=h%12||12;
+  return h12+(m?':'+String(m).padStart(2,'0'):'')+ap;
+}
+function nowMins(){const d=new Date();return d.getHours()*60+d.getMinutes();}
+
+function eventsOn(dateStr){
+  return state.events
+    .filter(e=>e.date===dateStr)
+    .slice()
+    .sort((a,b)=>minsOf(a.start)-minsOf(b.start));
+}
+/* Merge overlapping commitments. Two meetings that overlap are still just one block of
+   time you do not have — and treating them separately would invent free gaps that do not exist. */
+function busyBlocks(dateStr){
+  const evs=eventsOn(dateStr);
+  const out=[];
+  evs.forEach(e=>{
+    const a=minsOf(e.start), b=Math.max(minsOf(e.end),a+5);
+    const last=out[out.length-1];
+    if(last&&a<=last.end){last.end=Math.max(last.end,b);last.titles.push(e.title);}
+    else out.push({start:a,end:b,titles:[e.title]});
+  });
+  return out;
+}
+/* Free gaps from a given moment to the end of the day. */
+function freeGaps(dateStr,fromMins){
+  const from=Math.max(fromMins,DAY_START*60);
+  const end=DAY_END*60;
+  const busy=busyBlocks(dateStr).filter(b=>b.end>from);
+  const gaps=[];
+  let cursor=from;
+  busy.forEach(b=>{
+    if(b.start>cursor)gaps.push({start:cursor,end:b.start});
+    cursor=Math.max(cursor,b.end);
+  });
+  if(cursor<end)gaps.push({start:cursor,end});
+  return gaps.filter(g=>g.end-g.start>=1);
+}
+/* How many minutes are free RIGHT NOW before the next commitment bites. */
+function freeNow(dateStr){
+  const n=nowMins();
+  const busy=busyBlocks(dateStr);
+  const inMeeting=busy.find(b=>n>=b.start&&n<b.end);
+  if(inMeeting)return {mins:0,inMeeting:true,until:inMeeting.end,titles:inMeeting.titles};
+  const next=busy.find(b=>b.start>n);
+  const until=next?next.start:DAY_END*60;
+  return {mins:Math.max(0,until-n),inMeeting:false,until,titles:next?next.titles:[]};
+}
+function windowFits(win){
+  const f=freeNow(localDateStr());
+  if(f.inMeeting)return {fits:false,reason:'in a meeting'};
+  if(f.mins<=0)return {fits:false,reason:'day is done'};
+  return {fits:win<=f.mins,reason:win<=f.mins?'':'only '+f.mins+'m free',free:f.mins};
+}
+
+function addEvent(title,start,end,dateStr){
+  if(!title.trim())return toast('Name it.');
+  if(!start||!end)return toast('Start and end times required.');
+  if(minsOf(end)<=minsOf(start))return toast('End must be after start.');
+  state.events.push({id:uid('evt'),title:title.trim(),start,end,date:dateStr||localDateStr()});
+  saveState();renderAll();
+  toast('Added · '+fmtTime(minsOf(start))+'–'+fmtTime(minsOf(end)));
+}
+function deleteEvent(id){state.events=state.events.filter(e=>e.id!==id);saveState();renderAll();}
+
+/* ---- the timeline strip ----
+   proposal = {start, mins} to preview a session block in situ */
+function timelineHtml(dateStr,proposal){
+  const span=(DAY_END-DAY_START)*60;
+  const pct=m=>((m-DAY_START*60)/span)*100;
+  const busy=busyBlocks(dateStr);
+  const isToday=dateStr===localDateStr();
+  const n=nowMins();
+  let h='<div class="tl"><div class="tl-track">';
+  busy.forEach(b=>{
+    const l=Math.max(0,pct(b.start)), w=Math.min(100-l,pct(b.end)-pct(b.start));
+    if(w<=0)return;
+    h+='<div class="tl-busy" style="left:'+l+'%;width:'+w+'%" title="'+esc(b.titles.join(', '))+'"></div>';
+  });
+  if(proposal){
+    const l=Math.max(0,pct(proposal.start));
+    const w=Math.min(100-l,(proposal.mins/span)*100);
+    const clash=busy.some(b=>proposal.start<b.end&&proposal.start+proposal.mins>b.start);
+    h+='<div class="tl-prop'+(clash?' clash':'')+'" style="left:'+l+'%;width:'+Math.max(w,0.8)+'%"></div>';
+  }
+  if(isToday&&n>=DAY_START*60&&n<=DAY_END*60)
+    h+='<div class="tl-now" style="left:'+pct(n)+'%"></div>';
+  h+='</div><div class="tl-axis">';
+  for(let hh=DAY_START;hh<=DAY_END;hh+=2)
+    h+='<span style="left:'+pct(hh*60)+'%">'+(hh%12||12)+(hh<12?'a':'p')+'</span>';
+  h+='</div></div>';
+  return h;
+}
+
+/* ---- ATOMIC TASKS ----
+   "Call James" does not decompose. Forcing a breakdown before it can enter a session is
+   ceremony, and ceremony is friction, and friction is how a two-minute job survives a week.
+
+   So a task with NO stages can be taken into a session whole. It is offered as a synthetic
+   stage with a reserved id (atomic:<taskId>) — nothing is written to the task yet, because
+   selecting is not committing. Only when the session actually STARTS is a real stage
+   materialised on the task. Everything downstream — scoring, markCompletion, breadcrumbs,
+   the ledger — then works unchanged, because by then it is an ordinary stage like any other. */
+const ATOMIC='atomic:';
+function isAtomicId(id){return typeof id==='string'&&id.startsWith(ATOMIC);}
+function atomicTasks(){
+  return state.tasks.filter(t=>!t.completed&&!t.waiting&&!t.recur&&!t.stages.length);
+}
+function atomicStageFor(t){
+  return {id:ATOMIC+t.id,taskId:t.id,title:t.title,objectiveId:t.objectiveId,
+          atomic:true,effDue:effTaskDue(t),ownDue:t.dueDate||null};
+}
+/* Turn every selected atomic entry into a real single stage on its task. Called once,
+   at the moment the clock starts. */
+function materialiseAtomics(list){
+  return list.map(s=>{
+    if(!isAtomicId(s.id))return s;
+    const t=state.tasks.find(x=>x.id===s.taskId);
+    if(!t)return s;
+    const st={id:uid('stage'),title:t.title,completed:false,waiting:false,dueDate:null,atomic:true};
+    t.stages.push(st);
+    return {id:st.id,taskId:t.id,title:st.title};
+  });
+}
+
 function liveStages(){
   const out=[];
   state.tasks.forEach(t=>{ if(t.completed||t.waiting)return;
@@ -1871,6 +2067,12 @@ function atLiveStages(t){return t.stages.filter(s=>!s.completed&&!s.waiting);}
 function atSelectedStages(){
   const out=[];
   state.tasks.forEach(t=>{
+    if(t.recur)return;
+    /* a selected task with NO stages travels as an atomic — it is taken whole */
+    if(!t.stages.length){
+      if(atSelTasks.has(t.id)&&!t.completed&&!t.waiting)out.push(atomicStageFor(t));
+      return;
+    }
     atLiveStages(t).forEach(s=>{ if(atSelected.has(s.id))out.push({id:s.id,taskId:t.id,title:s.title}); });
   });
   return out;
@@ -1895,6 +2097,8 @@ function renderAtSelBar(){
   let label=[];
   if(nTasks)label.push(nTasks+' task'+(nTasks===1?'':'s'));
   if(stages.length)label.push(stages.length+' stage'+(stages.length===1?'':'s'));
+  const atomics=stages.filter(s=>isAtomicId(s.id)).length;
+  if(atomics)label.push(atomics+' atomic');
   bar.innerHTML='<span class="at-selcount">'+label.join(' · ')+'</span>'
     +'<div class="at-selbtns"><button class="ghost" id="atClearSelBtn">Clear</button>'
     +'<button class="ghost" id="atBulkDue"'+(nTasks?'':' disabled')+'>Set Due Date</button>'
@@ -2094,6 +2298,7 @@ function renderAllTasks(){
         +hl(t.title)
         +(rec?'<span class="pill recur">'+rec.days.map(d=>DOWS[d]).join(' ')+(rec.streak?' · '+rec.streak+'🔥':'')+'</span>':'')
         +(t.recurOf?'<span class="pill">recurring</span>':'')
+        +((!t.stages.length&&!t.completed&&!rec)?'<span class="pill">atomic</span>':'')
         +'<div class="ts-obj">'+(o?esc(o.title):'unassigned')+' · '+t.stages.length+' stage'+(t.stages.length===1?'':'s')
         +(live.length?' · '+live.length+' live':'')+(t.waiting?' · blocked: '+esc(t.waitingReason||''):'')+'</div>'
         +((t.tags&&t.tags.length)?'<div class="at-tags">'+t.tags.map(x=>'<span class="tg">#'+esc(x)+'</span>').join('')+'</div>':'')
@@ -2143,6 +2348,8 @@ function renderAllTasks(){
     row.querySelector('.at-pick').addEventListener('click',()=>{atToggleTask(t);renderAllTasks();});
     row.querySelector('.ts-title').addEventListener('click',e=>{
       if(e.target.closest('.at-stages'))return;
+      /* No stages? Ticking it already works — it goes into a session whole. Opening the
+         breakdown here is an OFFER, not a toll gate. */
       if(!t.stages.length){showBreakdown(t.id);return;}
       atOpen[t.id]=!open;renderAllTasks();
     });
@@ -2350,6 +2557,7 @@ function confirmBreakdown(){
 /* ================= SESSION BUILDER ================= */
 function showSessionBuilder(){
   state.selectedStages=[];state.selectedWindow=null;builderOpen={};
+  setTimeout(renderBuilderDay,0);
   document.querySelectorAll('.window-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('selectedWindowLabel').textContent='No window chosen';
   renderBuilderStages();renderSelectedStages();updateStartBtn();showView('sessionBuilderView');
@@ -2360,17 +2568,50 @@ function showSessionBuilder(){
    Tasks with something already selected stay open so you never lose your place. */
 let builderOpen={};
 function toggleBuilderTask(id){builderOpen[id]=!builderOpen[id];renderBuilderStages();}
+/* The window selector now knows what the day looks like. A window that will not fit in
+   the gap you actually have is marked, and choosing it asks you to say so out loud —
+   because the timer does not stop for a meeting, and an abandoned session is scored as
+   an abandoned session. */
+function renderBuilderDay(){
+  const box=document.getElementById('builderDay');if(!box)return;
+  const d=localDateStr();
+  const f=freeNow(d);
+  const n=nowMins();
+  const prop=state.selectedWindow?{start:n,mins:state.selectedWindow}:null;
+  const over=prop?Math.max(0,(n+prop.mins)-f.until):0;
+
+  let head;
+  if(f.inMeeting)head='<span class="bd-warn">'+esc(f.titles.join(', '))+' until '+fmtTime(f.until)+'. You are not free.</span>';
+  else if(!state.selectedWindow)head='<b>'+f.mins+'m</b> free'+(f.titles.length?' until '+esc(f.titles[0])+' at '+fmtTime(f.until):'')+'.';
+  else if(over>0)head='<span class="bd-warn">This '+state.selectedWindow+'m session runs '+over+'m into '+(f.titles.length?esc(f.titles[0]):'the end of the day')+'. It will not finish.</span>';
+  else head='Ends '+fmtTime(n+state.selectedWindow)+' · <b>'+(f.mins-state.selectedWindow)+'m</b> still free after.';
+
+  box.innerHTML='<div class="bd-line">'+head+'</div>'+timelineHtml(d,prop);
+
+  document.querySelectorAll('.window-btn').forEach(b=>{
+    const w=+b.dataset.window;
+    const fit=windowFits(w);
+    b.classList.toggle('nofit',!fit.fits);
+    b.title=fit.fits?'':('Does not fit — '+fit.reason);
+  });
+}
+
 function renderBuilderStages(){
   const list=document.getElementById('builderStageList');
   const stages=liveStages();
+  const atomics=atomicTasks();
   list.innerHTML='';
-  if(!stages.length){list.innerHTML='<div class="empty-state">No live stages. Break down a task first.</div>';return;}
+  if(!stages.length&&!atomics.length){list.innerHTML='<div class="empty-state">No live work. Capture a task first.</div>';return;}
 
   /* group live stages under their task, ordered by soonest due */
   const groups={};
   stages.forEach(st=>{
     if(!groups[st.taskId])groups[st.taskId]={taskId:st.taskId,title:st.taskTitle,objectiveId:st.objectiveId,stages:[]};
     groups[st.taskId].stages.push(st);
+  });
+  /* tasks with no stages join as ATOMIC — one row, taken whole */
+  atomics.forEach(t=>{
+    groups[t.id]={taskId:t.id,title:t.title,objectiveId:t.objectiveId,atomic:true,stages:[atomicStageFor(t)]};
   });
   const order=Object.values(groups).sort((a,b)=>{
     const ad=a.stages.reduce((m,s)=>!m||(s.effDue&&s.effDue<m)?(s.effDue||m):m,null);
@@ -2392,10 +2633,28 @@ function renderBuilderStages(){
     const due=task?effTaskDue(task):null;
 
     const wrap=document.createElement('div');
-    wrap.className='bt-group'+(open?' open':'')+(picked?' has-picked':'')+(anyOverdue?' overdue':'');
+    wrap.className='bt-group'+(open?' open':'')+(picked?' has-picked':'')+(anyOverdue?' overdue':'')+(g.atomic?' atomic':'');
 
     const head=document.createElement('div');
     head.className='bt-head';
+    if(g.atomic){
+      /* one tick, whole task, no expanding. There is nothing underneath to expand into. */
+      const sel=!!state.selectedStages.find(x=>x.id===g.stages[0].id);
+      head.innerHTML='<span class="bt-tick'+(sel?' on':'')+'"></span>'
+        +'<div class="bt-info"><div class="bt-title">'+esc(g.title)+' '+dueBadge(due,task&&!task.dueDate)+'</div>'
+        +'<div class="bt-meta">'+(o?esc(o.title)+' · ':'')+'whole task · no breakdown</div></div>'
+        +'<span class="pill">atomic</span>';
+      head.addEventListener('click',()=>{
+        if(!state.selectedWindow){toast('Choose a window first');return;}
+        const st=g.stages[0];
+        if(state.selectedStages.find(x=>x.id===st.id))state.selectedStages=state.selectedStages.filter(x=>x.id!==st.id);
+        else state.selectedStages.push(st);
+        renderBuilderStages();renderSelectedStages();updateStartBtn();
+      });
+      wrap.appendChild(head);
+      list.appendChild(wrap);
+      return;
+    }
     head.innerHTML='<span class="bt-caret">'+(open?'▾':'▸')+'</span>'
       +'<div class="bt-info"><div class="bt-title">'+esc(g.title)+' '+dueBadge(due,task&&!task.dueDate)+'</div>'
       +'<div class="bt-meta">'+(o?esc(o.title)+' · ':'')+g.stages.length+' live stage'+(g.stages.length===1?'':'s')+'</div></div>'
@@ -2454,8 +2713,33 @@ function renderSelectedStages(){
 }
 function updateStartBtn(){document.getElementById('startTimerBtn').disabled=!state.selectedWindow||!state.selectedStages.length;}
 /* ================= TIMER ================= */
-function startSession(){
+function startSession(force){
   if(!state.selectedWindow||!state.selectedStages.length)return;
+  /* The timer does not stop for a meeting. If this session cannot finish before your next
+     commitment, you are not choosing a session — you are choosing an abandonment, and the
+     locked timer will score it as one. Say it out loud first. */
+  if(!force){
+    const f=freeNow(localDateStr());
+    const n=nowMins();
+    const over=(n+state.selectedWindow)-f.until;
+    if(f.inMeeting){
+      askConfirm('You Are In A Meeting',
+        esc(f.titles.join(', '))+' runs until '+fmtTime(f.until)+'.\n\nStart anyway?',
+        ()=>startSession(true));
+      return;
+    }
+    if(over>0){
+      askConfirm('This Will Not Finish',
+        'A '+state.selectedWindow+'-minute session started now ends at '+fmtTime(n+state.selectedWindow)+'.\n\n'
+        +(f.titles.length?esc(f.titles[0])+' starts at '+fmtTime(f.until)+'.':'The day closes at '+fmtTime(f.until)+'.')+'\n'
+        +'You will run '+over+' minutes over.\n\n'
+        +'The clock does not stop for a meeting. You have '+f.mins+' minutes — a '
+        +[2,5,15,25,40,60,90].filter(w=>w<=f.mins).pop()+'-minute window would fit.\n\n'
+        +'Start the '+state.selectedWindow+'-minute session anyway?',
+        ()=>startSession(true));
+      return;
+    }
+  }
   if(state.currentSession&&!state.currentSession.endedAt){
     toast('A session is already running.');showView('timerView');return;
   }
@@ -2470,9 +2754,11 @@ function startSession(){
   if(!state.mysteryAwardedToday&&state.selectedWindow>=config.mysteryMinWindow&&!inLockoutPeriod()){
     mysteryBonus=pickMysteryBonus();
   }
+  /* atomic picks become real stages only now — selecting was never committing */
+  const planned=materialiseAtomics(state.selectedStages);
   state.currentSession={
     sessionId:uid('sess'),windowMinutes:state.selectedWindow,startedAt:new Date().toISOString(),
-    stagesPlanned:state.selectedStages.map(s=>({id:s.id,taskId:s.taskId,title:s.title,completed:false,waiting:false})),
+    stagesPlanned:planned.map(s=>({id:s.id,taskId:s.taskId,title:s.title,completed:false,waiting:false})),
     extraStages:[],
     /* endsAt is an ABSOLUTE timestamp. The clock is the wall, not a closure —
        so it survives navigation, refresh, and the app being closed entirely. */
@@ -2857,7 +3143,7 @@ function renderStageReport(){document.getElementById('stageReport').innerHTML=st
 function renderAll(){
   renderDashObjectives();renderRockPanel();renderObjSelect();renderTaskLists();
   renderObjectives();renderWaiting();renderCompleted();renderAllTasks();
-  renderRewardTarget();updateHeader();updateWaitBadge();updateRewardBadge();
+  renderRewardTarget();renderDay();updateHeader();updateWaitBadge();updateRewardBadge();
   checkRewardIntro();tickRnR();
 }
 function updateHeader(){
@@ -4164,6 +4450,47 @@ function renderRewardTarget(){
   if(go)go.addEventListener('click',()=>{showView('rewardsView');switchRewardTab('store');});
 }
 
+/* ---- the day, rendered ---- */
+function renderDay(){
+  const tl=document.getElementById('dayTimeline');if(!tl)return;
+  const d=localDateStr();
+  tl.innerHTML=timelineHtml(d,null);
+
+  const f=freeNow(d);
+  const line=document.getElementById('dayFreeLine');
+  const longest=freeGaps(d,nowMins()).reduce((a,g)=>Math.max(a,g.end-g.start),0);
+  if(f.inMeeting){
+    line.className='day-free busy';
+    line.innerHTML='<b>'+esc(f.titles.join(', '))+'</b> until '+fmtTime(f.until)+'. Nothing to start now.';
+  }else if(f.mins<=0){
+    line.className='day-free';
+    line.innerHTML='The day is done.';
+  }else{
+    const fits=[2,5,15,25,40,60,90].filter(w=>w<=f.mins);
+    line.className='day-free'+(f.mins<25?' tight':'');
+    line.innerHTML='<b>'+f.mins+' minutes free</b>'
+      +(f.titles.length?' until '+esc(f.titles[0])+' at '+fmtTime(f.until):' before the day closes')
+      +'. Longest window left today: <b>'+longest+'m</b>.'
+      +'<div class="day-fit">Fits now: '+(fits.length?fits.join(' · ')+' min':'<span class="no">nothing — not even a 2-minute window</span>')+'</div>';
+  }
+
+  const list=document.getElementById('dayEvents');
+  const evs=eventsOn(d);
+  if(!evs.length){list.innerHTML='<div class="empty-state" style="padding:14px">Nothing scheduled. The day is yours.</div>';}
+  else{
+    list.innerHTML=evs.map(e=>{
+      const past=minsOf(e.end)<=nowMins();
+      const live=nowMins()>=minsOf(e.start)&&nowMins()<minsOf(e.end);
+      return '<div class="evt-row'+(past?' past':'')+(live?' live':'')+'">'
+        +'<span class="evt-time">'+fmtTime(minsOf(e.start))+' – '+fmtTime(minsOf(e.end))+'</span>'
+        +'<span class="evt-title">'+esc(e.title)+'</span>'
+        +'<span class="evt-len">'+(minsOf(e.end)-minsOf(e.start))+'m</span>'
+        +'<button class="ghost evt-del" data-e="'+e.id+'">✕</button></div>';
+    }).join('');
+    list.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>deleteEvent(b.dataset.e)));
+  }
+}
+
 /* --- first-reward discovery nudge --- */
 function checkRewardIntro(){
   if(state.rewardIntroSeen)return;
@@ -4813,6 +5140,15 @@ document.getElementById('addTasksBtn').addEventListener('click',()=>{
 });
 document.getElementById('taskDueInput').valueAsDate=new Date();
 document.getElementById('allTasksSort').addEventListener('change',renderAllTasks);
+document.getElementById('evtAdd').addEventListener('click',()=>{
+  addEvent(document.getElementById('evtTitle').value,
+           document.getElementById('evtStart').value,
+           document.getElementById('evtEnd').value,
+           document.getElementById('evtDate').value||localDateStr());
+  document.getElementById('evtTitle').value='';
+});
+document.getElementById('evtDate').valueAsDate=new Date();
+setInterval(()=>{ if(document.getElementById('dashView').classList.contains('active'))renderDay(); },60000);
 document.getElementById('purgeBtn').addEventListener('click',togglePurge);
 document.getElementById('tagCancel').addEventListener('click',()=>closeModal('tagModal'));
 document.getElementById('tagSave').addEventListener('click',saveTags);
@@ -4855,7 +5191,7 @@ document.querySelectorAll('.window-btn').forEach(b=>b.addEventListener('click',(
   document.querySelectorAll('.window-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');
   state.selectedWindow=parseInt(b.dataset.window);
   document.getElementById('selectedWindowLabel').textContent=state.selectedWindow+' minute window — commit your stages';
-  renderBuilderStages();updateStartBtn();
+  renderBuilderStages();renderBuilderDay();updateStartBtn();
 }));
 document.getElementById('startTimerBtn').addEventListener('click',startSession);
 document.getElementById('addStageInSessionBtn').addEventListener('click',openStagePicker);
