@@ -354,6 +354,31 @@ button.danger:hover{background:#8f382e}
 .all-task-row{grid-template-columns:26px 2fr 1fr 1fr auto}
 .all-task-row.picked{border-color:var(--brass);background:rgba(182,138,90,.08)}
 .at-pick{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.tl-plan{position:absolute;bottom:0;height:6px;border-radius:2px;background:var(--brass);opacity:.85}
+.tl-plan.ready{background:var(--green);box-shadow:0 0 6px rgba(95,174,122,.6)}
+.tl-plan.missed{background:var(--ash);opacity:.4}
+.tl-plan.launched{background:var(--camel);opacity:.5}
+.tl-plan.upcoming{background:var(--brass)}
+.plan-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.plan-row input{width:auto;flex:1;min-width:110px;font-size:12px;padding:9px 10px}
+.plan-row #planLabel{flex:2}
+.pl-head{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--camel);font-weight:600;margin:14px 0 8px}
+.pl-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;margin-bottom:5px}
+.pl-row.ready{border-color:var(--green);background:rgba(36,53,43,.2)}
+.pl-row.missed{opacity:.5}
+.pl-info{flex:1;min-width:0}
+.pl-title{font-size:13px;color:var(--bone)}
+.pl-meta{font-size:11px;color:var(--ash);margin-top:2px}
+.pl-go{background:var(--green);border-color:var(--green);color:var(--obsidian);padding:6px 14px;font-size:11px}
+.pl-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ash);white-space:nowrap}
+.pl-tag.done{color:var(--camel)}
+.pl-tag.missed{color:var(--oxide)}
+.pl-del{padding:3px 8px;font-size:10px}
+.qc-bar{display:flex;gap:8px;margin-bottom:6px}
+.qc-bar input{flex:1;font-size:13px;padding:10px 12px}
+.qc-bar button{width:44px;font-size:18px;font-weight:600;padding:0}
+.qc-note{font-size:11px;color:var(--ash);line-height:1.6;margin-bottom:12px}
+.qc-note code{background:var(--espresso);padding:1px 5px;border-radius:3px;color:var(--camel);font-size:10px}
 .rec-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow:auto;margin-bottom:12px}
 .rec-row{display:flex;align-items:center;gap:11px;padding:11px 12px;background:var(--obsidian);border:1px solid var(--line);border-radius:7px;cursor:pointer}
 .rec-row:hover{border-color:var(--line-warm)}
@@ -708,6 +733,7 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
       <div class="section-note">What you are actually committed to. Sessions get chosen against this, not against wishful thinking.</div>
       <div id="dayFreeLine"></div>
       <div id="dayTimeline"></div>
+      <div id="dayPlanned"></div>
       <div class="evt-add">
         <input type="text" id="evtTitle" placeholder="Meeting, call, gym…">
         <input type="time" id="evtStart">
@@ -804,11 +830,23 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
         <div class="selected-list" id="selectedStagesList"></div>
       </div>
       <div class="form-group">
-        <label>Available Stages</label>
+        <label>Available Work</label>
+        <div class="qc-bar">
+          <input type="text" id="qcInput" placeholder="Quick task — type it, hit + to drop it straight in" autocomplete="off">
+          <button id="qcAdd" class="ghost" title="Add and select">+</button>
+        </div>
+        <div class="qc-note">Capture and commit in one move. Add <code>#tag</code> inline, or <code>/</code> to split a task into stages: <code>Ship deck / outline / draft / polish</code>.</div>
         <div class="item-list" id="builderStageList"></div>
       </div>
       <div class="button-group">
         <button id="startTimerBtn" disabled>Commit &amp; Start</button>
+        <button id="planLaterBtn" class="ghost" disabled>Plan for Later…</button>
+      </div>
+      <div id="planLaterRow" class="plan-row" style="display:none">
+        <input type="time" id="planTime" title="Start time">
+        <input type="text" id="planLabel" placeholder="Label (e.g. meeting prep)">
+        <button id="planConfirm">Place on Timeline</button>
+        <button id="planCancel" class="ghost">Cancel</button>
       </div>
     </div>
   </div>
@@ -1145,6 +1183,7 @@ const state={
   /* --- wallet & rewards --- */
   spendableXp:0,
   events:[],
+  planned:[],
   rewardCatalogue:[],rewardInventory:[],xpTransactions:[],rewardRedemptions:[],
   rewardSettings:{xpPerDollar:150,monthlyAllowanceCapAud:150,rewardRefundRate:0.80,requireRedemptionNotes:false},
   walletMigratedV1:false,catalogueSeededV1:false,pinnedRewardId:null,
@@ -1183,7 +1222,7 @@ const config={
   levelBase:500, levelExp:2,
   sessionXpCeilingMult:30  /* max legitimate multiplier product; see the circuit breaker in endSession */
 };
-const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession','resetAt','events'];
+const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession','resetAt','events','planned'];
 
 /* ================= LOCKOUT & MYSTERY ================= */
 function inLockoutPeriod(){
@@ -1295,6 +1334,69 @@ function addEvent(title,start,end,dateStr){
 }
 function deleteEvent(id){state.events=state.events.filter(e=>e.id!==id);saveState();renderAll();}
 
+/* ---- PLANNED SESSIONS ----
+   A planned session is an INTENTION on the timeline, not a scheduled execution. It never
+   auto-starts. The locked timer's entire premise is that you commit at the moment you sit
+   down — present, chosen, clock-as-wall. A block that fired at noon whether or not you were
+   at the desk would start scoring an abandonment you never agreed to.
+
+   So this reserves a slot and, when its time comes, becomes a one-tap launch. Placement is
+   central and planned; execution stays flexible and yours. A missed plan greys out and
+   stays on the record — it is information, not a penalty, because the commitment was never
+   made. Penalising it would drag the miss-debit outside the session boundary, which is the
+   exact conflation reconciliation exists to prevent. */
+function addPlanned(win,start,dateStr,stages,label){
+  if(!win)return toast('Pick a window.');
+  if(!start)return toast('Pick a start time.');
+  const p={id:uid('plan'),win:win,start:start,date:dateStr||localDateStr(),
+    label:(label||'').trim()||null,
+    stages:(stages||[]).map(s=>({id:s.id,taskId:s.taskId,title:s.title})),
+    launched:false,createdAt:new Date().toISOString()};
+  state.planned.push(p);
+  saveState();renderAll();
+  toast('Planned · '+win+'m at '+fmtTime(minsOf(start)));
+  return p;
+}
+function deletePlanned(id){state.planned=state.planned.filter(x=>x.id!==id);saveState();renderAll();}
+function plannedOn(dateStr){
+  return state.planned.filter(p=>p.date===dateStr).slice().sort((a,b)=>minsOf(a.start)-minsOf(b.start));
+}
+function plannedStatus(p){
+  if(p.launched)return 'launched';
+  const n=nowMins(), st=minsOf(p.start), end=st+p.win;
+  if(p.date<localDateStr())return 'missed';
+  if(p.date>localDateStr())return 'upcoming';
+  if(n>=end)return 'missed';       // its whole window passed, never launched
+  if(n>=st)return 'ready';         // start time reached, still launchable
+  return 'upcoming';
+}
+/* Launch a planned session: load its window + stages into the builder. Still requires you
+   to hit Start — this is a pre-fill, not an execution. */
+function launchPlanned(id){
+  const p=state.planned.find(x=>x.id===id);
+  if(!p)return;
+  showSessionBuilder();
+  state.selectedWindow=p.win;
+  document.querySelectorAll('.window-btn').forEach(b=>b.classList.toggle('active',+b.dataset.window===p.win));
+  const label=document.getElementById('selectedWindowLabel');
+  if(label)label.textContent=p.win+' minute window — commit your stages';
+  /* re-resolve stages against live tasks; drop any that were since completed or deleted */
+  const live=[];
+  p.stages.forEach(ps=>{
+    const t=state.tasks.find(x=>x.id===ps.taskId);
+    if(!t)return;
+    const st=t.stages.find(x=>x.id===ps.id);
+    if(st&&!st.completed&&!st.waiting){live.push({id:st.id,taskId:t.id,title:st.title});builderOpen[t.id]=true;}
+    else if(!t.stages.length&&!t.completed&&!t.waiting){live.push(atomicStageFor(t));}
+  });
+  state.selectedStages=live;
+  p.launched=true;p.launchedAt=new Date().toISOString();
+  saveState();
+  setTimeout(()=>{renderBuilderStages();renderBuilderDay();renderSelectedStages();updateStartBtn();},0);
+  const dropped=p.stages.length-live.length;
+  toast(p.win+'m loaded'+(live.length?' · '+live.length+' stages':'')+(dropped>0?' · '+dropped+' no longer live':'')+' · hit Start when ready');
+}
+
 /* ---- the timeline strip ----
    proposal = {start, mins} to preview a session block in situ */
 function timelineHtml(dateStr,proposal){
@@ -1308,6 +1410,13 @@ function timelineHtml(dateStr,proposal){
     const l=Math.max(0,pct(b.start)), w=Math.min(100-l,pct(b.end)-pct(b.start));
     if(w<=0)return;
     h+='<div class="tl-busy" style="left:'+l+'%;width:'+w+'%" title="'+esc(b.titles.join(', '))+'"></div>';
+  });
+  /* planned sessions sit UNDER meetings visually — they are intentions, not walls */
+  plannedOn(dateStr).forEach(p=>{
+    const st=minsOf(p.start), l=Math.max(0,pct(st)), w=Math.min(100-l,(p.win/span)*100);
+    if(w<=0)return;
+    const stt=plannedStatus(p);
+    h+='<div class="tl-plan '+stt+'" style="left:'+l+'%;width:'+Math.max(w,0.8)+'%" title="'+esc((p.label||'Planned session')+' · '+p.win+'m at '+fmtTime(st))+'"></div>';
   });
   if(proposal){
     const l=Math.max(0,pct(proposal.start));
@@ -2622,6 +2731,48 @@ function renderBuilderDay(){
   });
 }
 
+/* ---- quick capture, straight into the session ----
+   The point of this screen is to START WORK. Forcing a round trip through the planner to
+   add one task before a quick session is exactly the friction that makes a two-minute job
+   never happen. So capture happens here, and whatever you capture is auto-selected — you
+   typed it because you intend to do it now.
+
+   Syntax, all optional:
+     #tag            inline tag, stripped from the title
+     a / b / c       a task 'a' broken into stages b, c   (first segment is the title)
+   A bare line with no slash is an atomic task, taken whole. */
+function builderQuickAdd(){
+  const raw=(document.getElementById('qcInput').value||'').trim();
+  if(!raw){toast('Type something first.');return;}
+  if(!state.selectedWindow){toast('Choose a window first — then it drops straight in.');}
+
+  const segs=raw.split('/').map(x=>x.trim()).filter(Boolean);
+  let head=segs.shift()||'';
+  const tags=[];
+  head=head.replace(/#([\w-]+)/g,(_,t)=>{tags.push(t.toLowerCase());return '';}).replace(/\s+/g,' ').trim();
+  if(!head){toast('Give it a title.');return;}
+
+  const stageObjs=segs.map(t=>({id:uid('stage'),title:t.replace(/#([\w-]+)/g,'').replace(/\s+/g,' ').trim(),completed:false,waiting:false,dueDate:null})).filter(x=>x.title);
+
+  const task={id:uid('task'),title:head,objectiveId:null,completed:false,waiting:false,starred:false,
+    tags,stages:stageObjs,dueDate:localDateStr(),createdAt:new Date().toISOString()};
+  state.tasks.push(task);
+
+  /* auto-select into the current session */
+  if(stageObjs.length){
+    stageObjs.forEach(st=>state.selectedStages.push({id:st.id,taskId:task.id,title:st.title}));
+    builderOpen[task.id]=true;
+  }else{
+    state.selectedStages.push(atomicStageFor(task));   // whole task, materialised at start
+  }
+
+  document.getElementById('qcInput').value='';
+  saveState();
+  renderBuilderStages();renderSelectedStages();updateStartBtn();
+  const n=stageObjs.length||1;
+  toast(stageObjs.length?('Added “'+head+'” · '+stageObjs.length+' stages selected'):('Added “'+head+'” · selected'));
+}
+
 function renderBuilderStages(){
   const list=document.getElementById('builderStageList');
   const stages=liveStages();
@@ -2737,7 +2888,9 @@ function renderSelectedStages(){
     l.appendChild(el);
   });
 }
-function updateStartBtn(){document.getElementById('startTimerBtn').disabled=!state.selectedWindow||!state.selectedStages.length;}
+function updateStartBtn(){
+  const pl=document.getElementById('planLaterBtn');
+  if(pl)pl.disabled=!(state.selectedWindow&&state.selectedStages.length);document.getElementById('startTimerBtn').disabled=!state.selectedWindow||!state.selectedStages.length;}
 /* ================= TIMER ================= */
 function startSession(force){
   if(!state.selectedWindow||!state.selectedStages.length)return;
@@ -4588,6 +4741,28 @@ function renderDay(){
       +'<div class="day-fit">Fits now: '+(fits.length?fits.join(' · ')+' min':'<span class="no">nothing — not even a 2-minute window</span>')+'</div>';
   }
 
+  /* planned sessions: ready ones get a Start, the rest show their status */
+  const pl=document.getElementById('dayPlanned');
+  const plans=plannedOn(d);
+  if(!plans.length){pl.innerHTML='';}
+  else{
+    pl.innerHTML='<div class="pl-head">Planned sessions</div>'+plans.map(p=>{
+      const stt=plannedStatus(p);
+      const when=fmtTime(minsOf(p.start));
+      const meta=p.win+'m'+(p.stages.length?' · '+p.stages.length+' stages':'')+' · '+when;
+      let action;
+      if(stt==='ready')action='<button class="pl-go" data-go="'+p.id+'">Start</button>';
+      else if(stt==='launched')action='<span class="pl-tag done">launched</span>';
+      else if(stt==='missed')action='<span class="pl-tag missed">missed</span>';
+      else action='<span class="pl-tag">at '+when+'</span>';
+      return '<div class="pl-row '+stt+'"><div class="pl-info"><div class="pl-title">'
+        +esc(p.label||(p.win+'-minute session'))+'</div><div class="pl-meta">'+meta+'</div></div>'
+        +action+'<button class="ghost pl-del" data-del="'+p.id+'">✕</button></div>';
+    }).join('');
+    pl.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>launchPlanned(b.dataset.go)));
+    pl.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>deletePlanned(b.dataset.del)));
+  }
+
   const list=document.getElementById('dayEvents');
   const evs=eventsOn(d);
   if(!evs.length){list.innerHTML='<div class="empty-state" style="padding:14px">Nothing scheduled. The day is yours.</div>';}
@@ -5264,6 +5439,30 @@ document.getElementById('addTasksBtn').addEventListener('click',()=>{
 });
 document.getElementById('taskDueInput').valueAsDate=new Date();
 document.getElementById('allTasksSort').addEventListener('change',renderAllTasks);
+document.getElementById('qcAdd').addEventListener('click',builderQuickAdd);
+document.getElementById('planLaterBtn').addEventListener('click',()=>{
+  const row=document.getElementById('planLaterRow');
+  const showing=row.style.display!=='none';
+  row.style.display=showing?'none':'flex';
+  if(!showing){
+    const t=new Date(Date.now()+30*60000);
+    document.getElementById('planTime').value=String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+  }
+});
+document.getElementById('planCancel').addEventListener('click',()=>{document.getElementById('planLaterRow').style.display='none';});
+document.getElementById('planConfirm').addEventListener('click',()=>{
+  if(!state.selectedWindow){toast('Pick a window first.');return;}
+  const t=document.getElementById('planTime').value;
+  if(!t){toast('Pick a start time.');return;}
+  addPlanned(state.selectedWindow,t,localDateStr(),state.selectedStages,document.getElementById('planLabel').value);
+  document.getElementById('planLaterRow').style.display='none';
+  document.getElementById('planLabel').value='';
+  state.selectedStages=[];state.selectedWindow=null;
+  document.querySelectorAll('.window-btn').forEach(b=>b.classList.remove('active'));
+  renderBuilderStages();renderSelectedStages();updateStartBtn();
+  showView('dashView');
+});
+document.getElementById('qcInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();builderQuickAdd();}});
 document.getElementById('evtAdd').addEventListener('click',()=>{
   addEvent(document.getElementById('evtTitle').value,
            document.getElementById('evtStart').value,
