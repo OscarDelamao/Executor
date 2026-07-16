@@ -369,6 +369,19 @@ button.danger:hover{background:#8f382e}
 .pl-info{flex:1;min-width:0}
 .pl-title{font-size:13px;color:var(--bone)}
 .pl-meta{font-size:11px;color:var(--ash);margin-top:2px}
+.pe-grid{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.pe-grid label,#planEditModal label{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ash);margin-bottom:5px}
+.pe-stages{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow:auto}
+.pe-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--espresso);border:1px solid var(--line);border-radius:6px}
+.pe-info{flex:1;min-width:0}
+.pe-title{font-size:13px;color:var(--bone)}
+.pe-meta{font-size:11px;color:var(--ash);margin-top:2px}
+.pe-rm{padding:4px 10px;font-size:10px;color:var(--oxide);border-color:var(--oxide)}
+.pe-pool{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow:auto}
+.pe-poolrow{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--obsidian);border:1px solid var(--line);border-radius:6px;cursor:pointer}
+.pe-poolrow:hover{border-color:var(--line-warm);background:rgba(182,138,90,.06)}
+.pe-plus{color:var(--brass);font-size:16px;font-weight:600;flex-shrink:0}
+.pl-edit{padding:6px 12px;font-size:10px}
 .pl-go{background:var(--green);border-color:var(--green);color:var(--obsidian);padding:6px 14px;font-size:11px}
 .pl-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ash);white-space:nowrap}
 .pl-tag.done{color:var(--camel)}
@@ -440,6 +453,15 @@ button.danger:hover{background:#8f382e}
 .at-star:hover{background:transparent;color:var(--brass)}
 .at-star.on{color:var(--brass)}
 .pill.recur{background:rgba(95,174,122,.18);color:var(--forest)}
+.pill.plan{background:rgba(182,138,90,.2);color:var(--brass)}
+.at-section{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--camel);font-weight:600;margin:16px 0 9px;display:flex;align-items:center;gap:9px}
+.at-section:first-child{margin-top:2px}
+.at-section span{background:var(--espresso);color:var(--sand);padding:1px 7px;border-radius:3px;font-size:9px;letter-spacing:1px}
+.at-section.planned{color:var(--brass)}
+.at-section.planned span:first-of-type{background:var(--brass);color:var(--obsidian)}
+.at-section-note{background:transparent!important;color:var(--ash)!important;font-size:9px;letter-spacing:.5px;text-transform:none;font-weight:400;padding:0!important}
+.at-toggle{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ash);cursor:pointer;user-select:none}
+.at-toggle input{width:auto;margin:0}
 .dow-row{display:flex;gap:6px;flex-wrap:wrap}
 .dow{flex:1;min-width:44px;background:transparent;border:1px solid var(--line);color:var(--ash);padding:10px 4px;font-size:11px;border-radius:6px}
 .dow:hover{color:var(--bone);background:rgba(182,138,90,.06)}
@@ -677,6 +699,7 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
           <option value="title">Title</option>
           <option value="status">Status</option>
         </select>
+        <label class="at-toggle"><input type="checkbox" id="atReserved"> show planned</label>
         <span class="at-count" id="atCount"></span>
       </div>
       <div id="atSelBar" class="at-selbar" style="display:none"></div>
@@ -687,6 +710,24 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
   <!-- DASHBOARD -->
   <div id="dashView" class="view active">
     <div id="dashRnR" class="rnr-banner" style="display:none"></div>
+
+    <!-- THE DAY (top, scan at a glance) -->
+    <div class="card" style="margin-bottom:18px">
+      <h2>The Day</h2>
+      <div class="section-note">What you are actually committed to. Sessions get chosen against this, not against wishful thinking.</div>
+      <div id="dayFreeLine"></div>
+      <div id="dayTimeline"></div>
+      <div id="dayPlanned"></div>
+      <div class="evt-add">
+        <input type="text" id="evtTitle" placeholder="Meeting, call, gym…">
+        <input type="time" id="evtStart">
+        <input type="time" id="evtEnd">
+        <input type="date" id="evtDate">
+        <button id="evtAdd">Add</button>
+      </div>
+      <div id="dayEvents"></div>
+    </div>
+
     <div class="dash">
       <!-- LEFT: ACTIVE OBJECTIVES -->
       <div class="card">
@@ -727,22 +768,6 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
       </div>
     </div>
 
-    <!-- THE DAY -->
-    <div class="card" style="margin-top:18px">
-      <h2>The Day</h2>
-      <div class="section-note">What you are actually committed to. Sessions get chosen against this, not against wishful thinking.</div>
-      <div id="dayFreeLine"></div>
-      <div id="dayTimeline"></div>
-      <div id="dayPlanned"></div>
-      <div class="evt-add">
-        <input type="text" id="evtTitle" placeholder="Meeting, call, gym…">
-        <input type="time" id="evtStart">
-        <input type="time" id="evtEnd">
-        <input type="date" id="evtDate">
-        <button id="evtAdd">Add</button>
-      </div>
-      <div id="dayEvents"></div>
-    </div>
   </div>
 
   <!-- OBJECTIVES -->
@@ -1099,6 +1124,26 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
   <div class="modal-actions"><button id="dueDateCancel" class="ghost">Cancel</button><button id="dueDateConfirm">Save</button></div>
 </div></div>
 
+<div id="planEditModal" class="modal-overlay"><div class="modal wide">
+  <div class="modal-title">Edit Planned Session</div>
+  <div class="modal-sub">Reshape it when the diary shifts — change the time, the length, or which stages ride in it. Stages you remove drop back into the pool; stages you add leave it.</div>
+  <div class="pe-grid">
+    <div><label>Label</label><input type="text" id="peLabel" placeholder="e.g. meeting prep"></div>
+    <div><label>Start</label><input type="time" id="peStart"></div>
+  </div>
+  <label style="margin-top:12px">Length</label>
+  <div class="window-selector" id="peWindows"></div>
+  <label style="margin-top:14px">Stages in this session</label>
+  <div id="peStages" class="pe-stages"></div>
+  <label style="margin-top:14px">Add from the pool</label>
+  <input type="search" id="pePoolSearch" placeholder="Search unplanned tasks and stages…" style="margin-bottom:8px">
+  <div id="pePool" class="pe-pool"></div>
+  <div class="modal-actions">
+    <button id="peCancel" class="ghost">Cancel</button>
+    <button id="peSave">Save Changes</button>
+  </div>
+</div></div>
+
 <div id="recModal" class="modal-overlay"><div class="modal wide">
   <div class="modal-title">Reconcile</div>
   <div class="modal-sub" id="recSub"></div>
@@ -1444,8 +1489,45 @@ function timelineHtml(dateStr,proposal){
    the ledger — then works unchanged, because by then it is an ordinary stage like any other. */
 const ATOMIC='atomic:';
 function isAtomicId(id){return typeof id==='string'&&id.startsWith(ATOMIC);}
+/* ---- what a live plan is holding ----
+   A planned session RESERVES its stages; it never OWNS them. Only plans that are still
+   claimable (upcoming or ready, today) hold anything. The moment a plan is launched
+   (its stages go into the builder), missed (the window passed), or deleted, its claim
+   evaporates and every stage inside it falls straight back into the pool — with no
+   migration, no cleanup, because the claim was only ever a derived view, never a stored
+   flag on the stage. That is the safety property: work cannot get stranded inside a dead
+   plan, because a dead plan holds nothing by definition. */
+function reservedStageIds(){
+  const ids=new Set();
+  state.planned.forEach(p=>{
+    const st=plannedStatus(p);
+    if(st!=='upcoming'&&st!=='ready')return;   // launched / missed release immediately
+    p.stages.forEach(s=>ids.add(s.id));
+  });
+  return ids;
+}
+function reservedTaskIds(){
+  /* an ATOMIC task (no stages) reserved whole travels as atomic:<taskId> */
+  const ids=new Set();
+  state.planned.forEach(p=>{
+    const st=plannedStatus(p);
+    if(st!=='upcoming'&&st!=='ready')return;
+    p.stages.forEach(s=>{ if(isAtomicId(s.id))ids.add(s.taskId); });
+  });
+  return ids;
+}
+/* which plan currently holds a given stage/task — for the "reserved" badge */
+function reservingPlan(stageOrTaskId){
+  return state.planned.find(p=>{
+    const st=plannedStatus(p);
+    if(st!=='upcoming'&&st!=='ready')return false;
+    return p.stages.some(s=>s.id===stageOrTaskId||(isAtomicId(s.id)&&s.taskId===stageOrTaskId));
+  });
+}
+
 function atomicTasks(){
-  return state.tasks.filter(t=>!t.completed&&!t.waiting&&!t.recur&&!t.stages.length);
+  const reserved=reservedTaskIds();
+  return state.tasks.filter(t=>!t.completed&&!t.waiting&&!t.recur&&!t.stages.length&&!reserved.has(t.id));
 }
 function atomicStageFor(t){
   return {id:ATOMIC+t.id,taskId:t.id,title:t.title,objectiveId:t.objectiveId,
@@ -1465,9 +1547,10 @@ function materialiseAtomics(list){
 }
 
 function liveStages(){
+  const reserved=reservedStageIds();
   const out=[];
   state.tasks.forEach(t=>{ if(t.completed||t.waiting)return;
-    t.stages.forEach(s=>{ if(!s.completed&&!s.waiting) out.push({...s,taskId:t.id,taskTitle:t.title,objectiveId:t.objectiveId,effDue:effStageDue(s,t),ownDue:s.dueDate||null}); });
+    t.stages.forEach(s=>{ if(!s.completed&&!s.waiting&&!reserved.has(s.id)) out.push({...s,taskId:t.id,taskTitle:t.title,objectiveId:t.objectiveId,effDue:effStageDue(s,t),ownDue:s.dueDate||null}); });
   });
   return out;
 }
@@ -2134,7 +2217,7 @@ function confirmDueDate(){
    The filter is a lens, not a delete key: it changes what you look at, never what
    exists. And the whole reason to search here is to ACT on what you find, so the
    selection survives filtering — narrow, tick, narrow again, tick again, then go. */
-let atFilter='live', atQuery='', atObj='', atTag='', atSelected=new Set(), atSelTasks=new Set(), atOpen={};
+let atFilter='live', atQuery='', atObj='', atTag='', atShowReserved=false, atSelected=new Set(), atSelTasks=new Set(), atOpen={};
 /* TWO selection sets, deliberately.
    atSelected  = stage ids -> what goes into a session.
    atSelTasks  = task ids  -> what a bulk edit (due date) applies to.
@@ -2166,7 +2249,7 @@ function atClearSel(){atSelected.clear();atSelTasks.clear();}
 const AT_FILTERS=[
   ['live','Live'],['today','Today'],['overdue','Overdue'],['upcoming','Upcoming'],
   ['nodate','No date'],['starred','Rocks'],['waiting','Blocked'],
-  ['nostages','Not broken down'],['recurring','Recurring'],['done','Done'],['all','All']
+  ['nostages','Not broken down'],['planned','Planned'],['recurring','Recurring'],['done','Done'],['all','All']
 ];
 function matchesQuery(t,q){
   if(!q)return {hit:true,stages:[]};
@@ -2174,22 +2257,30 @@ function matchesQuery(t,q){
   const stages=t.stages.filter(s=>s.title.toLowerCase().includes(q));
   return {hit:inTitle||stages.length>0,stages};
 }
+/* Is EVERY live piece of this task currently held by a live plan? Only then does it leave
+   the pool. A task with one stage reserved and two free stays visible — you can still
+   session the free ones. */
+function taskFullyReserved(t){
+  if(t.completed||t.recur)return false;
+  const resStages=reservedStageIds(), resTasks=reservedTaskIds();
+  if(!t.stages.length)return resTasks.has(t.id);           // atomic task reserved whole
+  const liveS=t.stages.filter(s=>!s.completed&&!s.waiting);
+  if(!liveS.length)return false;
+  return liveS.every(s=>resStages.has(s.id));
+}
 function passesFilter(t,f){
   const st=taskStatus(t);
   /* a recurring TEMPLATE is a rule, not a task. It only shows under its own filter. */
   if(t.recur&&f!=='recurring'&&f!=='all')return false;
+  if(f==='planned')return taskFullyReserved(t)||(t.stages.some(x=>reservedStageIds().has(x.id)));
   switch(f){
     case 'all':      return true;
-    case 'recurring':return !!t.recur;
+    case 'planned':  return true;
     case 'live':     return !t.completed&&!t.recur;
     case 'done':     return t.completed;
     case 'waiting':  return !!t.waiting&&!t.completed;
     case 'starred':  return !!t.starred&&!t.completed;
     case 'nostages': return !t.stages.length&&!t.completed;
-    /* taskStatus() calls an UNDATED task 'today', because on the Dashboard an undated
-       task lives in Standing Tasks permanently. That rule is right there and wrong here:
-       a task with no date is not due today, it is simply undated. So this filter asks
-       for a real date, and the 'nodate' chip catches the rest. */
     case 'today':    return !t.completed&&effTaskDue(t)===localDateStr();
     case 'overdue':  return st==='overdue';
     case 'upcoming': return st==='upcoming';
@@ -2197,7 +2288,7 @@ function passesFilter(t,f){
     default:         return true;
   }
 }
-function atLiveStages(t){return t.stages.filter(s=>!s.completed&&!s.waiting);}
+function atLiveStages(t){const r=reservedStageIds();return t.stages.filter(s=>!s.completed&&!s.waiting&&!r.has(s.id));}
 
 function atSelectedStages(){
   const out=[];
@@ -2241,6 +2332,105 @@ function renderAtSelBar(){
   document.getElementById('atClearSelBtn').addEventListener('click',()=>{atClearSel();renderAllTasks();});
   if(nTasks)document.getElementById('atBulkDue').addEventListener('click',openBulkDue);
   if(stages.length)document.getElementById('atToSession').addEventListener('click',sendSelectionToSession);
+}
+
+/* ---- planned session editor ----
+   When a meeting drops into the diary, a plan you made this morning may no longer fit.
+   This lets you reshape it: move it, resize it, swap what is inside it. Adding a stage
+   reserves it (out of the pool); removing one releases it (back in). Same reservation
+   model as everywhere else — the editor just edits p.stages, and reservedStageIds()
+   recomputes from that on the next render. Nothing to keep in sync. */
+let peTarget=null, peStages=[], peWin=null, pePoolQ='';
+function openPlanEditor(id){
+  const p=state.planned.find(x=>x.id===id);
+  if(!p){toast('Not found.');return;}
+  if(p.launched){toast('Already launched — it is in the builder now.');return;}
+  peTarget=id;
+  peStages=p.stages.map(s=>({...s}));
+  peWin=p.win;
+  pePoolQ='';
+  document.getElementById('peLabel').value=p.label||'';
+  document.getElementById('peStart').value=p.start;
+  document.getElementById('pePoolSearch').value='';
+  renderPeWindows();renderPeStages();renderPePool();
+  openModal('planEditModal');
+}
+function renderPeWindows(){
+  const box=document.getElementById('peWindows');
+  box.innerHTML=[2,5,15,25,40,60,90].map(w=>
+    '<button class="window-btn'+(w===peWin?' active':'')+'" data-w="'+w+'">'+w+'</button>').join('');
+  box.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>{peWin=+b.dataset.w;renderPeWindows();}));
+}
+function renderPeStages(){
+  const box=document.getElementById('peStages');
+  if(!peStages.length){box.innerHTML='<div class="empty-state" style="padding:12px">No stages — this is a time-only reservation. Add some below, or just save.</div>';return;}
+  box.innerHTML=peStages.map((sg,i)=>{
+    const t=state.tasks.find(x=>x.id===sg.taskId);
+    const o=t?objOf(t):null;
+    return '<div class="pe-row"><div class="pe-info"><div class="pe-title">'+esc(sg.title)+'</div>'
+      +'<div class="pe-meta">'+(o?esc(o.title)+' › ':'')+(t?esc(t.title):'—')+(isAtomicId(sg.id)?' · whole task':'')+'</div></div>'
+      +'<button class="ghost pe-rm" data-i="'+i+'">Remove</button></div>';
+  }).join('');
+  box.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{
+    peStages.splice(+b.dataset.i,1);renderPeStages();renderPePool();
+  }));
+}
+function renderPePool(){
+  const box=document.getElementById('pePool');
+  const inPlan=new Set(peStages.map(s=>s.id));
+  /* stages reserved by OTHER live plans (not this one) are unavailable */
+  const otherReserved=new Set();
+  state.planned.forEach(pp=>{
+    if(pp.id===peTarget)return;
+    const st=plannedStatus(pp);
+    if(st!=='upcoming'&&st!=='ready')return;
+    pp.stages.forEach(s=>otherReserved.add(s.id));
+  });
+  const q=pePoolQ.trim().toLowerCase();
+  const opts=[];
+  state.tasks.forEach(t=>{
+    if(t.completed||t.waiting||t.recur)return;
+    if(!t.stages.length){
+      const aid=ATOMIC+t.id;
+      if(inPlan.has(aid)||otherReserved.has(aid))return;
+      if(q&&!t.title.toLowerCase().includes(q))return;
+      opts.push({id:aid,taskId:t.id,title:t.title,atomic:true,task:t});
+    }else{
+      t.stages.forEach(sg=>{
+        if(sg.completed||sg.waiting)return;
+        if(inPlan.has(sg.id)||otherReserved.has(sg.id))return;
+        if(q&&!sg.title.toLowerCase().includes(q)&&!t.title.toLowerCase().includes(q))return;
+        opts.push({id:sg.id,taskId:t.id,title:sg.title,task:t});
+      });
+    }
+  });
+  if(!opts.length){box.innerHTML='<div class="empty-state" style="padding:12px">'+(q?'Nothing matches.':'Nothing left in the pool.')+'</div>';return;}
+  box.innerHTML=opts.slice(0,50).map(o=>{
+    const ob=objOf(o.task);
+    return '<div class="pe-poolrow" data-add=\''+o.id+'\'><span class="pe-plus">+</span>'
+      +'<div class="pe-info"><div class="pe-title">'+esc(o.title)+(o.atomic?' <span class="pill">atomic</span>':'')+'</div>'
+      +'<div class="pe-meta">'+(ob?esc(ob.title)+' › ':'')+esc(o.task.title)+'</div></div></div>';
+  }).join('');
+  box.querySelectorAll('[data-add]').forEach(el=>el.addEventListener('click',()=>{
+    const id=el.dataset.add;
+    const o=opts.find(x=>x.id===id);
+    if(o)peStages.push({id:o.id,taskId:o.taskId,title:o.title});
+    renderPeStages();renderPePool();
+  }));
+}
+function savePlanEdit(){
+  const p=state.planned.find(x=>x.id===peTarget);
+  if(!p){closeModal('planEditModal');return;}
+  const start=document.getElementById('peStart').value;
+  if(!start){toast('Pick a start time.');return;}
+  if(!peWin){toast('Pick a length.');return;}
+  p.label=(document.getElementById('peLabel').value||'').trim()||null;
+  p.start=start;
+  p.win=peWin;
+  p.stages=peStages.map(s=>({id:s.id,taskId:s.taskId,title:s.title}));
+  closeModal('planEditModal');peTarget=null;
+  saveState();renderAll();
+  toast('Session updated · '+p.win+'m at '+fmtTime(minsOf(start)));
 }
 
 /* ---- tags ---- */
@@ -2386,6 +2576,9 @@ function renderAllTasks(){
   const today=localDateStr();
   let rows=state.tasks
     .filter(t=>passesFilter(t,atFilter))
+    /* fully-reserved tasks drop out by default — they are already spoken for in a plan.
+       The Planned chip and the "show reserved" toggle both reveal them again. */
+    .filter(t=>atShowReserved||atFilter==='planned'||atFilter==='all'||!taskFullyReserved(t))
     .filter(t=>!atObj||(atObj==='__none'?!t.objectiveId:t.objectiveId===atObj))
     .filter(t=>!atTag||(t.tags||[]).includes(atTag))
     .map(t=>({t,m:matchesQuery(t,q)}))
@@ -2402,6 +2595,19 @@ function renderAllTasks(){
   document.getElementById('atCount').textContent=
     rows.length+' task'+(rows.length===1?'':'s')+(q&&totalStageHits?' · '+totalStageHits+' stage match'+(totalStageHits===1?'':'es'):'');
 
+  /* Group into Unplanned / Planned without cutting the list in two. Every existing tool —
+     search, multi-select, bulk edit — still operates on one flat list; the headers are
+     just dividers. A task with ANY reserved stage sorts into Planned. */
+  const anyReserved=(reservedStageIds().size>0)||(reservedTaskIds().size>0);
+  const isPlannedRow=t=>taskFullyReserved(t)||t.stages.some(x=>reservedStageIds().has(x.id))||reservedTaskIds().has(t.id);
+  if(anyReserved){
+    const un=rows.filter(r=>!isPlannedRow(r.t));
+    const pl=rows.filter(r=>isPlannedRow(r.t));
+    rows=un.concat(pl);
+    rows._splitAt=un.length;   // index where Planned begins
+    rows._plannedCount=pl.length;
+  }
+
   list.innerHTML='';
   if(!rows.length){
     list.innerHTML='<div class="empty-state">'+(q?'Nothing matches “'+esc(atQuery)+'”.':'Nothing in this filter.')+'</div>';
@@ -2415,7 +2621,21 @@ function renderAllTasks(){
     return esc(txt.slice(0,i))+'<mark>'+esc(txt.slice(i,i+q.length))+'</mark>'+esc(txt.slice(i+q.length));
   };
 
-  rows.forEach(({t,m})=>{
+  let _emittedUn=false,_emittedPl=false;
+  const _split=rows._splitAt, _plCount=rows._plannedCount||0;
+  rows.forEach(({t,m},_i)=>{
+    /* section dividers, only when both groups are present */
+    if(_split!=null&&_plCount>0){
+      if(!_emittedUn&&_i===0&&_split>0){
+        const hd=document.createElement('div');hd.className='at-section';
+        hd.innerHTML='Unplanned <span>'+_split+'</span>';list.appendChild(hd);_emittedUn=true;
+      }
+      if(!_emittedPl&&_i===_split){
+        const hd=document.createElement('div');hd.className='at-section planned';
+        hd.innerHTML='Planned <span>'+_plCount+'</span><span class="at-section-note">already reserved in a session</span>';
+        list.appendChild(hd);_emittedPl=true;
+      }
+    }
     const st=taskStatus(t);
     const o=objOf(t);
     const ed=effTaskDue(t);
@@ -2445,16 +2665,19 @@ function renderAllTasks(){
     if(open&&t.stages.length){
       const sub=document.createElement('div');
       sub.className='at-stages';
+      const _res=reservedStageIds();
       t.stages.forEach(sg=>{
         const ssel=atSelected.has(sg.id);
         const sdue=effStageDue(sg,t);
-        const dead=sg.completed||sg.waiting;
+        const isRes=_res.has(sg.id);
+        const dead=sg.completed||sg.waiting||isRes;
         const r=document.createElement('div');
         r.className='at-stage'+(sg.completed?' done':'')+(sg.waiting?' waiting':'')+(ssel?' picked':'');
         r.innerHTML='<span class="bt-tick'+(ssel?' on':'')+(dead?' dead':'')+'"></span>'
           +'<span class="at-stage-title">'+hl(sg.title)+'</span>'
           +(sg.waiting?'<span class="pill wait">blocked</span>':'')
-          +(sg.completed?'<span class="pill">done</span>':dueBadge(sdue,!sg.dueDate))
+          +(isRes&&!sg.completed?'<span class="pill plan">planned</span>':'')
+          +(sg.completed?'<span class="pill">done</span>':(isRes?'':dueBadge(sdue,!sg.dueDate)))
           +'<span class="at-stage-btns">'
             +(dead?(sg.waiting?'<button class="ub ghost">Unblock</button>':'')
                   :'<button class="wt ghost">Waiting</button><button class="dn ghost">Done</button>')
@@ -4757,9 +4980,11 @@ function renderDay(){
       else action='<span class="pl-tag">at '+when+'</span>';
       return '<div class="pl-row '+stt+'"><div class="pl-info"><div class="pl-title">'
         +esc(p.label||(p.win+'-minute session'))+'</div><div class="pl-meta">'+meta+'</div></div>'
-        +action+'<button class="ghost pl-del" data-del="'+p.id+'">✕</button></div>';
+        +action+'<button class="ghost pl-edit" data-edit="'+p.id+'">Edit</button>'
+        +'<button class="ghost pl-del" data-del="'+p.id+'">✕</button></div>';
     }).join('');
     pl.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>launchPlanned(b.dataset.go)));
+    pl.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>openPlanEditor(b.dataset.edit)));
     pl.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>deletePlanned(b.dataset.del)));
   }
 
@@ -5473,6 +5698,9 @@ document.getElementById('evtAdd').addEventListener('click',()=>{
 document.getElementById('evtDate').valueAsDate=new Date();
 setInterval(()=>{ if(document.getElementById('dashView').classList.contains('active'))renderDay(); },60000);
 document.getElementById('purgeBtn').addEventListener('click',togglePurge);
+document.getElementById('peCancel').addEventListener('click',()=>closeModal('planEditModal'));
+document.getElementById('peSave').addEventListener('click',savePlanEdit);
+document.getElementById('pePoolSearch').addEventListener('input',e=>{pePoolQ=e.target.value;renderPePool();});
 document.getElementById('tagCancel').addEventListener('click',()=>closeModal('tagModal'));
 document.getElementById('tagSave').addEventListener('click',saveTags);
 document.getElementById('recurCancel').addEventListener('click',()=>closeModal('recurModal'));
@@ -5493,6 +5721,7 @@ document.getElementById('bulkDueCancel').addEventListener('click',()=>closeModal
 document.getElementById('bulkDueConfirm').addEventListener('click',()=>applyBulkDue(false));
 document.getElementById('bulkDueClear').addEventListener('click',()=>applyBulkDue(true));
 document.getElementById('atObjFilter').addEventListener('change',e=>{atObj=e.target.value;renderAllTasks();});
+document.getElementById('atReserved').addEventListener('change',e=>{atShowReserved=e.target.checked;renderAllTasks();});
 let atSearchT;
 document.getElementById('taskSearch').addEventListener('input',e=>{
   atQuery=e.target.value;
