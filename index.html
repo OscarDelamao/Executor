@@ -382,6 +382,25 @@ button.danger:hover{background:#8f382e}
 .pe-poolrow:hover{border-color:var(--line-warm);background:rgba(182,138,90,.06)}
 .pe-plus{color:var(--brass);font-size:16px;font-weight:600;flex-shrink:0}
 .pl-edit{padding:6px 12px;font-size:10px}
+.pl-row.has-stages{cursor:pointer}
+.pl-caret{color:var(--camel);font-size:10px;margin-right:7px;display:inline-block;width:9px}
+.pl-caret.empty{color:var(--line-warm)}
+.pl-nudge{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:9px 11px;margin:0 0 6px 6px;background:var(--espresso);border-radius:6px;font-size:11px}
+.pl-nudge.locked{opacity:.55}
+.pl-nudge-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ash)}
+.pl-nudge-val{font-variant-numeric:tabular-nums;color:var(--bone);min-width:96px;text-align:center}
+.pl-nb{padding:5px 10px;font-size:11px;font-variant-numeric:tabular-nums;background:var(--obsidian);border:1px solid var(--line);color:var(--brass);border-radius:5px}
+.pl-nb:hover:not(:disabled){border-color:var(--brass)}
+.pl-nb:disabled{opacity:.4;color:var(--ash)}
+.pl-nudge-note{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--oxide);margin-left:auto}
+.pl-stages{display:flex;flex-direction:column;gap:4px;padding:4px 0 8px 14px;margin:0 0 5px 6px;border-left:1px solid var(--line)}
+.pl-stage{display:flex;align-items:flex-start;gap:9px;padding:7px 10px;background:var(--espresso);border-radius:6px}
+.pl-stage.gone{opacity:.5}
+.pl-dot{width:6px;height:6px;border-radius:50%;background:var(--camel);margin-top:6px;flex-shrink:0}
+.pl-stage.gone .pl-dot{background:var(--oxide)}
+.pl-stage-info{flex:1;min-width:0}
+.pl-stage-title{font-size:12px;color:var(--bone)}
+.pl-stage-meta{font-size:10px;color:var(--ash);margin-top:2px}
 .pl-go{background:var(--green);border-color:var(--green);color:var(--obsidian);padding:6px 14px;font-size:11px}
 .pl-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ash);white-space:nowrap}
 .pl-tag.done{color:var(--camel)}
@@ -1409,6 +1428,29 @@ function addPlanned(win,start,dateStr,stages,label){
   return p;
 }
 function deletePlanned(id){state.planned=state.planned.filter(x=>x.id!==id);saveState();renderAll();}
+
+/* ---- nudge a planned session ----
+   The cheap, mobile-honest version of drag-and-drop: shift a block in 15-minute steps,
+   or grow/shrink its length by 15. Snapped to the same grid the timeline draws, clamped
+   inside the visible day, and a no-op past the edges rather than an error. A launched
+   plan is off-limits — its stages are already in the builder.
+   `field` is 'start' or 'len'; `delta` is minutes (±15). */
+function nudgePlan(id,field,delta){
+  const p=state.planned.find(x=>x.id===id);
+  if(!p||p.launched)return;
+  if(field==='start'){
+    let m=minsOf(p.start)+delta;
+    m=Math.round(m/15)*15;                                  // snap
+    m=Math.max(DAY_START*60,Math.min(m,DAY_END*60-p.win));  // clamp: whole block stays in-day
+    p.start=hhmmOf(m);
+  }else{
+    let w=p.win+delta;
+    w=Math.max(5,w);                                        // never below the smallest window
+    if(minsOf(p.start)+w>DAY_END*60)w=DAY_END*60-minsOf(p.start);  // do not spill past day end
+    p.win=w;
+  }
+  saveState();renderDay();
+}
 function plannedOn(dateStr){
   return state.planned.filter(p=>p.date===dateStr).slice().sort((a,b)=>minsOf(a.start)-minsOf(b.start));
 }
@@ -2356,6 +2398,7 @@ function renderAtSelBar(){
    model as everywhere else — the editor just edits p.stages, and reservedStageIds()
    recomputes from that on the next render. Nothing to keep in sync. */
 let peTarget=null, peStages=[], peWin=null, pePoolQ='';
+let planOpen={};
 function openPlanEditor(id){
   const p=state.planned.find(x=>x.id===id);
   if(!p){toast('Not found.');return;}
@@ -4986,21 +5029,66 @@ function renderDay(){
   else{
     pl.innerHTML='<div class="pl-head">Planned sessions</div>'+plans.map(p=>{
       const stt=plannedStatus(p);
-      const when=fmtTime(minsOf(p.start));
-      const meta=p.win+'m'+(p.stages.length?' · '+p.stages.length+' stages':'')+' · '+when;
+      const startM=minsOf(p.start);
+      const when=fmtTime(startM);
+      const range=when+' – '+fmtTime(startM+p.win);   // finish = start + window
+      const meta=p.win+'m'+(p.stages.length?' · '+p.stages.length+' stages':'')+' · '+range;
       let action;
       if(stt==='ready')action='<button class="pl-go" data-go="'+p.id+'">Start</button>';
       else if(stt==='launched')action='<span class="pl-tag done">launched</span>';
       else if(stt==='missed')action='<span class="pl-tag missed">missed</span>';
-      else action='<span class="pl-tag">at '+when+'</span>';
-      return '<div class="pl-row '+stt+'"><div class="pl-info"><div class="pl-title">'
+      else action='<span class="pl-tag">'+range+'</span>';
+      const hasStages=p.stages.length>0;
+      const open=!!planOpen[p.id];
+      let sub='';
+      if(open){
+        /* nudge controls: available on every plan, stages or not */
+        const locked=stt==='launched'||stt==='missed';
+        sub+='<div class="pl-nudge'+(locked?' locked':'')+'">'
+          +'<span class="pl-nudge-lbl">Start</span>'
+          +'<button class="pl-nb" data-nudge="'+p.id+'|start|-15"'+(locked?' disabled':'')+'>−15</button>'
+          +'<span class="pl-nudge-val">'+range+'</span>'
+          +'<button class="pl-nb" data-nudge="'+p.id+'|start|15"'+(locked?' disabled':'')+'>+15</button>'
+          +'<span class="pl-nudge-lbl" style="margin-left:10px">Length</span>'
+          +'<button class="pl-nb" data-nudge="'+p.id+'|len|-15"'+(locked?' disabled':'')+'>−15</button>'
+          +'<span class="pl-nudge-val">'+p.win+'m</span>'
+          +'<button class="pl-nb" data-nudge="'+p.id+'|len|15"'+(locked?' disabled':'')+'>+15</button>'
+          +(locked?'<span class="pl-nudge-note">'+(stt==='launched'?'launched':'missed')+'</span>':'')
+          +'</div>';
+      }
+      if(hasStages&&open){
+        sub+='<div class="pl-stages">'+p.stages.map(sg=>{
+          const t=state.tasks.find(x=>x.id===sg.taskId);
+          const o=t?objOf(t):null;
+          const gone=!t||(!isAtomicId(sg.id)&&!(t.stages||[]).some(x=>x.id===sg.id&&!x.completed));
+          return '<div class="pl-stage'+(gone?' gone':'')+'"><span class="pl-dot"></span>'
+            +'<div class="pl-stage-info"><div class="pl-stage-title">'+esc(sg.title)+(isAtomicId(sg.id)?' <span class="pill">whole task</span>':'')+(gone?' <span class="pill">no longer live</span>':'')+'</div>'
+            +'<div class="pl-stage-meta">'+(o?esc(o.title)+' › ':'')+(t?esc(t.title):'—')+'</div></div></div>';
+        }).join('')+'</div>';
+      }
+      return '<div class="pl-wrap"><div class="pl-row '+stt+' has-stages'+(open?' open':'')+'" data-toggle="'+p.id+'">'
+        +'<div class="pl-info"><div class="pl-title">'
+        +'<span class="pl-caret">'+(open?'▾':'▸')+'</span>'
         +esc(p.label||(p.win+'-minute session'))+'</div><div class="pl-meta">'+meta+'</div></div>'
         +action+'<button class="ghost pl-edit" data-edit="'+p.id+'">Edit</button>'
-        +'<button class="ghost pl-del" data-del="'+p.id+'">✕</button></div>';
+        +'<button class="ghost pl-del" data-del="'+p.id+'">✕</button></div>'
+        +sub+'</div>';
     }).join('');
-    pl.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>launchPlanned(b.dataset.go)));
-    pl.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>openPlanEditor(b.dataset.edit)));
-    pl.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>deletePlanned(b.dataset.del)));
+    /* toggling is on the row body; the action buttons stopPropagation so they still work */
+    pl.querySelectorAll('[data-toggle]').forEach(row=>row.addEventListener('click',e=>{
+      if(e.target.closest('button'))return;
+      const id=row.dataset.toggle;
+      planOpen[id]=!planOpen[id];
+      renderDay();
+    }));
+    pl.querySelectorAll('[data-nudge]').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation();
+      const [id,field,delta]=b.dataset.nudge.split('|');
+      nudgePlan(id,field,+delta);
+    }));
+    pl.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();launchPlanned(b.dataset.go);}));
+    pl.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openPlanEditor(b.dataset.edit);}));
+    pl.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();deletePlanned(b.dataset.del);}));
   }
 
   const list=document.getElementById('dayEvents');
