@@ -385,6 +385,44 @@ button.danger:hover{background:#8f382e}
 .pl-row.has-stages{cursor:pointer}
 .pl-caret{color:var(--camel);font-size:10px;margin-right:7px;display:inline-block;width:9px}
 .pl-caret.empty{color:var(--line-warm)}
+.rock-panel.v23 .rock-streak{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--ash);padding:8px 10px;background:var(--espresso);border-radius:6px;margin-bottom:10px}
+.rock-streak b{color:var(--brass)}
+.rock-streak.frozen{border:1px solid var(--oxide)}
+.rk-frozen{color:var(--oxide);font-weight:600}
+.rk-empty,.rk-hint{font-size:11px;color:var(--ash);line-height:1.6}
+.rk-hint{margin-top:8px}
+.rk-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.rk-card{border:1px solid var(--line);border-left:3px solid var(--camel);border-radius:7px;padding:10px 11px;background:var(--obsidian)}
+.rk-card.p1{border-left-color:var(--oxide)}
+.rk-card.p2{border-left-color:var(--amber)}
+.rk-card.p3{border-left-color:var(--brass)}
+.rk-card.p4{border-left-color:var(--camel)}
+.rk-card.overdue{background:rgba(201,106,95,.08);border-color:var(--oxide)}
+.rk-top{display:flex;align-items:center;gap:9px}
+.rk-pri{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--obsidian);background:var(--camel);padding:2px 7px;border-radius:4px}
+.rk-card.p1 .rk-pri{background:var(--oxide);color:var(--bone)}
+.rk-title{flex:1;font-size:14px;color:var(--bone);min-width:0}
+.rk-xp{font-size:12px;color:var(--brass);font-variant-numeric:tabular-nums}
+.rk-clock{font-size:11px;color:var(--ash);margin:6px 0 9px}
+.rk-clock.over{color:var(--oxide);font-weight:600}
+.rk-acts{display:flex;gap:6px;flex-wrap:wrap}
+.rk-acts button{padding:7px 11px;font-size:11px}
+.rk-land{background:var(--brass);border-color:var(--brass);color:var(--obsidian);font-weight:600}
+.rk-recommit{background:transparent;border:1px solid var(--amber);color:var(--amber)}
+.rk-abandon{background:transparent;border:1px solid var(--oxide);color:var(--oxide)}
+.rk-create{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.rk-create input{margin-bottom:8px}
+.rk-crow{display:flex;gap:8px}
+.rk-crow select{flex:1}
+.rk-crow button{white-space:nowrap}
+.rk-toggle{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--bone);cursor:pointer}
+.rk-toggle input{width:auto;margin:0}
+.reset-armed{font-size:12px;color:var(--amber);padding:9px 11px;background:var(--espresso);border-radius:6px;margin-bottom:9px}
+.reset-armed.ready{color:var(--oxide)}
+.reset-armed b{color:var(--brass)}
+.ghost-acts{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+#adoptGhostBtn{background:var(--brass);border-color:var(--brass);color:var(--obsidian);font-weight:600}
+.ghost-secondary{background:transparent!important;color:var(--oxide)!important;border:1px solid var(--oxide)!important}
 .pl-nudge{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:9px 11px;margin:0 0 6px 6px;background:var(--espresso);border-radius:6px;font-size:11px}
 .pl-nudge.locked{opacity:.55}
 .pl-nudge-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ash)}
@@ -1027,10 +1065,15 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
       <div class="section-note">Every XP award writes a receipt. This checks the balance against the receipts. If they disagree, something wrote XP without logging it — and that is a bug, not a bonus.</div>
       <div id="auditBody"></div>
     </div>
+    <div class="card">
+      <h2>Rock Economy</h2>
+      <div class="section-note">The v23 model: rocks are the only thing worth real XP, each on a priority clock. While a rock is overdue, non-rock XP freezes until you resolve it. Off by default — your existing scoring is untouched until you flip this.</div>
+      <label class="rk-toggle"><input type="checkbox" id="rockEconToggle"> Rock-centred economy</label>
+    </div>
     <div class="card danger-card">
       <h2>Reset Character</h2>
-      <div class="section-note">Wipes XP, level, wallet and ledger. <b>Keeps every objective, task and stage.</b> The work was real; only the number describing it was wrong. Levels were never the point — you can climb again in a fortnight.</div>
-      <button id="resetCharBtn" class="danger">Reset Character to Level 1</button>
+      <div class="section-note">Wipes XP, level, wallet and ledger. <b>Keeps every objective, task and stage.</b> The streak is the stake of the whole economy, so reset is deliberately hard: it arms, waits 24h, asks you to type a phrase, and always burns the streak.</div>
+      <div id="resetArea"></div>
     </div>
   </div>
 
@@ -1244,7 +1287,7 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
 <script>
 /* ================= STATE ================= */
 const state={
-  objectives:[],tasks:[],sessions:[],rockLog:{},
+  objectives:[],tasks:[],sessions:[],rockLog:{},rocks:[],resetRequestedAt:null,rockEconomyOn:false,
   dailyXp:0,cumulativeXp:0,level:1,
   currentDate:null,lastProcessedDate:null,updatedAt:0,
   firstUseDate:null,dayOpenXp:0,dayFloor:0,
@@ -1290,9 +1333,34 @@ const config={
      session — and makes the late ones genuinely expensive. XP earning is UNCHANGED;
      only the price of a level moves. */
   levelBase:500, levelExp:2,
-  sessionXpCeilingMult:30  /* max legitimate multiplier product; see the circuit breaker in endSession */
+  sessionXpCeilingMult:30,  /* max legitimate multiplier product; see the circuit breaker in endSession */
+
+  /* ============ v23 ROCK-CENTRED ECONOMY ============
+     Off by default so the working v22 economy is never disturbed without consent.
+     Flip rockEconomy:true (Account tab toggle) to run the new model. Every number here
+     is a default, exposed for tuning without a code change, exactly as the spec requires. */
+  rockEconomy:false,
+  rockMaxActive:3,
+  rockPriorityXp:{1:1000,2:600,3:400,4:250},
+  rockOnTimeBonus:{1:250,2:150,3:100,4:50},
+  rockClockHours:{1:24,2:36,3:48,4:48},
+  rockLatePct:0.40,            /* late completion pays this fraction of priority XP … */
+  rockLateHardCap:200,         /* … but NEVER more than this — a late P1 (would be 400)
+                                  must not out-earn an on-time P3 landing (400). Capped
+                                  below the lowest on-time tier so blowing a deadline can
+                                  never beat nailing a smaller rock. */
+  rockSubStageCredit:25,       /* advance credit for a committed sub-stage; NETS into the
+                                  completion payout, does not add on top. */
+  rockSessionMomentumXp:15,    /* starting a focused session on a rock — preserves the
+                                  activation dopamine, trivial next to completion. */
+  rockNonRockAtomicXp:10,      /* a non-rock atomic task. Capture/logistics, not scoring. */
+  rockStreakPerDay:0.05,       /* +5% rock XP per clean day … */
+  rockStreakCap:0.50,          /* … capped at +50%. */
+  rockRecommitFee:100,         /* cost to re-commit an overdue rock (also a streak ding). */
+  rockRecommitMax:1,           /* hard cap on re-commits per rock — no infinite snoozing. */
+  rockResetCooldownHours:24    /* hard reset is unreachable faster than this. */
 };
-const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession','resetAt','events','planned'];
+const PERSIST=['objectives','tasks','sessions','rockLog','dailyXp','cumulativeXp','level','currentDate','lastProcessedDate','updatedAt','firstUseDate','restTokensEarned','restTokensSpent','consecutiveCleanDays','spendableXp','rewardCatalogue','rewardInventory','xpTransactions','rewardRedemptions','rewardSettings','walletMigratedV1','catalogueSeededV1','pinnedRewardId','rewardIntroSeen','currentSession','resetAt','events','planned','rocks','resetRequestedAt','rockEconomyOn'];
 
 /* ================= LOCKOUT & MYSTERY ================= */
 function inLockoutPeriod(){
@@ -1702,7 +1770,154 @@ function penalizeXp(amount,sourceType,sourceId,description){
 }
 
 /* Legacy entry point. All existing call sites route through here. */
+/* ============================================================
+   ================  v23 ROCK ECONOMY  ========================
+   A rock is a committed, high-status objective with a priority (P1..P4), a clock, and a
+   payout that dwarfs everything else. Non-rock work is near-zero by design. The whole
+   point is that XP measures landing the things that matter, not grinding what is easy.
+
+   These functions are inert unless config.rockEconomy is true, so v22 is untouched when
+   the toggle is off.
+   ============================================================ */
+function rocksOn(){return !!config.rockEconomy;}
+function syncRockToggle(){
+  const t=document.getElementById('rockEconToggle');
+  if(t)t.checked=!!config.rockEconomy;
+}
+function setRockEconomy(on){
+  config.rockEconomy=!!on;
+  /* persist the flag inside state so it survives reload/sync */
+  state.rockEconomyOn=!!on;
+  saveState();renderAll();
+  toast(on?'Rock economy ON · rocks are now the scoreboard':'Rock economy OFF · back to standard scoring');
+}
+/* the live rock that owns a set of session stages, if any — by task or stage membership */
+function rockForStages(stageList){
+  const taskIds=new Set(stageList.map(x=>x.taskId).filter(Boolean));
+  const stageIds=new Set(stageList.map(x=>x.id));
+  return activeRocks().find(r=>
+    (r.taskIds||[]).some(t=>taskIds.has(t))||
+    (r.stageIds||[]).some(sid=>stageIds.has(sid))
+  )||null;
+}
+function activeRocks(){return state.rocks.filter(r=>r.state==='active'||r.state==='overdue');}
+function rockById(id){return state.rocks.find(r=>r.id===id);}
+function rockHoursLeft(r){
+  if(!r.deadline)return null;
+  return (new Date(r.deadline).getTime()-Date.now())/3600000;
+}
+/* Recompute active→overdue transitions. Called on every render tick and before any earn. */
+function refreshRockClocks(){
+  if(!rocksOn())return;
+  let changed=false;
+  state.rocks.forEach(r=>{
+    if(r.state==='active'&&r.deadline&&Date.now()>new Date(r.deadline).getTime()){
+      r.state='overdue';r.overdueAt=new Date().toISOString();changed=true;
+    }
+  });
+  if(changed)saveLocal();
+}
+function hasOverdueRock(){return rocksOn()&&state.rocks.some(r=>r.state==='overdue');}
+
+/* THE ANTI-FARMING GATE.
+   While any rock is overdue, non-rock XP is frozen — you cannot grind easy tasks to route
+   around a broken commitment. BUT work that advances a LIVE rock (any active or overdue
+   rock) still earns. Freezing hard work on other rocks was never the intent; the gate
+   exists to block trivia, not to punish you for doing the next important thing. So the
+   gate asks one question: does this earn belong to a rock? If yes, it always flows. */
+function earnFrozenByGate(sourceType,sourceId){
+  if(!rocksOn())return false;
+  if(!hasOverdueRock())return false;
+  /* rock-attributed earns are always allowed */
+  if(sourceType==='rock')return false;
+  /* a session/stage earn tied to a task that belongs to ANY live rock is allowed */
+  if(sourceId){
+    const taskId=isAtomicId(sourceId)?sourceId.slice(ATOMIC.length):null;
+    const belongs=activeRocks().some(r=>(r.taskIds||[]).includes(sourceId)||(taskId&&(r.taskIds||[]).includes(taskId))||(r.stageIds||[]).includes(sourceId));
+    if(belongs)return false;
+  }
+  return true;   // everything else is frozen until the overdue rock is resolved
+}
+
+function rockStreakMult(){
+  const days=Math.max(0,state.consecutiveCleanDays||0);
+  return 1+Math.min(config.rockStreakCap, days*config.rockStreakPerDay);
+}
+
+function createRock(title,priority,taskIds){
+  if(!rocksOn()){toast('Rock economy is off.');return null;}
+  if(activeRocks().length>=config.rockMaxActive){toast('Max '+config.rockMaxActive+' active rocks. Land or abandon one first.');return null;}
+  priority=+priority;
+  if(![1,2,3,4].includes(priority)){toast('Priority must be P1–P4.');return null;}
+  if(activeRocks().some(r=>r.priority===priority)){toast('You already hold a P'+priority+'. Priorities must be distinct — rank them.');return null;}
+  const hrs=config.rockClockHours[priority];
+  const r={id:uid('rock'),title:(title||'').trim()||'Untitled rock',priority,
+    state:'active',createdAt:new Date().toISOString(),
+    deadline:new Date(Date.now()+hrs*3600000).toISOString(),
+    taskIds:taskIds||[],stageIds:[],recommits:0,advanceXp:0,landedAt:null};
+  state.rocks.push(r);
+  saveState();renderAll&&renderAll();
+  toast('Rock set · P'+priority+' · '+hrs+'h clock');
+  return r;
+}
+
+/* land a rock — the event the whole economy points at */
+function landRock(id){
+  const r=rockById(id);if(!r)return;
+  const late=r.state==='overdue';
+  const streak=rockStreakMult();
+  let xp;
+  if(late){
+    xp=Math.round(Math.min(config.rockLateHardCap, config.rockPriorityXp[r.priority]*config.rockLatePct));
+    /* late landing still respects the streak? No — late breaks the clean intent. Flat, capped. */
+    r.streakDinged=true;
+  }else{
+    const base=config.rockPriorityXp[r.priority];
+    const bonus=config.rockOnTimeBonus[r.priority];
+    xp=Math.round((base+bonus)*streak) - (r.advanceXp||0);  // advance credit NETS in
+    if(xp<0)xp=0;
+  }
+  r.state='landed';r.landedAt=new Date().toISOString();r.landedLate=late;r.paidXp=xp;
+  grantXp(xp,'rock',r.id,'Rock landed · P'+r.priority+(late?' (late)':'')+' · '+r.title);
+  saveState();renderAll();
+  toast(late?('Landed late · +'+xp+' XP'):('★ Rock landed · +'+xp+' XP'));
+}
+
+/* three exits for an OVERDUE rock: late-complete (landRock above), re-commit, abandon */
+function recommitRock(id){
+  const r=rockById(id);if(!r||r.state!=='overdue')return;
+  if(r.recommits>=config.rockRecommitMax){toast('Already re-committed once. Land it or abandon it.');return;}
+  askConfirm('Re-commit Rock',
+    'A new '+config.rockClockHours[r.priority]+'h clock, a '+config.rockRecommitFee+' XP fee, and a ding to your streak.\n\n'
+    +'One re-commit per rock. After this you land it or abandon it.',
+    ()=>{
+      r.recommits++;r.state='active';
+      r.deadline=new Date(Date.now()+config.rockClockHours[r.priority]*3600000).toISOString();
+      r.streakDinged=true;
+      grantXp(-config.rockRecommitFee,'rock',r.id,'Rock re-commit fee · P'+r.priority);
+      state.consecutiveCleanDays=0;
+      saveState();renderAll();
+      toast('Re-committed · fresh '+config.rockClockHours[r.priority]+'h clock · streak reset');
+    });
+}
+function abandonRock(id){
+  const r=rockById(id);if(!r)return;
+  askConfirm('Abandon Rock',
+    'Frees the slot. No XP. Breaks your clean-day streak.\n\nP'+r.priority+' · '+r.title,
+    ()=>{
+      r.state='abandoned';r.abandonedAt=new Date().toISOString();
+      state.consecutiveCleanDays=0;
+      saveState();renderAll();
+      toast('Abandoned · slot freed · streak reset');
+    });
+}
+
 function grantXp(n,sourceType,sourceId,description){
+  refreshRockClocks();
+  if(earnFrozenByGate(sourceType,sourceId)){
+    toast('Frozen — an overdue rock is blocking non-rock XP. Resolve it first.');
+    return;
+  }
   if(inLockoutPeriod())return; // XP frozen during Training Week
   if(n>0)awardXp(n,sourceType||'system',sourceId||null,description||'XP earned');
   else if(n<0)penalizeXp(-n,sourceType||'system',sourceId||null,description||'XP penalty');
@@ -2009,7 +2224,7 @@ function repairCorruptSessions(){
   if(n)notices.push({title:'Corrupt Sessions Flagged',
     body:n+' session'+(n===1?'':'s')+' were scored by the old, broken penalty formula — penalties above 100% and negative XP, both impossible.\n\nThey stay in your history because they happened, but they no longer count toward your averages.'});
 }
-function runDailyEngines(){ seedRewardCatalogue(); migrateXpWallet(); repairCorruptSessions(); processRecurring(); settleRocks(); processDecay(); expireRnR(); updateLevelFromXp(); }
+function runDailyEngines(){ config.rockEconomy=!!state.rockEconomyOn; seedRewardCatalogue(); migrateXpWallet(); repairCorruptSessions(); processRecurring(); settleRocks(); processDecay(); expireRnR(); updateLevelFromXp(); }
 
 /* --- rock settlement (lazy, on open) --- */
 function settleRocks(){
@@ -2068,6 +2283,18 @@ function processDecay(){
       missed.push({ds,before,after:state.cumulativeXp,tokenUsed});
     }
     cur.setDate(cur.getDate()+1);
+  }
+  /* v23 clean-day judgement per elapsed day. A day is CLEAN when no rock sat overdue-and-
+     unresolved through it, and any P1 either advanced or landed. A dinged rock (re-committed
+     or landed late) already broke the streak at the moment it happened, so here we only need
+     to catch a rock that silently rotted overdue across a whole day. */
+  if(rocksOn()){
+    const stillOverdue=state.rocks.some(r=>r.state==='overdue');
+    if(stillOverdue){
+      state.consecutiveCleanDays=0;   // an unresolved overdue rock is the definition of not-clean
+    }else{
+      state.consecutiveCleanDays=(state.consecutiveCleanDays||0)+1;
+    }
   }
   state.lastProcessedDate=today;
   if(missed.length){
@@ -2914,7 +3141,8 @@ function completeStageOOS(taskId,stageId){
   const t=state.tasks.find(x=>x.id===taskId);if(!t)return;
   const s=findStage(taskId,stageId);if(!s||s.completed)return;
   s.completed=true;s.oos=true;s.waiting=false;
-  const xp=Math.round(config.xpPerStage*config.oosMultiplier);grantXp(xp,'oos',stageId,'Out of session: '+s.title);
+  const xp=rocksOn()?config.rockNonRockAtomicXp:Math.round(config.xpPerStage*config.oosMultiplier);
+  grantXp(xp,'oos',stageId,'Out of session: '+s.title);
   if(t.stages.length&&t.stages.every(x=>x.completed)){t.completed=true;t.oos=true;}
   checkObjComplete();saveState();renderAll();flushNotices();
   toast('+'+xp+' XP · out of session (50%)');
@@ -2925,7 +3153,8 @@ function completeTaskOOS(taskId){
   if(t.stages.length)t.stages.forEach(s=>{if(!s.completed){s.completed=true;s.oos=true;s.waiting=false;units++;}});
   else units=1;
   t.completed=true;t.oos=true;t.waiting=false;
-  const xp=Math.round(units*config.xpPerStage*config.oosMultiplier);grantXp(xp,'oos',taskId,'Out of session: '+t.title);
+  const xp=rocksOn()?config.rockNonRockAtomicXp:Math.round(units*config.xpPerStage*config.oosMultiplier);
+  grantXp(xp,'oos',taskId,'Out of session: '+t.title);
   checkObjComplete();saveState();renderAll();flushNotices();
   toast('+'+xp+' XP · out of session (50%)');
 }
@@ -3302,25 +3531,55 @@ function renderGhostBanner(){
   const s=state.currentSession;
   if(!s||s.endedAt||!sessionIsGhost()){b.style.display='none';b.innerHTML='';return;}
   const foreign=sessionIsForeign(), stale=sessionIsStale();
+  const elapsedMin=Math.floor((Date.now()-new Date(s.startedAt).getTime())/60000);
+  const overrun=stale||elapsedMin>s.windowMinutes;
   let why;
-  if(foreign&&stale)why='This session was started on another device, on an earlier day.';
-  else if(foreign)why='This session was started on another device. You are not the one running it.';
-  else why='This session was started on an earlier day and never closed.';
+  if(foreign&&stale)why='Started on another device, on an earlier day — its clock has been running ever since.';
+  else if(foreign)why='This session was started on another device. You can take it over and finish it here.';
+  else why='Started on an earlier day and left open, so its clock kept counting.';
   b.style.display='block';
-  b.innerHTML='<div class="ghost-banner"><b>Ghost Session</b>'
-    +'<div>'+why+' You cannot execute it from here, so it is not work — it is a stale record.</div>'
-    +'<button id="clearGhostBtn">Clear Session</button></div>';
+  b.innerHTML='<div class="ghost-banner"><b>'+(foreign&&!stale?'Session On Another Device':'Stale Session')+'</b>'
+    +'<div>'+why+'</div>'
+    +'<div class="ghost-acts">'
+    +'<button id="adoptGhostBtn">Take Over Here</button>'
+    +'<button id="clearGhostBtn" class="ghost-secondary">Discard</button>'
+    +'</div></div>';
+  document.getElementById('adoptGhostBtn').addEventListener('click',()=>adoptGhostSession(overrun));
   document.getElementById('clearGhostBtn').addEventListener('click',clearGhostSession);
+}
+
+/* ---- adopt a session onto THIS device ----
+   The point the old model missed: a session you started on your phone and want to finish
+   on your laptop is not a ghost — it is the same work, same account, same you. Adoption
+   rebinds it to this device so you can execute and score it here.
+
+   If its clock has overrun the window (it was left running across a gap, or across a day),
+   the elapsed time is meaningless, so we re-anchor the end to a fresh full window from now.
+   The point of the locked timer is a bounded push you are present for, not a stopwatch that
+   happened to run all night. Stages already ticked are kept. */
+function adoptGhostSession(overrun){
+  const s=state.currentSession;
+  if(!s||s.endedAt)return;
+  s.deviceId=getDeviceId();
+  if(overrun){
+    s.startedAt=new Date().toISOString();
+    s.endsAt=new Date(Date.now()+s.windowMinutes*60000).toISOString();
+  }
+  saveState();flushSync&&flushSync();
+  resumeSession();          // rebinds the live clock to this device
+  renderAll();
+  showView('timerView');
+  toast(overrun?('Taken over · fresh '+s.windowMinutes+'-minute window'):'Taken over · finish it here');
 }
 
 function clearGhostSession(){
   const s=state.currentSession;
   if(!s||s.endedAt)return;
   if(!sessionIsGhost()){toast('A live session on this device cannot be cleared.');return;}
-  askConfirm('Clear Ghost Session',
+  askConfirm('Discard Session',
     s.windowMinutes+'-minute session, opened '+new Date(s.startedAt).toLocaleString()+'.\n\n'
-    +'It will be voided: no XP earned, no penalty applied, and it will not appear in your history as a real session.\n\n'
-    +'This exists only for sessions you cannot execute. It is not a stop button — a session you started here today stays locked.',
+    +'Discard it: no XP, no penalty, no history entry. Use this when the session is genuinely dead — otherwise Take Over Here and finish it.\n\n'
+    +'A session you started here today, still inside its window, stays locked and is not offered here.',
     ()=>{
       stopSessionClock();
       /* The session dies whole. Its heat, First Blood claim and mystery multiplier all
@@ -3509,7 +3768,13 @@ function scoreSession(auto){
     if(rem<=300&&win>0)timeBonus=rem/win;
   }
   const weekend=isWeekend(new Date());
-  const base=completed*config.xpPerStage;
+  /* v23: with the rock economy on, a stage is worth the small sub-stage credit, not 100.
+     Completion of the ROCK is the scoring event; the pieces are just advance credit that
+     nets into the eventual payout. If this session's stages belong to a live rock, the
+     credit is banked onto that rock rather than paid loose. */
+  const rockForSession = rocksOn() ? rockForStages(s.stagesPlanned.concat(s.extraStages)) : null;
+  const perStage = rocksOn() ? config.rockSubStageCredit : config.xpPerStage;
+  const base=completed*perStage;
   const heat=s.heat||0;
   const heatMult=config.heatLadder[heat]||1.0;
   const firstBloodMult=s.isFirstBlood&&!inLockoutPeriod()?config.firstBloodMult:1.0;
@@ -3546,8 +3811,16 @@ function scoreSession(auto){
 
   const label=s.windowMinutes+' minute session · '+completed+' stage'+(completed===1?'':'s')
     +(s.amendedCount?' ('+s.amendedCount+' amended)':'');
-  if(earned>0)grantXp(earned,'session',s.sessionId,label);
-  if(debit>0)grantXp(-debit,'session',s.sessionId,(missed+deficit)+' committed stage'+((missed+deficit)===1?'':'s')+' missed');
+  if(rocksOn()&&rockForSession){
+    /* credit advances the rock; it is not loose XP. Recorded on the rock, netted at landing.
+       Momentum XP for having run a focused session on a rock is paid loose, small, once. */
+    rockForSession.advanceXp=(rockForSession.advanceXp||0)+earned;
+    if(earned>0)grantXp(config.rockSessionMomentumXp,'rock',rockForSession.id,'Session momentum · P'+rockForSession.priority);
+    if(debit>0)grantXp(-debit,'session',s.sessionId,(missed+deficit)+' committed stage'+((missed+deficit)===1?'':'s')+' missed');
+  }else{
+    if(earned>0)grantXp(earned,'session',s.sessionId,label);
+    if(debit>0)grantXp(-debit,'session',s.sessionId,(missed+deficit)+' committed stage'+((missed+deficit)===1?'':'s')+' missed');
+  }
 
   markCompletion();checkObjComplete();updateRestTokens();
   saveState();flushSync();
@@ -3690,7 +3963,7 @@ function renderStageReport(){document.getElementById('stageReport').innerHTML=st
 function renderAll(){
   renderDashObjectives();renderRockPanel();renderObjSelect();renderTaskLists();
   renderObjectives();renderWaiting();renderCompleted();renderAllTasks();
-  renderRewardTarget();renderDay();updateHeader();updateWaitBadge();updateRewardBadge();
+  renderRewardTarget();renderDay();renderResetArea();syncRockToggle();updateHeader();updateWaitBadge();updateRewardBadge();
   checkRewardIntro();tickRnR();
 }
 function updateHeader(){
@@ -3725,8 +3998,33 @@ function renderDashObjectives(){
   });
 }
 /* rocks panel */
+function renderResetArea(){
+  const el=document.getElementById('resetArea');if(!el)return;
+  const req=state.resetRequestedAt?new Date(state.resetRequestedAt).getTime():null;
+  const cool=config.rockResetCooldownHours*3600000;
+  if(!req){
+    el.innerHTML='<button id="armResetBtn" class="danger">Arm Reset</button>';
+    document.getElementById('armResetBtn').addEventListener('click',requestReset);
+  }else{
+    const left=cool-(Date.now()-req);
+    if(left>0){
+      const h=Math.ceil(left/3600000);
+      el.innerHTML='<div class="reset-armed">Reset armed · unlocks in <b>'+h+'h</b>. This wait is the point.</div>'
+        +'<button id="cancelResetBtn" class="ghost">Stand Down</button>';
+      document.getElementById('cancelResetBtn').addEventListener('click',cancelResetRequest);
+    }else{
+      el.innerHTML='<div class="reset-armed ready">Cooldown cleared. Executing will zero your '+(state.consecutiveCleanDays||0)+'-day streak and wipe XP.</div>'
+        +'<button id="execResetBtn" class="danger">Type Phrase & Reset</button>'
+        +'<button id="cancelResetBtn" class="ghost">Stand Down</button>';
+      document.getElementById('execResetBtn').addEventListener('click',characterReset);
+      document.getElementById('cancelResetBtn').addEventListener('click',cancelResetRequest);
+    }
+  }
+}
+
 function renderRockPanel(){
   const c=document.getElementById('rockPanel');
+  if(rocksOn()){return renderRockEconomyPanel(c);}
   const all=todaysRocks();const open=rockGateOpen();
   /* A landed rock leaves the board. The Muster panel is a list of what is still ON YOU —
      a finished rock sitting there greyed out is just noise competing with live work.
@@ -3749,6 +4047,78 @@ function renderRockPanel(){
   h+='<div class="gate-note'+(open?'':' locked')+'">'+(open?'Star and unstar freely until 20:00 settlement.':'Gate closed. Locked until 20:00 settlement.')+'</div></div>';
   c.innerHTML=h;
 }
+/* ---- v23 rock panel: priority-clock rocks with land / re-commit / abandon ---- */
+function fmtHrs(h){
+  if(h==null)return '';
+  if(h<0){const a=Math.abs(h);return (a<1?Math.round(a*60)+'m':a.toFixed(a<10?1:0)+'h')+' over';}
+  return h<1?Math.round(h*60)+'m left':h.toFixed(h<10?1:0)+'h left';
+}
+function renderRockEconomyPanel(c){
+  refreshRockClocks();
+  const rocks=activeRocks().slice().sort((a,b)=>a.priority-b.priority);
+  const overdue=hasOverdueRock();
+  const streak=state.consecutiveCleanDays||0;
+  const mult=rockStreakMult();
+  let h='<div class="rock-panel v23">';
+  h+='<div class="rock-head"><span>▲ Rocks</span><span>'+rocks.length+'/'+config.rockMaxActive+'</span></div>';
+  h+='<div class="rock-streak'+(overdue?' frozen':'')+'">'
+    +'<span>Streak <b>'+streak+'</b> clean day'+(streak===1?'':'s')+' · rock XP ×'+mult.toFixed(2)+'</span>'
+    +(overdue?'<span class="rk-frozen">⛔ non-rock XP frozen</span>':'')+'</div>';
+
+  if(!rocks.length){
+    h+='<div class="rk-empty">No rocks. Set one — it is the only thing worth real XP here.</div>';
+  }else{
+    h+='<div class="rk-list">';
+    rocks.forEach(r=>{
+      const hrs=rockHoursLeft(r);
+      const od=r.state==='overdue';
+      h+='<div class="rk-card p'+r.priority+(od?' overdue':'')+'">'
+        +'<div class="rk-top"><span class="rk-pri">P'+r.priority+'</span>'
+        +'<span class="rk-title">'+esc(r.title)+'</span>'
+        +'<span class="rk-xp">'+(config.rockPriorityXp[r.priority]+config.rockOnTimeBonus[r.priority])+'</span></div>'
+        +'<div class="rk-clock'+(od?' over':'')+'">'+(od?'OVERDUE · ':'')+fmtHrs(hrs)
+        +(r.advanceXp?' · '+r.advanceXp+' banked':'')+(r.recommits?' · re-committed':'')+'</div>';
+      if(od){
+        h+='<div class="rk-acts">'
+          +'<button class="rk-land" data-land="'+r.id+'">Land late (+'+Math.round(Math.min(config.rockLateHardCap,config.rockPriorityXp[r.priority]*config.rockLatePct))+')</button>'
+          +(r.recommits<config.rockRecommitMax?'<button class="rk-recommit" data-recommit="'+r.id+'">Re-commit</button>':'')
+          +'<button class="rk-abandon" data-abandon="'+r.id+'">Abandon</button></div>';
+      }else{
+        h+='<div class="rk-acts"><button class="rk-land" data-land="'+r.id+'">Land ★ +'+Math.round((config.rockPriorityXp[r.priority]+config.rockOnTimeBonus[r.priority])*mult - (r.advanceXp||0))+'</button></div>';
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  /* create form — only when a slot is free */
+  if(rocks.length<config.rockMaxActive){
+    const taken=new Set(rocks.map(r=>r.priority));
+    const freeP=[1,2,3,4].filter(x=>!taken.has(x));
+    h+='<div class="rk-create">'
+      +'<input type="text" id="rkTitle" placeholder="New rock — the thing that actually matters">'
+      +'<div class="rk-crow"><select id="rkPri">'+freeP.map(x=>'<option value="'+x+'">P'+x+' · '+config.rockClockHours[x]+'h · '+config.rockPriorityXp[x]+'xp</option>').join('')+'</select>'
+      +'<button id="rkAdd">Set Rock</button></div>'
+      +'<div class="rk-hint">P1 is most important: shortest clock, biggest payout. Priorities can\'t repeat.</div>'
+      +'</div>';
+  }else{
+    h+='<div class="rk-hint">All '+config.rockMaxActive+' slots full. Land or abandon one to set another.</div>';
+  }
+  h+='</div>';
+  c.innerHTML=h;
+
+  c.querySelectorAll('[data-land]').forEach(b=>b.addEventListener('click',()=>landRock(b.dataset.land)));
+  c.querySelectorAll('[data-recommit]').forEach(b=>b.addEventListener('click',()=>recommitRock(b.dataset.recommit)));
+  c.querySelectorAll('[data-abandon]').forEach(b=>b.addEventListener('click',()=>abandonRock(b.dataset.abandon)));
+  const add=document.getElementById('rkAdd');
+  if(add)add.addEventListener('click',()=>{
+    const t=document.getElementById('rkTitle').value;
+    const pr=+document.getElementById('rkPri').value;
+    if(!t.trim()){toast('Name the rock.');return;}
+    createRock(t,pr,[]);
+  });
+}
+
 /* objective select on dashboard */
 function renderObjSelect(){
   const s=document.getElementById('taskObjSelect');const cur=s.value;
@@ -5599,6 +5969,30 @@ function reconcileXp(){
    Your objectives, tasks and stages are real things you actually thought about; the XP
    was just a number describing them, and the number is wrong. So the number goes and
    the work stays. Starting again from zero is not a loss — the levels were never the point. */
+/* v23: reset is no longer a one-tap wipe. The streak is the stake of the whole economy;
+   if it can be erased on a whim it cannot function as a stake. So reset requires an explicit
+   request, a 24h cooldown, and typing a confirmation phrase — and it always zeroes the streak. */
+function requestReset(){
+  const now=Date.now();
+  const req=state.resetRequestedAt?new Date(state.resetRequestedAt).getTime():null;
+  const cool=config.rockResetCooldownHours*3600000;
+  if(!req){
+    state.resetRequestedAt=new Date().toISOString();
+    saveState();renderAll();
+    toast('Reset armed. It unlocks in '+config.rockResetCooldownHours+'h. Come back then if you still mean it.');
+    return;
+  }
+  const left=cool-(now-req);
+  if(left>0){
+    const h=Math.ceil(left/3600000);
+    toast('Reset still cooling down — '+h+'h left. This is deliberate.');
+    return;
+  }
+  /* cooldown cleared → require the typed phrase, then wipe */
+  characterReset();
+}
+function cancelResetRequest(){state.resetRequestedAt=null;saveState();renderAll();toast('Reset stood down.');}
+
 function characterReset(){
   const a=xpAudit();
   const held=state.rewardInventory.filter(i=>i.status==='available'||i.status==='active'||i.status==='partially_redeemed').length;
@@ -5614,8 +6008,10 @@ function characterReset(){
     +'  Every objective, task and stage\n'
     +'  Session history and the rock log, as a record of what you actually did\n'
     +'  Your reward catalogue and its prices\n\n'
-    +'This cannot be undone.',
+    +'This cannot be undone. Type RESET to confirm.',
     ()=>{
+      const typed=(typeof prompt==='function')?prompt('Type RESET to confirm the wipe:'):'RESET';
+      if((typed||'').trim().toUpperCase()!=='RESET'){toast('Reset cancelled — phrase not matched.');return;}
       const before={xp:state.cumulativeXp,wallet:state.spendableXp,level:state.level};
       state.cumulativeXp=0;
       state.spendableXp=0;
@@ -5626,7 +6022,8 @@ function characterReset(){
       state.xpTransactions=[];
       state.restTokensEarned=0;
       state.restTokensSpent=0;
-      state.consecutiveCleanDays=0;
+      state.consecutiveCleanDays=0;   // the streak is the stake — a reset always burns it
+      state.resetRequestedAt=null;
       state.mysteryAwardedToday=false;
       state.dayFirstSessionRun=false;
       state.rewardIntroSeen=false;
@@ -5745,7 +6142,7 @@ document.getElementById('sbReturn').addEventListener('click',()=>{
   if(state.currentSession&&!state.currentSession.endedAt){renderTimerStages();showView('timerView');}
 });
 document.getElementById('syncNowBtn').addEventListener('click',manualSync);
-document.getElementById('resetCharBtn').addEventListener('click',characterReset);
+const _rt=document.getElementById('rockEconToggle');if(_rt)_rt.addEventListener('change',e=>setRockEconomy(e.target.checked));
 document.getElementById('exportMdBtn').addEventListener('click',()=>{
   downloadBlob(buildReport(),'forge-report-'+stamp()+'.md','text/markdown');
   toast('Report downloaded');
