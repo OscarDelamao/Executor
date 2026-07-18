@@ -415,6 +415,9 @@ button.danger:hover{background:#8f382e}
 .rk-crow{display:flex;gap:8px}
 .rk-crow select{flex:1}
 .rk-crow button{white-space:nowrap}
+.obj-card .cm{background:var(--forest);border-color:var(--forest);color:var(--obsidian);font-weight:600;padding:8px 12px}
+.obj-card .del{color:var(--oxide);border-color:transparent}
+.obj-card .del:hover{border-color:var(--oxide)}
 .rk-toggle{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--bone);cursor:pointer}
 .rk-toggle input{width:auto;margin:0}
 .reset-armed{font-size:12px;color:var(--amber);padding:9px 11px;background:var(--espresso);border-radius:6px;margin-bottom:9px}
@@ -2364,6 +2367,45 @@ function abandonObj(id){
     saveState();renderAll();updateHeader();toast('−'+config.objAbandonPenalty+' XP · objective abandoned');
   });
 }
+/* mark an objective done by hand — before every stage is ticked. Pays the same per-stage
+   bonus as auto-completion, but only on the stages ACTUALLY finished, so hand-completing an
+   unfinished objective is honest: you are paid for what you did, not what you declared. */
+function completeObj(id){
+  const o=state.objectives.find(x=>x.id===id);if(!o)return;
+  if(o.status==='complete'){toast('Already complete.');return;}
+  const st=objStats(o);
+  const bonus=st.done*config.objBonusPerStage;   // done, not total — pay for real progress
+  const openStages=st.total-st.done;
+  askConfirm('Mark Objective Done',
+    '"'+o.title+'"\n\n'
+    +st.done+' of '+st.total+' stages finished'
+    +(openStages>0?' — the '+openStages+' unfinished stage'+(openStages===1?'':'s')+' will be closed as-is.':'.')+'\n\n'
+    +'Bonus: +'+bonus+' XP (paid on completed stages only).',
+    ()=>{
+      o.status='complete';o.completedAt=new Date().toISOString();o.bonusAwarded=bonus;o.manualComplete=true;
+      if(bonus>0)grantXp(bonus,'objective',o.id,'Objective complete: '+o.title+(openStages>0?' (manual)':''));
+      saveState();renderAll();updateHeader();
+      toast(bonus>0?('★ Objective done · +'+bonus+' XP'):'Objective done');
+    });
+}
+/* delete removes it entirely — no penalty, no XP, no record. For objectives created in error
+   or no longer relevant. Distinct from Abandon (which is a penalised give-up on real work)
+   and Complete (which pays out). Tasks are detached, not destroyed. */
+function deleteObj(id){
+  const o=state.objectives.find(x=>x.id===id);if(!o)return;
+  const ts=tasksOf(o);
+  askConfirm('Delete Objective',
+    '"'+o.title+'" will be removed entirely.\n\n'
+    +'No XP, no penalty — as if it was never set. '
+    +(ts.length?'Its '+ts.length+' task'+(ts.length===1?'':'s')+' stay in your list, just unassigned.':'It has no tasks.')+'\n\n'
+    +'Use this for objectives set in error. To give up on real work, use Abandon instead.',
+    ()=>{
+      ts.forEach(t=>t.objectiveId=null);
+      state.objectives=state.objectives.filter(x=>x.id!==id);
+      saveState();renderAll();updateHeader();
+      toast('Objective deleted · tasks kept, unassigned');
+    });
+}
 function checkObjComplete(){
   state.objectives.forEach(o=>{
     if(o.status!=='active'&&o.status!=='backlog')return;
@@ -4193,11 +4235,16 @@ function objList(c,objs,isActive){
       +'<div class="obj-meta"><span>'+st.tasks+' tasks · '+st.done+'/'+st.total+' stages · '+st.pct+'%</span><span>'+(o.dueDate?'due '+fmtDue(o.dueDate):'no date')+'</span></div>'
       +'<div class="button-group" style="margin-top:11px">'
       +(isActive?'<button class="dm ghost">→ Backlog</button>':'<button class="pm">Activate</button>')
-      +'<button class="op ghost">Open</button><button class="ab ghost">Abandon</button></div>';
+      +'<button class="op ghost">Open</button>'
+      +'<button class="cm">Done +'+(st.done*config.objBonusPerStage)+'</button>'
+      +'<button class="ab ghost">Abandon</button>'
+      +'<button class="del ghost">Delete</button></div>';
     const pm=el.querySelector('.pm');if(pm)pm.addEventListener('click',()=>promoteObj(o.id));
     const dm=el.querySelector('.dm');if(dm)dm.addEventListener('click',()=>demoteObj(o.id));
     el.querySelector('.op').addEventListener('click',()=>showObjDetail(o.id));
+    el.querySelector('.cm').addEventListener('click',()=>completeObj(o.id));
     el.querySelector('.ab').addEventListener('click',()=>abandonObj(o.id));
+    el.querySelector('.del').addEventListener('click',()=>deleteObj(o.id));
     c.appendChild(el);
   });
 }
