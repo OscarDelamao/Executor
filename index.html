@@ -520,6 +520,34 @@ button.danger:hover{background:#8f382e}
 .at-star.on{color:var(--brass)}
 .pill.recur{background:rgba(95,174,122,.18);color:var(--forest)}
 .pill.plan{background:rgba(182,138,90,.2);color:var(--brass)}
+.at-viewtoggle{display:inline-flex;gap:0;margin-bottom:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden;width:fit-content}
+.at-vt{background:transparent;border:none;color:var(--ash);padding:7px 16px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.at-vt.active{background:var(--brass);color:var(--obsidian);font-weight:600}
+.tree-obj{margin-bottom:6px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--obsidian)}
+.tree-obj.done{opacity:.6}
+.tree-obj-head{display:flex;align-items:center;gap:9px;padding:12px 13px;cursor:pointer;flex-wrap:wrap}
+.tree-obj-head:hover{background:rgba(182,138,90,.05)}
+.tree-obj-title{flex:1;font-family:var(--serif);font-size:15px;color:var(--bone);min-width:0}
+.tree-obj-meta{font-size:11px;color:var(--ash);white-space:nowrap}
+.tree-obj-bar{flex-basis:100%;height:3px;background:var(--espresso);border-radius:2px;overflow:hidden}
+.tree-obj-bar>div{height:100%;background:var(--brass)}
+.tree-caret{color:var(--camel);font-size:10px;width:10px;flex-shrink:0}
+.tree-tasks{padding:0 10px 6px 10px}
+.tree-task{border-top:1px solid var(--line)}
+.tree-task.done .tree-task-title{color:var(--ash);text-decoration:line-through}
+.tree-task-head{display:flex;align-items:center;gap:8px;padding:10px 6px;cursor:pointer;flex-wrap:wrap}
+.tree-task-head:hover{background:rgba(182,138,90,.04)}
+.tree-task-title{flex:1;font-size:13px;color:var(--bone);min-width:0}
+.tree-task-meta{font-size:10px;color:var(--ash);white-space:nowrap}
+.tree-tags{font-size:10px;color:var(--camel)}
+.tree-stages{padding:2px 0 8px 20px;display:flex;flex-direction:column;gap:3px}
+.tree-stage{display:flex;align-items:center;gap:9px;padding:7px 10px;background:var(--espresso);border-radius:6px}
+.tree-stage.done .tree-stage-title{color:var(--ash);text-decoration:line-through}
+.tree-stage-title{flex:1;font-size:12px;color:var(--bone);min-width:0}
+.tree-dot{width:5px;height:5px;border-radius:50%;background:var(--camel);flex-shrink:0}
+.tree-stage.done .tree-dot{background:var(--forest)}
+.tree-stage.wait .tree-dot{background:var(--oxide)}
+.tree-send{padding:4px 9px;font-size:10px;background:transparent;border:1px solid var(--line-warm);color:var(--brass)}
 .at-section{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--camel);font-weight:600;margin:16px 0 9px;display:flex;align-items:center;gap:9px}
 .at-section:first-child{margin-top:2px}
 .at-section span{background:var(--espresso);color:var(--sand);padding:1px 7px;border-radius:3px;font-size:9px;letter-spacing:1px}
@@ -756,6 +784,7 @@ button.danger:hover{background:var(--oxide);color:var(--obsidian)}
       </div>
       <input type="search" id="taskSearch" placeholder="Search tasks and stages…" autocomplete="off" style="margin-bottom:12px">
       <div class="at-tagrow" id="atTagRow"></div>
+      <div class="at-viewtoggle" id="atViewToggle"></div>
       <div class="at-filters" id="atFilters"></div>
       <div class="at-controls">
         <select id="atObjFilter"></select>
@@ -2544,6 +2573,7 @@ function confirmDueDate(){
    exists. And the whole reason to search here is to ACT on what you find, so the
    selection survives filtering — narrow, tick, narrow again, tick again, then go. */
 let atFilter='live', atQuery='', atObj='', atTag='', atShowReserved=false, atSelected=new Set(), atSelTasks=new Set(), atOpen={};
+let atView='flat', treeObjOpen={}, treeTaskOpen={};
 /* TWO selection sets, deliberately.
    atSelected  = stage ids -> what goes into a session.
    atSelTasks  = task ids  -> what a bulk edit (due date) applies to.
@@ -2853,6 +2883,118 @@ function applyBulkDue(clear){
   toast(n+' task'+(n===1?'':'s')+(d?' due '+fmtDue(d):' cleared of a due date'));
 }
 
+/* ---- ALL TASKS · TREE VIEW ----
+   Objective → Task → Stage, each level expandable. This is a NAVIGATION view, deliberately
+   read-and-drill rather than the working surface the flat list is: no multi-select or bulk
+   tools here, because a tree with checkboxes at three depths is a usability trap on a phone.
+   Tapping a stage still sends it to a session; tapping a task or objective just expands.
+   The flat 'List' view keeps every power tool. Two modes, one data set. */
+function renderAllTasksTree(){
+  const list=document.getElementById('allTasksList');
+  const q=(atQuery||'').trim().toLowerCase();
+  const match=txt=>!q||(txt||'').toLowerCase().includes(q);
+  const hl=txt=>{
+    if(!q)return esc(txt);
+    const i=(txt||'').toLowerCase().indexOf(q);
+    if(i<0)return esc(txt);
+    return esc(txt.slice(0,i))+'<mark>'+esc(txt.slice(i,i+q.length))+'</mark>'+esc(txt.slice(i+q.length));
+  };
+  /* filter tasks by the SAME chip + tag + reserved rules as the flat view, so the two agree */
+  const taskVisible=t=>passesFilter(t,atFilter)
+    &&(!atTag||(t.tags||[]).includes(atTag))
+    &&(atShowReserved||atFilter==='planned'||atFilter==='all'||!taskFullyReserved(t))
+    &&!t.recur;
+
+  /* group visible tasks under objectives (+ an Unassigned bucket) */
+  const groups=[];
+  const byObj=new Map();
+  state.objectives.filter(o=>o.status==='active'||o.status==='backlog'||o.status==='complete').forEach(o=>{
+    byObj.set(o.id,{obj:o,tasks:[]});
+  });
+  const unassigned={obj:null,tasks:[]};
+  state.tasks.filter(taskVisible).forEach(t=>{
+    const bucket=t.objectiveId&&byObj.has(t.objectiveId)?byObj.get(t.objectiveId):unassigned;
+    bucket.tasks.push(t);
+  });
+  byObj.forEach(g=>{if(g.tasks.length)groups.push(g);});
+  if(unassigned.tasks.length)groups.push(unassigned);
+
+  /* when searching, auto-open branches that contain a hit so nothing is hidden */
+  const searching=!!q;
+
+  list.innerHTML='';
+  if(!groups.length){
+    list.innerHTML='<div class="empty-state">'+(q?'Nothing matches “'+esc(atQuery)+'”.':'Nothing in this filter.')+'</div>';
+    renderAtSelBar();return;
+  }
+
+  groups.forEach(g=>{
+    const o=g.obj;
+    const oid=o?o.id:'__unassigned';
+    const st=o?objStats(o):null;
+    const oOpen=searching||treeObjOpen[oid];
+    const totalStages=g.tasks.reduce((n,t)=>n+(t.stages.length||1),0);
+    const doneStages=g.tasks.reduce((n,t)=>n+(t.stages.length?t.stages.filter(s=>s.completed).length:(t.completed?1:0)),0);
+
+    const objEl=document.createElement('div');
+    objEl.className='tree-obj'+(oOpen?' open':'')+(o&&o.status==='complete'?' done':'');
+    objEl.innerHTML='<div class="tree-obj-head" data-obj="'+oid+'">'
+      +'<span class="tree-caret">'+(oOpen?'▾':'▸')+'</span>'
+      +'<span class="tree-obj-title">'+(o?hl(o.title):'Unassigned')+'</span>'
+      +'<span class="tree-obj-meta">'+g.tasks.length+' task'+(g.tasks.length===1?'':'s')+' · '+doneStages+'/'+totalStages+'</span>'
+      +(o?'<div class="tree-obj-bar"><div style="width:'+(st?st.pct:0)+'%"></div></div>':'')
+      +'</div>';
+    const kids=document.createElement('div');kids.className='tree-tasks';
+
+    if(oOpen){
+      g.tasks.forEach(t=>{
+        const tOpen=searching||treeTaskOpen[t.id];
+        const hasStages=t.stages.length>0;
+        const tdone=t.completed;
+        const live=atLiveStages(t);
+        const taskEl=document.createElement('div');
+        taskEl.className='tree-task'+(tOpen?' open':'')+(tdone?' done':'');
+        taskEl.innerHTML='<div class="tree-task-head"'+(hasStages?' data-task="'+t.id+'"':'')+'>'
+          +'<span class="tree-caret">'+(hasStages?(tOpen?'▾':'▸'):'·')+'</span>'
+          +'<span class="tree-task-title">'+hl(t.title)+'</span>'
+          +(t.starred?'<span class="pill">★</span>':'')
+          +((t.tags||[]).length?'<span class="tree-tags">'+t.tags.map(x=>'#'+esc(x)).join(' ')+'</span>':'')
+          +'<span class="tree-task-meta">'+(hasStages?(t.stages.filter(s=>s.completed).length+'/'+t.stages.length):(tdone?'done':'atomic'))+'</span>'
+          +'</div>';
+        if(tOpen&&hasStages){
+          const sWrap=document.createElement('div');sWrap.className='tree-stages';
+          t.stages.forEach(sg=>{
+            const sEl=document.createElement('div');
+            sEl.className='tree-stage'+(sg.completed?' done':'')+(sg.waiting?' wait':'');
+            const selectable=!sg.completed&&!sg.waiting;
+            sEl.innerHTML='<span class="tree-dot"></span><span class="tree-stage-title">'+hl(sg.title)+'</span>'
+              +(sg.completed?'<span class="pill">done</span>':sg.waiting?'<span class="pill wait">blocked</span>':'<button class="tree-send" data-send="'+t.id+'|'+sg.id+'">→ session</button>');
+            sWrap.appendChild(sEl);
+          });
+          taskEl.appendChild(sWrap);
+        }
+        kids.appendChild(taskEl);
+      });
+    }
+    objEl.appendChild(kids);
+    list.appendChild(objEl);
+  });
+
+  list.querySelectorAll('[data-obj]').forEach(el=>el.addEventListener('click',()=>{
+    const id=el.dataset.obj;treeObjOpen[id]=!treeObjOpen[id];renderAllTasksTree();
+  }));
+  list.querySelectorAll('[data-task]').forEach(el=>el.addEventListener('click',()=>{
+    const id=el.dataset.task;treeTaskOpen[id]=!treeTaskOpen[id];renderAllTasksTree();
+  }));
+  list.querySelectorAll('[data-send]').forEach(el=>el.addEventListener('click',e=>{
+    e.stopPropagation();
+    const [tid,sid]=el.dataset.send.split('|');
+    atSelected.clear();atSelTasks.clear();atSelected.add(sid);
+    sendSelectionToSession();
+  }));
+  renderAtSelBar();
+}
+
 function renderAllTasks(){
   const list=document.getElementById('allTasksList');
   const fbox=document.getElementById('atFilters');
@@ -2889,6 +3031,15 @@ function renderAllTasks(){
         .map(o=>'<option value="'+o.id+'">'+esc(o.title)+'</option>').join('');
     ib.value=ibc;
   }
+
+  /* view toggle (flat vs tree) */
+  const vt=document.getElementById('atViewToggle');
+  if(vt){
+    vt.innerHTML='<button class="at-vt'+(atView==='flat'?' active':'')+'" data-v="flat">List</button>'
+      +'<button class="at-vt'+(atView==='tree'?' active':'')+'" data-v="tree">Tree</button>';
+    vt.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',()=>{atView=b.dataset.v;renderAllTasks();}));
+  }
+  if(atView==='tree'){renderAllTasksTree();return;}
 
   /* objective dropdown */
   const cur=ofil.value||atObj;
